@@ -1,180 +1,186 @@
-from sqlalchemy import (
-    Column, Integer, String, Date, Time, ForeignKey,
-    TIMESTAMP, CheckConstraint
-)
-from sqlalchemy.orm import relationship, declarative_base
-from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
+from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
 
-Base = declarative_base()
+app = Flask(__name__)
 
-# -----------------------------------------
-#  DATABASE CONNECTION
-# -----------------------------------------
+# ---------------------------------------------------
+#      CONFIGURATION DE LA BASE DE DONNÉES
+# ---------------------------------------------------
 
-# Pour PostgreSQL normal (synchrone)
-DATABASE_URL = "postgresql://trevor:TREFRIED1707@localhost/Travelling"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://trevor:TREFRIED1707@localhost/travelling"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-engine = create_engine(DATABASE_URL, echo=True)
-SessionLocal = sessionmaker(bind=engine)
+db = SQLAlchemy(app)
 
 
-# =====================================================
-#                    MODELS
-# =====================================================
+# ---------------------------------------------------
+#             DÉCLARATION DES MODELS
+# ---------------------------------------------------
 
-class Agence(Base):
+class Agence(db.Model):
     __tablename__ = "agence"
 
-    id_agence = Column(Integer, primary_key=True, autoincrement=True)
-    nom_agence = Column(String(100), nullable=False)
-    adresse = Column(String(255))
+    id_agence = db.Column(db.Integer, primary_key=True)
+    nom_agence = db.Column(db.String(100), nullable=False)
+    adresse = db.Column(db.String(255))
 
-    personnels = relationship("Personnel", back_populates="agence")
-    voyages = relationship("Voyage", back_populates="agence")
+    personnels = db.relationship("Personnel", back_populates="agence")
+    voyages = db.relationship("Voyage", back_populates="agence")
 
 
-class Personnel(Base):
+class Personnel(db.Model):
     __tablename__ = "personnel"
 
-    id_personnel = Column(Integer, primary_key=True, autoincrement=True)
-    nom = Column(String(50), nullable=False)
-    prenom = Column(String(50))
-    role = Column(String(50), nullable=False)
-    id_agence = Column(Integer, ForeignKey("agence.id_agence"))
+    id_personnel = db.Column(db.Integer, primary_key=True)
+    nom = db.Column(db.String(50), nullable=False)
+    prenom = db.Column(db.String(50))
+    role = db.Column(db.String(50), nullable=False)
+    id_agence = db.Column(db.Integer, db.ForeignKey("agence.id_agence"))
 
-    agence = relationship("Agence", back_populates="personnels")
-    voyages = relationship("Voyage", secondary="voyage_personnel", back_populates="personnels")
-    colis_traite = relationship("Colis", back_populates="personnel_traiteur")
+    agence = db.relationship("Agence", back_populates="personnels")
+    voyages = db.relationship("Voyage", secondary="voyage_personnel", back_populates="personnels")
+    colis_traite = db.relationship("Colis", back_populates="personnel_traiteur")
 
 
-class Client(Base):
+class Client(db.Model):
     __tablename__ = "client"
 
-    id_client = Column(Integer, primary_key=True, autoincrement=True)
-    nom = Column(String(50), nullable=False)
-    prenom = Column(String(50))
-    telephone = Column(String(20), unique=True, nullable=False)
-    email = Column(String(100), unique=True)
-    cni = Column(String(50))
+    id_client = db.Column(db.Integer, primary_key=True)
+    nom = db.Column(db.String(50), nullable=False)
+    prenom = db.Column(db.String(50))
+    telephone = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(100), unique=True)
+    cni = db.Column(db.String(50))
 
-    reservations = relationship("Reservation", back_populates="client")
-    expeditions = relationship("Expedition", back_populates="client")
+    reservations = db.relationship("Reservation", back_populates="client")
+    expeditions = db.relationship("Expedition", back_populates="client")
 
 
-class Trajet(Base):
+class Trajet(db.Model):
     __tablename__ = "trajet"
 
-    id_trajet = Column(Integer, primary_key=True, autoincrement=True)
-    ville_depart = Column(String(100), nullable=False)
-    ville_arrivee = Column(String(100), nullable=False)
-    tarif_standard = Column(Integer, nullable=False)
-    tarif_vip = Column(Integer, nullable=False)
+    id_trajet = db.Column(db.Integer, primary_key=True)
+    ville_depart = db.Column(db.String(100), nullable=False)
+    ville_arrivee = db.Column(db.String(100), nullable=False)
+    tarif_standard = db.Column(db.Integer, nullable=False)
+    tarif_vip = db.Column(db.Integer, nullable=False)
 
-    voyages = relationship("Voyage", back_populates="trajet")
+    voyages = db.relationship("Voyage", back_populates="trajet")
 
 
-class Vehicule(Base):
+class Vehicule(db.Model):
     __tablename__ = "vehicule"
 
-    immatriculation = Column(String(20), primary_key=True)
-    type = Column(String(50), nullable=False)
-    capacite = Column(Integer, nullable=False)
-    statut = Column(String(50), nullable=False, default="En service")
+    immatriculation = db.Column(db.String(20), primary_key=True)
+    type = db.Column(db.String(50), nullable=False)
+    capacite = db.Column(db.Integer, nullable=False)
+    statut = db.Column(db.String(50), nullable=False, default="En service")
 
-    voyages = relationship("Voyage", back_populates="vehicule")
+    voyages = db.relationship("Voyage", back_populates="vehicule")
 
 
-class Voyage(Base):
+class Voyage(db.Model):
     __tablename__ = "voyage"
 
-    id_voyage = Column(Integer, primary_key=True, autoincrement=True)
-    date_depart = Column(Date, nullable=False)
-    heure_depart = Column(Time, nullable=False)
-    id_trajet = Column(Integer, ForeignKey("trajet.id_trajet"), nullable=False)
-    immatriculation = Column(String(20), ForeignKey("vehicule.immatriculation"), nullable=False)
-    id_agence = Column(Integer, ForeignKey("agence.id_agence"))
-    standing = Column(String(50), nullable=False)
-    places_reservees = Column(Integer)
+    id_voyage = db.Column(db.Integer, primary_key=True)
+    date_depart = db.Column(db.Date, nullable=False)
+    heure_depart = db.Column(db.Time, nullable=False)
+    id_trajet = db.Column(db.Integer, db.ForeignKey("trajet.id_trajet"), nullable=False)
+    immatriculation = db.Column(db.String(20), db.ForeignKey("vehicule.immatriculation"), nullable=False)
+    id_agence = db.Column(db.Integer, db.ForeignKey("agence.id_agence"))
+    standing = db.Column(db.String(50), nullable=False)
+    places_reservees = db.Column(db.Integer)
 
-    trajet = relationship("Trajet", back_populates="voyages")
-    vehicule = relationship("Vehicule", back_populates="voyages")
-    agence = relationship("Agence", back_populates="voyages")
+    trajet = db.relationship("Trajet", back_populates="voyages")
+    vehicule = db.relationship("Vehicule", back_populates="voyages")
+    agence = db.relationship("Agence", back_populates="voyages")
 
-    personnels = relationship("Personnel", secondary="voyage_personnel", back_populates="voyages")
-    reservations = relationship("Reservation", back_populates="voyage")
-    expeditions = relationship("Expedition", back_populates="voyage")
+    personnels = db.relationship("Personnel", secondary="voyage_personnel", back_populates="voyages")
+    reservations = db.relationship("Reservation", back_populates="voyage")
+    expeditions = db.relationship("Expedition", back_populates="voyage")
 
 
-class VoyagePersonnel(Base):
+class VoyagePersonnel(db.Model):
     __tablename__ = "voyage_personnel"
 
-    id_voyage = Column(Integer, ForeignKey("voyage.id_voyage", ondelete="CASCADE"), primary_key=True)
-    id_personnel = Column(Integer, ForeignKey("personnel.id_personnel"), primary_key=True)
+    id_voyage = db.Column(db.Integer, db.ForeignKey("voyage.id_voyage", ondelete="CASCADE"), primary_key=True)
+    id_personnel = db.Column(db.Integer, db.ForeignKey("personnel.id_personnel"), primary_key=True)
 
 
-class Paiement(Base):
+class Paiement(db.Model):
     __tablename__ = "paiement"
 
-    id_paiement = Column(Integer, primary_key=True, autoincrement=True)
-    montant = Column(Integer, nullable=False)
-    date_paiement = Column(TIMESTAMP, nullable=False)
-    mode = Column(String(50), nullable=False)
-    reference_transaction = Column(String(100), unique=True, nullable=False)
+    id_paiement = db.Column(db.Integer, primary_key=True)
+    montant = db.Column(db.Integer, nullable=False)
+    date_paiement = db.Column(db.TIMESTAMP, nullable=False)
+    mode = db.Column(db.String(50), nullable=False)
+    reference_transaction = db.Column(db.String(100), unique=True, nullable=False)
 
-    reservation = relationship("Reservation", back_populates="paiement", uselist=False)
+    reservation = db.relationship("Reservation", back_populates="paiement", uselist=False)
 
 
-class Reservation(Base):
+class Reservation(db.Model):
     __tablename__ = "reservation"
 
-    num_reservation = Column(String(20), primary_key=True)
-    date_reservation = Column(TIMESTAMP, nullable=False)
-    statut = Column(String(50), nullable=False)
+    num_reservation = db.Column(db.String(20), primary_key=True)
+    date_reservation = db.Column(db.TIMESTAMP, nullable=False)
+    statut = db.Column(db.String(50), nullable=False)
 
-    id_client = Column(Integer, ForeignKey("client.id_client"), nullable=False)
-    id_voyage = Column(Integer, ForeignKey("voyage.id_voyage"), nullable=False)
-    id_paiement = Column(Integer, ForeignKey("paiement.id_paiement"), unique=True)
+    id_client = db.Column(db.Integer, db.ForeignKey("client.id_client"), nullable=False)
+    id_voyage = db.Column(db.Integer, db.ForeignKey("voyage.id_voyage"), nullable=False)
+    id_paiement = db.Column(db.Integer, db.ForeignKey("paiement.id_paiement"), unique=True)
 
-    client = relationship("Client", back_populates="reservations")
-    voyage = relationship("Voyage", back_populates="reservations")
-    paiement = relationship("Paiement", back_populates="reservation")
+    client = db.relationship("Client", back_populates="reservations")
+    voyage = db.relationship("Voyage", back_populates="reservations")
+    paiement = db.relationship("Paiement", back_populates="reservation")
 
 
-class Expedition(Base):
+class Expedition(db.Model):
     __tablename__ = "expedition"
 
-    num_expedition = Column(String(20), primary_key=True)
-    date_expedition = Column(TIMESTAMP, nullable=False)
-    frais = Column(Integer, nullable=False)
-    nature = Column(String(100))
+    num_expedition = db.Column(db.String(20), primary_key=True)
+    date_expedition = db.Column(db.TIMESTAMP, nullable=False)
+    frais = db.Column(db.Integer, nullable=False)
+    nature = db.Column(db.String(100))
 
-    id_client_expediteur = Column(Integer, ForeignKey("client.id_client"))
-    id_voyage = Column(Integer, ForeignKey("voyage.id_voyage"))
+    id_client_expediteur = db.Column(db.Integer, db.ForeignKey("client.id_client"))
+    id_voyage = db.Column(db.Integer, db.ForeignKey("voyage.id_voyage"))
 
-    client = relationship("Client", back_populates="expeditions")
-    voyage = relationship("Voyage", back_populates="expeditions")
-    colis = relationship("Colis", back_populates="expedition")
+    client = db.relationship("Client", back_populates="expeditions")
+    voyage = db.relationship("Voyage", back_populates="expeditions")
+    colis = db.relationship("Colis", back_populates="expedition")
 
 
-class Colis(Base):
+class Colis(db.Model):
     __tablename__ = "colis"
 
-    id_colis = Column(Integer, primary_key=True, autoincrement=True)
-    num_expedition = Column(String(20), ForeignKey("expedition.num_expedition"), nullable=False)
-    nature = Column(String(100), nullable=False)
-    quantite = Column(Integer, nullable=False)
+    id_colis = db.Column(db.Integer, primary_key=True)
+    num_expedition = db.Column(db.String(20), db.ForeignKey("expedition.num_expedition"), nullable=False)
+    nature = db.Column(db.String(100), nullable=False)
+    quantite = db.Column(db.Integer, nullable=False)
 
-    id_personnel_traiteur = Column(Integer, ForeignKey("personnel.id_personnel"))
+    id_personnel_traiteur = db.Column(db.Integer, db.ForeignKey("personnel.id_personnel"))
 
-    expedition = relationship("Expedition", back_populates="colis")
-    personnel_traiteur = relationship("Personnel", back_populates="colis_traite")
+    expedition = db.relationship("Expedition", back_populates="colis")
+    personnel_traiteur = db.relationship("Personnel", back_populates="colis_traite")
 
 
-# =====================================================
-#  CREATE TABLES
-# =====================================================
+# ---------------------------------------------------
+#                     ROUTES
+# ---------------------------------------------------
 
-def create_database():
-    Base.metadata.create_all(engine)
+@app.route("/", methods=["GET"])
+def acceuil():
+    return "<h1>Application Travelling opérationnelle !</h1>"
+
+
+# ---------------------------------------------------
+#                   LANCEMENT APP
+# ---------------------------------------------------
+
+if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
+
+    app.run(debug=True, host="0.0.0.0")
+
