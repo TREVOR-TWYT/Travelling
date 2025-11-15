@@ -1,24 +1,7 @@
-from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
-from crud_routes import crud
 
+db = SQLAlchemy()
 
-app = Flask(__name__)
-app.register_blueprint(crud)
-
-# ---------------------------------------------------
-#      CONFIGURATION DE LA BASE DE DONNÉES
-# ---------------------------------------------------
-
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://trevor:TREFRIED1707@localhost/travelling"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-db = SQLAlchemy(app)
-
-
-# ---------------------------------------------------
-#             DÉCLARATION DES MODELS
-# ---------------------------------------------------
 
 class Agence(db.Model):
     __tablename__ = "agence"
@@ -41,7 +24,9 @@ class Personnel(db.Model):
     id_agence = db.Column(db.Integer, db.ForeignKey("agence.id_agence"))
 
     agence = db.relationship("Agence", back_populates="personnels")
-    voyages = db.relationship("Voyage", secondary="voyage_personnel", back_populates="personnels")
+    voyages = db.relationship(
+        "Voyage", secondary="voyage_personnel", back_populates="personnels"
+    )
     colis_traite = db.relationship("Colis", back_populates="personnel_traiteur")
 
 
@@ -98,7 +83,9 @@ class Voyage(db.Model):
     vehicule = db.relationship("Vehicule", back_populates="voyages")
     agence = db.relationship("Agence", back_populates="voyages")
 
-    personnels = db.relationship("Personnel", secondary="voyage_personnel", back_populates="voyages")
+    personnels = db.relationship(
+        "Personnel", secondary="voyage_personnel", back_populates="voyages"
+    )
     reservations = db.relationship("Reservation", back_populates="voyage")
     expeditions = db.relationship("Expedition", back_populates="voyage")
 
@@ -161,165 +148,7 @@ class Colis(db.Model):
     num_expedition = db.Column(db.String(20), db.ForeignKey("expedition.num_expedition"), nullable=False)
     nature = db.Column(db.String(100), nullable=False)
     quantite = db.Column(db.Integer, nullable=False)
-
     id_personnel_traiteur = db.Column(db.Integer, db.ForeignKey("personnel.id_personnel"))
 
     expedition = db.relationship("Expedition", back_populates="colis")
     personnel_traiteur = db.relationship("Personnel", back_populates="colis_traite")
-
-# ---------------------------------------------------
-#                     ROUTES CRUD
-# ---------------------------------------------------
-
-@crud.route("/agences", methods=["POST"])
-def create_agence():
-    data = request.json
-    agence = Agence(
-        nom_agence=data.get("nom_agence"),
-        adresse=data.get("adresse")
-    )
-    db.session.add(agence)
-    db.session.commit()
-
-    return jsonify({"message": "Agence créée", "id": agence.id_agence}), 201
-
-@crud.route("/agences", methods=["GET"])
-def get_agences():
-    agences = Agence.query.all()
-    result = [
-        {"id": a.id_agence, "nom": a.nom_agence, "adresse": a.adresse}
-        for a in agences
-    ]
-    return jsonify(result)
-
-@crud.route("/agences/<int:id>", methods=["GET"])
-def get_agence(id):
-    agence = Agence.query.get_or_404(id)
-    return jsonify({
-        "id": agence.id_agence,
-        "nom": agence.nom_agence,
-        "adresse": agence.adresse
-    })
-
-@crud.route("/agences/<int:id>", methods=["PUT"])
-def update_agence(id):
-    agence = Agence.query.get_or_404(id)
-    data = request.json
-
-    agence.nom_agence = data.get("nom_agence", agence.nom_agence)
-    agence.adresse = data.get("adresse", agence.adresse)
-
-    db.session.commit()
-    return jsonify({"message": "Agence mise à jour"})
-
-@crud.route("/agences/<int:id>", methods=["DELETE"])
-def delete_agence(id):
-    agence = Agence.query.get_or_404(id)
-    db.session.delete(agence)
-    db.session.commit()
-    return jsonify({"message": "Agence supprimée"})
-
-
-
-@crud.route("/clients", methods=["POST"])
-def create_client():
-    data = request.json
-
-    client = Client(
-        nom=data.get("nom"),
-        prenom=data.get("prenom"),
-        telephone=data.get("telephone"),
-        email=data.get("email"),
-        cni=data.get("cni")
-    )
-    db.session.add(client)
-    db.session.commit()
-
-    return jsonify({"message": "Client créé", "id": client.id_client}), 201
-
-@crud.route("/clients", methods=["GET"])
-def get_clients():
-    clients = Client.query.all()
-    return jsonify([
-        {
-            "id": c.id_client,
-            "nom": c.nom,
-            "prenom": c.prenom,
-            "telephone": c.telephone,
-            "email": c.email,
-            "cni": c.cni
-        }
-        for c in clients
-    ])
-
-@crud.route("/clients/<int:id>", methods=["PUT"])
-def update_client(id):
-    client = Client.query.get_or_404(id)
-    data = request.json
-
-    for field in ["nom", "prenom", "telephone", "email", "cni"]:
-        setattr(client, field, data.get(field, getattr(client, field)))
-
-    db.session.commit()
-    return jsonify({"message": "Client mis à jour"})
-
-@crud.route("/clients/<int:id>", methods=["DELETE"])
-def delete_client(id):
-    client = Client.query.get_or_404(id)
-    db.session.delete(client)
-    db.session.commit()
-    return jsonify({"message": "Client supprimé"})
-
-
-
-@crud.route("/trajets", methods=["POST"])
-def create_trajet():
-    data = request.json
-
-    trajet = Trajet(
-        ville_depart=data["ville_depart"],
-        ville_arrivee=data["ville_arrivee"],
-        tarif_standard=data["tarif_standard"],
-        tarif_vip=data["tarif_vip"]
-    )
-
-    db.session.add(trajet)
-    db.session.commit()
-    return jsonify({"message": "Trajet créé", "id": trajet.id_trajet}), 201
-
-@crud.route("/trajets", methods=["GET"])
-def get_trajets():
-    trajets = Trajet.query.all()
-    return jsonify([
-        {
-            "id": t.id_trajet,
-            "depart": t.ville_depart,
-            "arrivee": t.ville_arrivee,
-            "tarif_standard": t.tarif_standard,
-            "tarif_vip": t.tarif_vip
-        }
-        for t in trajets
-    ])
-
-
-
-
-# ---------------------------------------------------
-#                     ROUTES
-# ---------------------------------------------------
-
-@app.route("/", methods=["GET"])
-def acceuil():
-    return "<h1>Application Travelling opérationnelle !</h1>"
-
-
-# ---------------------------------------------------
-#                   LANCEMENT APP
-# ---------------------------------------------------
-
-if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-
-    app.run(debug=True, host="0.0.0.0")
-
