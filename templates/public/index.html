@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mboa-travel - Accueil</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">Mboa travel</div>
+            <nav>
+                <ul>
+                    <li><a href="#">Accueil</a></li>
+                    <li><a href="#">Réserver</a></li>
+                    <li><a href="#">Tarifs</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <a href="#" class="btn login">Se connecter</a>
+                <a href="#" class="btn signup">Créer un compte</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-overlay">
+            <img src="/static/image/logo.png" alt="logo Mboa Travel">
+            <h1>Bienvenue chez Mboa Travel</h1>
+            <p>Voyages, réservations et expéditions rapides en toute sécurité</p>
+            <a href="#" class="btn hero-btn">Réserver maintenant</a>
+        </div>
+    </section>
+
+    <!-- FORMULAIRE DE RECHERCHE -->
+    <section class="search-form">
+        <form>
+            <input type="text" placeholder="Ville de départ" required>
+            <input type="text" placeholder="Ville d'arrivée" required>
+            <input type="date" required>
+            <button type="submit">Rechercher</button>
+        </form>
+    </section>
+
+    <!-- TRAJETS POPULAIRES -->
+    <section class="trajets">
+        <div class="container">
+            <h2>Nos trajets populaires</h2>
+            <div class="cards">
+                <div class="card">
+                    <h3>Yaoundé → Douala</h3>
+                    <p>Tarif standard : 3500 FCFA</p>
+                    <p>Tarif VIP : 5000 FCFA</p>
+                    <a href="#" class="btn card-btn">Voir voyages</a>
+                </div>
+                <div class="card">
+                    <h3>Bafoussam → Yaoundé</h3>
+                    <p>Tarif standard : 4000Fcfa FCFA</p>
+                    <p>Tarif VIP : 5500 FCFA</p>
+                    <a href="#" class="btn card-btn">Voir voyages</a>
+                </div>
+                <div class="card">
+                    <h3>Douala → Bafang</h3>
+                    <p>Tarif standard : 6000 FCFA</p>
+                    <p>Tarif VIP : 7500 FCFA</p>
+                    <a href="#" class="btn card-btn">Voir voyages</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="services">
+        <div class="container">
+            <h2>Pourquoi nous choisir ?</h2>
+            <div class="service-cards">
+                <div class="service-card">
+                    <h3>🚌 Réservation de voyages</h3>
+                    <p>Réservez vos trajets facilement et rapidement.</p>
+                </div>
+                <div class="service-card">
+                    <h3>📦 Expédition de colis</h3>
+                    <p>Envoyez vos colis en toute sécurité et rapidement.</p>
+                </div>
+                <div class="service-card">
+                    <h3>🚚 Suivi des réservations</h3>
+                    <p>Suivez vos voyages et colis en temps réel.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container footer-container">
+            <p>© 2025 Mboa Travel | Tous droits réservés</p>
+            <p>Contact : +237 690 67 03 02 | email@traveling.cm</p>
+        </div>
+    </footer>
+</body>
+</html>
