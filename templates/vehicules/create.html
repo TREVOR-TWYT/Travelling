@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Ajouter un véhicule</h2>
+
+<form action="" method="POST">
+    <label>Immatriculation :</label>
+    <input type="text" name="immatriculation" required><br><br>
+
+    <label>Type :</label>
+    <input type="text" name="type" required><br><br>
+
+    <label>Capacité :</label>
+    <input type="number" name="capacite" required><br><br>
+
+    <label>Statut :</label>
+    <select name="statut">
+        <option value="En service" selected>En service</option>
+        <option value="Hors service">Hors service</option>
+    </select><br><br>
+
+    <button type="submit">Créer</button>
+</form>
+
+<a href="{{ url_for('crud.list_vehicules') }}">Retour à la liste</a>
+{% endblock %}
