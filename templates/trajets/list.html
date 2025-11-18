@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Liste des Trajets</h2>
+
+<a href="/trajets/create">➕ Créer un nouveau trajet</a>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Départ</th>
+        <th>Arrivée</th>
+        <th>Tarif Standard</th>
+        <th>Tarif VIP</th>
+        <th>Action</th>
+    </tr>
+
+    {% for t in trajets %}
+    <tr>
+        <td>{{ t.id_trajet }}</td>
+        <td>{{ t.ville_depart }}</td>
+        <td>{{ t.ville_arrivee }}</td>
+        <td>{{ t.tarif_standard }} FCFA</td>
+        <td>{{ t.tarif_vip }} FCFA</td>
+        <td>
+            <a href="/trajets/{{ t.id_trajet }}/edit">Modifier</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

@@ -1,6 +1,6 @@
-from flask import Flask
+from flask import Flask, request, render_template, redirect
 from models import db
-from crud_routes import crud
+from crud_routes import crud 
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://trevor:TREFRIED1707@localhost/travelling"
@@ -13,7 +13,7 @@ app.register_blueprint(crud)
 
 @app.route("/")
 def index():
-    return "<h1>Application Travelling opérationnelle !</h1>"
+    return render_template("layout.html")
 
 if __name__ == "__main__":
     with app.app_context():
