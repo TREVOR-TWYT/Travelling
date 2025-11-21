@@ -17,7 +17,7 @@
 header {
     width: 100%;
     padding: 20px 0;
-    background: #fff;
+    background: #0b7be4;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     position: fixed;
     top: 0;
@@ -34,7 +34,7 @@ header {
 .logo {
     font-size: 24px;
     font-weight: 700;
-    color: #1e88e5;
+    color: #dfe6e7;
 }
 
 nav ul {
@@ -45,7 +45,7 @@ nav ul {
 
 nav ul li a {
     text-decoration: none;
-    color: #333;
+    color: #eef5f5fa;
     font-weight: 500;
     transition: 0.3s;
 }
@@ -85,7 +85,7 @@ nav ul li a:hover {
 
 /* HERO */
 .hero {
-    height: 100vh;
+    height: 130vh;
     background: url('https:/static/image/logo.png') center/cover no-repeat;
     display: flex;
     align-items: center;
@@ -96,7 +96,7 @@ nav ul li a:hover {
 .hero-overlay {
     text-align: center;
     color: #fff;
-    background: rgba(0,0,0,0.4);
+    background: #1565c0;
     padding: 50px;
     border-radius: 10px;
 }

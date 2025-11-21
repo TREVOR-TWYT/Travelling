@@ -11,9 +11,20 @@ db.init_app(app)
 # Register blueprint
 app.register_blueprint(crud)
 
+#route pour la page d'acceuil
 @app.route("/")
 def index():
-    return render_template("public/index.html")
+    return render_template("acceuil.html")
+
+@app.route("/admin/dashboard.html")
+def admin():
+    return render_template("/admin/dashboard.html")
+
+@app.route("/public/index.html")
+def public_index():
+    return render_template("/public/index.html")
+
+
 
 if __name__ == "__main__":
     with app.app_context():
