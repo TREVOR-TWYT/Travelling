@@ -1,431 +1,3 @@
-/* RESET */
-/* * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Montserrat', sans-serif;
-}
-
-/* CONTAINERS */
-/*.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: auto;
-}
-
-/* HEADER */
-/* header {
-    width: 100%;
-    padding: 20px 0;
-    background: #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 100;
-}
-
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    font-size: 24px;
-    font-weight: 700;
-    color: #1e88e5;
-}
-
-nav ul {
-    display: flex;
-    list-style: none;
-    gap: 20px;
-}
-
-nav ul li a {
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    transition: 0.3s;
-}
-
-nav ul li a:hover {
-    color: #1e88e5;
-}
-
-.auth-buttons .btn {
-    padding: 8px 15px;
-    border-radius: 5px;
-    text-decoration: none;
-    margin-left: 10px;
-    font-weight: 500;
-    transition: 0.3s;
-}
-
-.auth-buttons .login {
-    background: #fff;
-    color: #1e88e5;
-    border: 1px solid #1e88e5;
-}
-
-.auth-buttons .login:hover {
-    background: #1e88e5;
-    color: #fff;
-}
-
-.auth-buttons .signup {
-    background: #1e88e5;
-    color: #fff;
-}
-
-.auth-buttons .signup:hover {
-    background: #1565c0;
-}
-
-/* HERO */
-/*.hero {
-    height: 100vh;
-    background: url('https:/static/image/logo.png') center/cover no-repeat;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
-
-.hero-overlay {
-    text-align: center;
-    color: #fff;
-    background: rgba(0,0,0,0.4);
-    padding: 50px;
-    border-radius: 10px;
-}
-
-.hero h1 {
-    font-size: 48px;
-    margin-bottom: 20px;
-}
-
-.hero p {
-    font-size: 20px;
-    margin-bottom: 30px;
-}
-
-.hero-btn {
-    background: #ff9800;
-    color: #fff;
-    padding: 12px 30px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.hero-btn:hover {
-    background: #e68900;
-}
-
-/* FORMULAIRE DE RECHERCHE */
-/*.search-form {
-    margin-top: -50px;
-    display: flex;
-    justify-content: center;
-}
-
-.search-form form {
-    display: flex;
-    gap: 15px;
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.search-form input,
-.search-form button {
-    padding: 10px 15px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-.search-form button {
-    background: #1e88e5;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.search-form button:hover {
-    background: #1565c0;
-}
-
-/* TRAJETS */
-/*.trajets {
-    padding: 80px 0;
-    background: #f5f5f5;
-}
-
-.trajets h2 {
-    text-align: center;
-    margin-bottom: 40px;
-    font-size: 32px;
-    color: #1e88e5;
-}
-
-.cards {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.card {
-    background: #fff;
-    padding: 20px;
-    width: 250px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    text-align: center;
-    transition: transform 0.3s;
-}
-
-.card:hover {
-    transform: scale(1.05);
-}
-
-.card h3 {
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.card p {
-    margin-bottom: 10px;
-    color: #555;
-}
-
-.card-btn {
-    display: inline-block;
-    padding: 8px 20px;
-    background: #1e88e5;
-    color: #fff;
-    border-radius: 5px;
-    text-decoration: none;
-}
-
-.card-btn:hover {
-    background: #1565c0;
-}
-
-/* SERVICES */
-/*.services {
-    padding: 80px 0;
-}
-
-.services h2 {
-    text-align: center;
-    margin-bottom: 40px;
-    font-size: 32px;
-    color: #1e88e5;
-}
-
-.service-cards {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.service-card {
-    background: #fff;
-    padding: 20px;
-    width: 250px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    text-align: center;
-    transition: transform 0.3s;
-}
-
-.service-card:hover {
-    transform: scale(1.05);
-}
-
-.service-card h3 {
-    margin-bottom: 10px;
-}
-
-.service-card p {
-    color: #555;
-}
-
-/* FOOTER */
-/*footer {
-    background: #1f1f1f;
-    color: #fff;
-    padding: 20px 0;
-    text-align: center;
-}
-
-footer p {
-    margin-bottom: 5px;
-}
-*/
-
-
-/* Reset & global */
-/*
-* {margin:0; padding:0; box-sizing:border-box;}
-body {font-family: 'Roboto', sans-serif; color:#333;}
-a {text-decoration:none; color: inherit;}
-img {max-width:100%; display:block;}
-
-/* Header */
-/*
-header {
-    background-color: #004aad;
-    color: #fff;
-    padding: 15px 50px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-header nav ul {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-}
-header nav ul li a:hover {text-decoration: underline;}
-header img {height:50px;}
-
-/* Hero */
-/*
-.hero {
-    position: relative;
-    height: 400px;
-    background: url('bus-hero.jpg') center/cover no-repeat;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    text-align: center;
-}
-.hero h1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
-}
-.btn {
-    background-color: #ff9500;
-    color: #fff;
-    padding: 12px 30px;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: 0.3s;
-}
-.btn:hover {background-color: #e08600;}
-
-/* Reservation Form */
-/*
-.reservation {
-    background-color: #f5f5f5;
-    padding: 40px 50px;
-    display: flex;
-    justify-content: center;
-}
-.reservation form {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-    max-width: 900px;
-    width: 100%;
-}
-.reservation input, .reservation select {
-    padding: 10px;
-    font-size: 1rem;
-    flex:1 1 150px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-.reservation button {
-    padding: 12px 20px;
-    background-color: #004aad;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    flex: 1 1 100px;
-}
-.reservation button:hover {background-color: #003080;}
-
-/* Advantages */
-/*
-.advantages {
-    display: flex;
-    gap: 30px;
-    justify-content: center;
-    padding: 50px 20px;
-    text-align: center;
-}
-.advantage {
-    flex: 1 1 200px;
-}
-.advantage img {height:80px; margin-bottom:15px;}
-.advantage h3 {margin-bottom:10px; color:#004aad;}
-.advantage p {font-size: 0.9rem;}
-
-/* Popular trips */
-/*
-.trips {
-    padding: 50px 20px;
-    background-color: #e8f0ff;
-}
-.trips h2 {text-align: center; margin-bottom: 40px; color:#004aad;}
-.trip-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 30px;
-    justify-content: center;
-}
-.trip {
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    width: 250px;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    transition: 0.3s;
-}
-.trip:hover {transform: translateY(-5px);}
-.trip img {height:150px; border-radius: 5px; margin-bottom:15px;}
-.trip h4 {margin-bottom:10px;}
-.trip p {font-size:0.9rem; color:#555;}
-
-/* Testimonials */
-/*
-.testimonials {
-    padding: 50px 20px;
-    text-align: center;
-}
-.testimonials h2 {color:#004aad; margin-bottom:40px;}
-.testimonial {
-    max-width: 600px;
-    margin: 0 auto 30px;
-    font-style: italic;
-    color:#555;
-}
-
-/* Footer */
-/*
-footer {
-    background-color: #004aad;
-    color: #fff;
-    text-align: center;
-    padding: 20px;
-}
-footer a {color:#ff9500;}
-*/
-
-
 /* =====================
    Global Styles
 ===================== */
@@ -533,7 +105,9 @@ header nav ul li a:hover {
     padding: 50px 20px;
     background-color: #f0f8ff; /* fond bleu très clair */
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
 }
 
 .reservation form {
@@ -541,9 +115,12 @@ header nav ul li a:hover {
     flex-wrap: wrap;
     gap: 15px;
     max-width: 700px;
+    width: 100%;
 }
 
-.reservation input, .reservation select, .reservation button {
+.reservation input,
+.reservation select,
+.reservation button {
     padding: 12px;
     font-size: 1rem;
     border-radius: 5px;
@@ -552,7 +129,7 @@ header nav ul li a:hover {
 }
 
 .reservation button {
-    background-color: #007bff; /* bleu */
+    background-color: #007bff;
     color: white;
     border: none;
     cursor: pointer;
@@ -560,7 +137,57 @@ header nav ul li a:hover {
 }
 
 .reservation button:hover {
-    background-color: #0056b3; /* bleu foncé */
+    background-color: #0056b3;
+}
+
+/* =====================
+   Results for search
+===================== */
+#results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    width: 100%;
+}
+
+#results .trip {
+    background-color: #ffffff;
+    border-radius: 10px;
+    flex: 1 1 250px;
+    text-align: center;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+#results .trip:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+#results .trip h4 {
+    margin: 15px 0 10px;
+    color: #007bff;
+}
+
+#results .trip p {
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+#results .trip .btn {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+#results .trip .btn:hover {
+    background-color: #0056b3;
 }
 
 /* =====================
@@ -602,7 +229,13 @@ header nav ul li a:hover {
 ===================== */
 .trips {
     padding: 50px 20px;
-    background-color: #f0f8ff; /* bleu très clair */
+    background-color: #f0f8ff;
+}
+
+.trips h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #007bff;
 }
 
 .trip-list {
@@ -638,6 +271,7 @@ header nav ul li a:hover {
 }
 
 .trip p {
+    font-size: 0.9rem;
     margin-bottom: 15px;
 }
 
@@ -690,7 +324,104 @@ footer a {
         gap: 20px;
     }
 
-    .trip-list {
+    .trip-list, #results {
         flex-direction: column;
     }
 }
+
+.search-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.search-info h2 {
+    color: #0055aa;
+    font-size: 26px;
+    margin-bottom: 5px;
+}
+
+.search-info p {
+    color: #003366;
+    font-size: 16px;
+}
+
+
+/* CONTACT PAGE */
+.contact-section {
+    padding: 60px 20px;
+    background: #f5faff;
+}
+
+.contact-container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+.contact-container h1 {
+    text-align: center;
+    color: #003366;
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.contact-intro {
+    text-align: center;
+    font-size: 18px;
+    color: #003366;
+    margin-bottom: 40px;
+}
+
+.contact-grid {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.contact-form, .contact-info {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    flex: 1;
+    min-width: 320px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.contact-form label {
+    font-weight: bold;
+    color: #003366;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0 20px;
+    border: 1px solid #bcd2e8;
+    border-radius: 8px;
+}
+
+.contact-form textarea {
+    height: 150px;
+    resize: none;
+}
+
+.contact-btn {
+    width: 100%;
+    padding: 14px;
+    background: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.contact-btn:hover {
+    background: #004c99;
+}
+
+.contact-info h2 {
+    color: #003366;
+    margin-bottom: 20px;
+}
+
