@@ -98,6 +98,34 @@ header nav ul li a:hover {
     background-color: #cce5ff; /* bleu clair au hover */
 }
 
+.hero-title {
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: #ffffff;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+    animation: fadeInUp 1.2s ease forwards;
+}
+
+.hero-title .highlight {
+    color: #007bff; /* bleu principal du thème */
+    font-size: 3.2rem;
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
 /* =====================
    Reservation Form
 ===================== */
