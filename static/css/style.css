@@ -1,13 +1,31 @@
 /* =====================
    Global Styles
 ===================== */
-body {
+/*body {
     margin: 0;
     font-family: 'Montserrat', sans-serif;
     line-height: 1.6;
     color: #333;
     background-color: #ffffff;
+}*/
+
+body {
+    background-image: url("/static/image/background1.jpg");
+    background-size: cover;        /* L’image couvre toute la page */
+    background-position: center;   /* Centre l’image */
+    background-repeat: no-repeat;  /* Pas de répétition */
+    background-attachment: fixed;  /* Effet léger de parallaxe */
 }
+
+.search-info {
+    background: rgba(255, 255, 255, 0.85); /* Blanc transparent */
+    padding: 25px;
+    border-radius: 10px;
+    width: 350px;
+    margin: auto;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+}
+
 
 a {
     text-decoration: none;
@@ -323,6 +341,11 @@ header nav ul li a:hover {
     margin: 10px auto;
 }
 
+.reservation {
+    width: 90%;
+}
+
+
 /* =====================
    Footer
 ===================== */
@@ -453,3 +476,40 @@ footer a {
     margin-bottom: 20px;
 }
 
+
+/* ===== GLASSMORPHISM POUR LA SECTION RESERVATION ===== */
+.reservation {
+    background: rgba(255, 255, 255, 0.15); /* léger transparent */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 50px 20px;
+    border-radius: 15px;
+    max-width: 900px;
+    margin: 40px auto;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Pour mieux lire les labels et textes */
+.reservation h2,
+.reservation label,
+.reservation p {
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+/* Inputs lisibles */
+.reservation input,
+.reservation select {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+/* Bouton */
+.reservation button {
+    background: #ffffff;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.reservation button:hover {
+    background: #cce5ff;
+}
