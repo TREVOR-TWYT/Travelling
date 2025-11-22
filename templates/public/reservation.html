@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Réservation - MBOA TRAVEL</title>
+    <link rel="stylesheet" href="/static/css/reservation.css">
+</head>
+<body>
+
+{% include 'public/header.html' %}
+
+<div class="trajets-container">
+    <h2>Réserver un voyage</h2>
+    <form method="GET">
+        <input type="text" name="ville_depart" placeholder="Ville de départ">
+        <input type="text" name="ville_arrivee" placeholder="Ville d'arrivée">
+        <button type="submit">Rechercher</button>
+    </form>
+
+    <div class="trajets-list">
+        {% for voyage in voyages %}
+            <div class="trajet-card">
+                <h3>{{ voyage.trajet.ville_depart }} → {{ voyage.trajet.ville_arrivee }}</h3>
+                <p>Date : {{ voyage.date_depart }} | Heure : {{ voyage.heure_depart }}</p>
+                <p>Tarif : {{ voyage.trajet.tarif_standard }} FCFA</p>
+                <form method="POST" action="{{ url_for('crud.reserver_voyage', id_voyage=voyage.id_voyage) }}">
+                    <button type="submit" class="btn">Réserver</button>
+                </form>
+                
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% include 'public/footer.html' %}
+</body>
+</html>

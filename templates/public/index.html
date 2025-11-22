@@ -8,52 +8,58 @@
 </head>
 <body>
 
-<!-- Header -->
-<header>
-    <img src="/static/image/logo3.png" alt="Logo MBOA TRAVEL">
-    <nav>
-        <ul>
-            <li><a href="#">Accueil</a></li>
-            <li><a href="#">Nos trajets</a></li>
-            <li><a href="#">Horaires & Tarifs</a></li>
-            <li><a href="/contact">Contact</a>
-            <li><a href="/login">Connexion</a></li>
-            <li><a href="/register">Inscription</a></li>
-                
-            </li>
-        </ul>
-    </nav>
-</header>
+{% include 'public/header.html' %}
 
 <!-- Hero Section -->
 <section class="hero">
     <div class="hero-text">
         <h1 class="hero-title">Voyagez confortablement<br>avec <span class="highlight">MBOA TRAVEL</span></h1>
-        <a href="/reservation" class="btn hero-btn">Réserver maintenant</a>
+        {% if session.get('client_id') %}
+            <a href="{{ url_for('crud.reservation') }}" class="btn hero-btn">Réserver maintenant</a>
+        {% else %}
+            <a href="{{ url_for('crud.login') }}" class="btn hero-btn">Réserver maintenant</a>
+        {% endif %}
     </div>
 </section>
 
-<div class="search-info">
-    <h2>Rechercher un trajet</h2>
-    <p>Saisissez votre ville de départ et votre ville d'arrivée pour voir tous les trajets disponibles et leurs horaires.</p>
-</div>
-
 <!-- Formulaire de recherche -->
-<section class="reservation" id="reservation">
-    <form method="GET" action="/reservation">
-        <input type="text" name="ville_depart" placeholder="Ville de départ" required>
-        <input type="text" name="ville_arrivee" placeholder="Ville d'arrivée" required>
-        <input type="date" name="date_depart" required>
-        <select name="passagers" required>
-            <option value="">Nombre de passagers</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-        </select>
-        <button type="submit">Rechercher</button>
-    </form>
+<section class="reservation-section">
+    <div class="reservation-container">
+        <div class="hero-form">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% endwith %}
+        
+            <p class="form-info">
+                <h2>Rechercher un trajet</h2>
+                Veuillez vous connecter ou vous inscrire pour rechercher un trajet
+            </p>
+        
+            <form method="GET" action="{{ url_for('crud.reservation') }}">
+                <input type="text" name="ville_depart" placeholder="Ville de départ" required>
+                <input type="text" name="ville_arrivee" placeholder="Ville d'arrivée" required>
+                <input type="date" name="date_depart" required>
+                <select name="passagers" required>
+                    <option value="">Passagers</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+                <button type="submit">Rechercher</button>
+            </form>
+        </div>
+        
+        
+    </div>
 </section>
+
 
 <!-- Advantages -->
 <section class="advantages">
@@ -103,11 +109,6 @@
     <p class="testimonial">"J’ai pu réserver mon trajet facilement et à bon prix. Je recommande vivement !" – Jean-Paul</p>
 </section>
 
-<!-- Footer -->
-<footer>
-    <p>&copy; 2025 MBOA TRAVEL. Tous droits réservés.</p>
-    <p>Contact : <a href="mailto:contact@MBOA-TRAVEL.cm">contact@MBOA-TRAVEL.cm</a> | Téléphone : +237 6 99 99 99 99</p>
-</footer>
-
+{% include 'public/footer.html' %}
 </body>
 </html>

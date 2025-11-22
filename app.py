@@ -5,6 +5,9 @@ from app.crud_routes import crud
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://trevor:TREFRIED1707@localhost/travelling'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key= '8eed26c5ef5f5990c5086859028720cff96fd1fbb3748632ac2cb2bf89ba9b23'
+
+
 
 db.init_app(app)
 

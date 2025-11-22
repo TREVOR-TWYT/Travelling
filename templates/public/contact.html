@@ -4,36 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact – BlueVoyage</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="/static/css/contact.css">
 </head>
 <body>
-
-    <header class="header">
-        <div class="logo">MBOA<span>TRAVEL</span></div>
-        <nav class="navbar">
-            <a href="/">Accueil</a>
-            <a href="/reservations">Réservations</a>
-            <a class="active" href="/contact">Contact</a>
-        </nav>
-    </header>
+  {% include 'public/header.html' %}
 
     <section class="contact-section">
         <div class="contact-container">
 
             <h1>Contactez-nous</h1>
-
-            {% if success %}
-<div style="background-color:#e0f7ff; padding:12px; border-radius:8px; color:#005f99; margin-bottom:20px;">
-    Votre message a été envoyé avec succès ! Nous vous contacterons très bientôt.
-</div>
-{% endif %}
-
             <p class="contact-intro">
                 Une question, une réservation ou besoin d'aide ?  
                 Notre équipe vous répond rapidement.
             </p>
 
             <div class="contact-grid">
+              {% if success %}
+            <div style="background-color:#e0f7ff; padding:12px; border-radius:8px; color:#005f99; margin-bottom:20px;">
+               Votre message a été envoyé avec succès ! Nous vous contacterons très bientôt.
+            </div>
+              {% endif %}
+
 
                 <!-- LEFT SIDE : FORMULAIRE -->
                 <form class="contact-form" method="POST" action="/contact">
@@ -69,6 +60,6 @@
             </div>
         </div>
     </section>
-
+    {% include 'public/footer.html' %}
 </body>
 </html>

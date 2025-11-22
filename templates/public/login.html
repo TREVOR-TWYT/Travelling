@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion - MBOA TRAVEL</title>
+    <link rel="stylesheet" href="/static/css/login.css">
+</head>
+<body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-container">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+{% include 'public/header.html' %}
+
+<div class="form-container">
+    <h2>Connexion</h2>
+    <form method="POST">
+        <input type="text" name="telephone" placeholder="Téléphone" required>
+        <input type="password" name="password" placeholder="Mot de passe" required>
+        <button type="submit">Se connecter</button>
+    </form>
+    <p>Vous n'avez pas de compte ? <a href="{{ url_for('crud.register') }}">S’inscrire</a></p>
+</div>
+{% include 'public/footer.html' %}
+</body>
+</html>
