@@ -1,0 +1,33 @@
+{% extends "admin/layout.html" %}
+{% block content %}
+<h2>Ajouter un nouveau personnel</h2>
+
+<form action="" method="POST">
+    <label>Nom :</label>
+    <input type="text" name="nom" required><br><br>
+
+    <label>Prénom :</label>
+    <input type="text" name="prenom"><br><br>
+
+    <label>Rôle :</label>
+    <select name="role" required>
+        <option>Chauffeur</option>
+        <option>Agent</option>
+        <option>Manager</option>
+        <option>Controleur</option>
+        <option>Livreur</option>
+    </select><br><br>
+
+    <label>Agence :</label>
+    <select name="id_agence">
+        <option value="">— Aucune —</option>
+        {% for a in agences %}
+            <option value="{{ a.id_agence }}">{{ a.nom_agence }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <button type="submit">Créer</button>
+</form>
+
+<a href="{{ url_for('crud.list_personnels') }}">Retour à la liste</a>
+{% endblock %}

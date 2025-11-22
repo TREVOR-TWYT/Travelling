@@ -1,270 +1,515 @@
-/* RESET */
-* {
+/* =====================
+   Global Styles
+===================== */
+/*body {
     margin: 0;
-    padding: 0;
-    box-sizing: border-box;
     font-family: 'Montserrat', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #ffffff;
+}*/
+
+body {
+    background-image: url("/static/image/background1.jpg");
+    background-size: cover;        /* L’image couvre toute la page */
+    background-position: center;   /* Centre l’image */
+    background-repeat: no-repeat;  /* Pas de répétition */
+    background-attachment: fixed;  /* Effet léger de parallaxe */
 }
 
-/* CONTAINERS */
-.container {
-    width: 90%;
-    max-width: 1200px;
+.search-info {
+    background: rgba(255, 255, 255, 0.85); /* Blanc transparent */
+    padding: 25px;
+    border-radius: 10px;
+    width: 350px;
     margin: auto;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
 }
 
-/* HEADER */
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* =====================
+   Header
+===================== */
 header {
-    width: 100%;
-    padding: 20px 0;
-    background: #0b7be4;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 100;
-}
-
-.header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 15px 50px;
+    background-color: #007bff; /* bleu principal */
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
-.logo {
-    font-size: 24px;
-    font-weight: 700;
-    color: #dfe6e7;
+header img {
+    height: 60px;
 }
 
-nav ul {
-    display: flex;
+header nav ul {
     list-style: none;
-    gap: 20px;
+    display: flex;
+    gap: 25px;
 }
 
-nav ul li a {
-    text-decoration: none;
-    color: #eef5f5fa;
-    font-weight: 500;
+header nav ul li a {
+    color: white;
+    font-weight: 600;
     transition: 0.3s;
 }
 
-nav ul li a:hover {
-    color: #1e88e5;
+header nav ul li a:hover {
+    color: #cce5ff; /* bleu clair au hover */
 }
 
-.auth-buttons .btn {
-    padding: 8px 15px;
-    border-radius: 5px;
-    text-decoration: none;
-    margin-left: 10px;
-    font-weight: 500;
-    transition: 0.3s;
-}
-
-.auth-buttons .login {
-    background: #fff;
-    color: #1e88e5;
-    border: 1px solid #1e88e5;
-}
-
-.auth-buttons .login:hover {
-    background: #1e88e5;
-    color: #fff;
-}
-
-.auth-buttons .signup {
-    background: #1e88e5;
-    color: #fff;
-}
-
-.auth-buttons .signup:hover {
-    background: #1565c0;
-}
-
-/* HERO */
+/* =====================
+   Hero Section
+===================== */
 .hero {
-    height: 130vh;
-    background: url('https:/static/image/logo.png') center/cover no-repeat;
+    position: relative;
+    background: url('/static/image/bus-hero.jpg') center/cover no-repeat;
+    height: 500px;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 123, 255, 0.5); /* overlay bleu semi-transparent */
+}
+
+.hero-text {
     position: relative;
-}
-
-.hero-overlay {
+    color: white;
     text-align: center;
-    color: #fff;
-    background: #1565c0;
-    padding: 50px;
-    border-radius: 10px;
+    max-width: 600px;
 }
 
-.hero h1 {
-    font-size: 48px;
+.hero-text h1 {
+    font-size: 2.8rem;
     margin-bottom: 20px;
 }
 
-.hero p {
-    font-size: 20px;
-    margin-bottom: 30px;
-}
-
-.hero-btn {
-    background: #ff9800;
-    color: #fff;
+.hero-text .btn {
     padding: 12px 30px;
+    background-color: #ffffff; /* bouton blanc */
+    color: #007bff; /* texte bleu */
+    font-weight: bold;
     border-radius: 5px;
-    text-decoration: none;
-    font-weight: 600;
+    transition: 0.3s;
 }
 
-.hero-btn:hover {
-    background: #e68900;
+.hero-text .btn:hover {
+    background-color: #cce5ff; /* bleu clair au hover */
 }
 
-/* FORMULAIRE DE RECHERCHE */
-.search-form {
-    margin-top: -50px;
+.hero-title {
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: #ffffff;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+    animation: fadeInUp 1.2s ease forwards;
+}
+
+.hero-title .highlight {
+    color: #007bff; /* bleu principal du thème */
+    font-size: 3.2rem;
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =====================
+   Reservation Form
+===================== */
+.reservation {
+    padding: 50px 20px;
+    background-color: #f0f8ff; /* fond bleu très clair */
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
 }
 
-.search-form form {
+.reservation form {
     display: flex;
+    flex-wrap: wrap;
     gap: 15px;
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    max-width: 700px;
+    width: 100%;
 }
 
-.search-form input,
-.search-form button {
-    padding: 10px 15px;
+.reservation input,
+.reservation select,
+.reservation button {
+    padding: 12px;
+    font-size: 1rem;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #007bff;
+    flex: 1 1 150px;
 }
 
-.search-form button {
-    background: #1e88e5;
-    color: #fff;
+.reservation button {
+    background-color: #007bff;
+    color: white;
     border: none;
     cursor: pointer;
-    font-weight: 600;
+    transition: 0.3s;
 }
 
-.search-form button:hover {
-    background: #1565c0;
+.reservation button:hover {
+    background-color: #0056b3;
 }
 
-/* TRAJETS */
-.trajets {
-    padding: 80px 0;
-    background: #f5f5f5;
-}
-
-.trajets h2 {
-    text-align: center;
-    margin-bottom: 40px;
-    font-size: 32px;
-    color: #1e88e5;
-}
-
-.cards {
+/* =====================
+   Results for search
+===================== */
+#results {
     display: flex;
-    justify-content: center;
-    gap: 20px;
     flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    width: 100%;
 }
 
-.card {
-    background: #fff;
-    padding: 20px;
-    width: 250px;
+#results .trip {
+    background-color: #ffffff;
     border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    flex: 1 1 250px;
     text-align: center;
-    transition: transform 0.3s;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.card:hover {
-    transform: scale(1.05);
+#results .trip:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
-.card h3 {
+#results .trip h4 {
+    margin: 15px 0 10px;
+    color: #007bff;
+}
+
+#results .trip p {
+    font-size: 0.9rem;
     margin-bottom: 10px;
-    color: #333;
 }
 
-.card p {
-    margin-bottom: 10px;
-    color: #555;
-}
-
-.card-btn {
-    display: inline-block;
+#results .trip .btn {
+    background-color: #007bff;
+    color: white;
     padding: 8px 20px;
-    background: #1e88e5;
-    color: #fff;
     border-radius: 5px;
     text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
 }
 
-.card-btn:hover {
-    background: #1565c0;
+#results .trip .btn:hover {
+    background-color: #0056b3;
 }
 
-/* SERVICES */
-.services {
-    padding: 80px 0;
+/* =====================
+   Advantages
+===================== */
+.advantages {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    padding: 50px 20px;
+    gap: 20px;
+    background-color: #ffffff;
 }
 
-.services h2 {
+.advantage {
+    flex: 1 1 200px;
+    padding: 20px;
+    border-radius: 10px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    background-color: #007bff; /* bleu */
+    color: white;
+}
+
+.advantage:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.advantage img {
+    height: 80px;
+    margin-bottom: 15px;
+    background-color: #ffffff; /* icône sur fond blanc */
+    border-radius: 50%;
+    padding: 10px;
+}
+
+/* =====================
+   Trips Section
+===================== */
+.trips {
+    padding: 50px 20px;
+    background-color: #f0f8ff;
+}
+
+.trips h2 {
     text-align: center;
     margin-bottom: 40px;
-    font-size: 32px;
-    color: #1e88e5;
+    color: #007bff;
 }
 
-.service-cards {
+.trip-list {
     display: flex;
-    justify-content: center;
-    gap: 20px;
     flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
 }
 
-.service-card {
-    background: #fff;
-    padding: 20px;
-    width: 250px;
+.trip {
+    background-color: #ffffff;
     border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    flex: 1 1 250px;
     text-align: center;
-    transition: transform 0.3s;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.service-card:hover {
-    transform: scale(1.05);
+.trip:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
-.service-card h3 {
+.trip img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.trip h4 {
+    margin: 15px 0 10px;
+    color: #007bff;
+}
+
+.trip p {
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+/* =====================
+   Testimonials
+===================== */
+.testimonials {
+    padding: 50px 20px;
+    background-color: #ffffff;
+    text-align: center;
+}
+
+.testimonials h2 {
+    margin-bottom: 30px;
+    color: #007bff;
+}
+
+.testimonial {
+    font-style: italic;
+    max-width: 600px;
+    margin: 10px auto;
+}
+
+.reservation {
+    width: 90%;
+}
+
+
+/* =====================
+   Footer
+===================== */
+footer {
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    padding: 25px 20px;
+}
+
+footer a {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+/* =====================
+   Responsive
+===================== */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .advantages {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .trip-list, #results {
+        flex-direction: column;
+    }
+}
+
+.search-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.search-info h2 {
+    color: #0055aa;
+    font-size: 26px;
+    margin-bottom: 5px;
+}
+
+.search-info p {
+    color: #003366;
+    font-size: 16px;
+}
+
+
+/* CONTACT PAGE */
+.contact-section {
+    padding: 60px 20px;
+    background: #f5faff;
+}
+
+.contact-container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+.contact-container h1 {
+    text-align: center;
+    color: #003366;
+    font-size: 36px;
     margin-bottom: 10px;
 }
 
-.service-card p {
-    color: #555;
-}
-
-/* FOOTER */
-footer {
-    background: #1f1f1f;
-    color: #fff;
-    padding: 20px 0;
+.contact-intro {
     text-align: center;
+    font-size: 18px;
+    color: #003366;
+    margin-bottom: 40px;
 }
 
-footer p {
-    margin-bottom: 5px;
+.contact-grid {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.contact-form, .contact-info {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    flex: 1;
+    min-width: 320px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.contact-form label {
+    font-weight: bold;
+    color: #003366;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0 20px;
+    border: 1px solid #bcd2e8;
+    border-radius: 8px;
+}
+
+.contact-form textarea {
+    height: 150px;
+    resize: none;
+}
+
+.contact-btn {
+    width: 100%;
+    padding: 14px;
+    background: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.contact-btn:hover {
+    background: #004c99;
+}
+
+.contact-info h2 {
+    color: #003366;
+    margin-bottom: 20px;
+}
+
+
+/* ===== GLASSMORPHISM POUR LA SECTION RESERVATION ===== */
+.reservation {
+    background: rgba(255, 255, 255, 0.15); /* léger transparent */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 50px 20px;
+    border-radius: 15px;
+    max-width: 900px;
+    margin: 40px auto;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Pour mieux lire les labels et textes */
+.reservation h2,
+.reservation label,
+.reservation p {
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+/* Inputs lisibles */
+.reservation input,
+.reservation select {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+/* Bouton */
+.reservation button {
+    background: #ffffff;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.reservation button:hover {
+    background: #cce5ff;
 }
