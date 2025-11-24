@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Réservation - MBOA TRAVEL</title>
+    <link rel="stylesheet" href="/static/css/reservation.css">
+</head>
+<body>
+
+{% include 'public/header.html' %}
+
+    <h2>Résultats de la recherche de trajets</h2>
+
+    <div class="trajets-list">
+        {% for voyage in voyages %}
+            <div class="trajet-card">
+                <h3>{{ voyage.trajet.ville_depart }} → {{ voyage.trajet.ville_arrivee }}</h3>
+                <p>Date : {{ voyage.date_depart }} | Heure : {{ voyage.heure_depart }}</p>
+                <p>Tarif Standard : {{ voyage.trajet.tarif_standard }} FCFA</p>
+                <p>Tarif VIP : {{ voyage.trajet.tarif_vip }} FCFA</p>
+                
+                <a href="{{ url_for('crud.selection_options', id_voyage=voyage.id_voyage) }}" class="btn">
+                    Sélectionner & Réserver
+                </a>
+            </div>
+        {% else %}
+            {% if recherche_effectuee %}
+                <p>Aucun voyage trouvé pour cette recherche.</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% include 'public/footer.html' %}
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mboa-travel - Accueil</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+{% include 'public/header.html' %}
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-text">
+        <h1 class="hero-title">Voyagez confortablement<br>avec <span class="highlight">MBOA TRAVEL</span></h1>
+        {% if session.get('client_id') %}
+            <a href="{{ url_for('crud.reservation') }}" class="btn hero-btn">Réserver maintenant</a>
+        {% else %}
+            <a href="{{ url_for('crud.login') }}" class="btn hero-btn">Réserver maintenant</a>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Section d'information de recherche -->
+<div class="search-info">
+    <h2>Rechercher un trajet</h2>
+    <p>Saisissez votre ville de départ et votre ville d'arrivée pour voir tous les trajets disponibles et leurs horaires.</p>
+</div>
+
+<!-- Formulaire de recherche -->
+<section class="reservation-section">
+    <div class="reservation-container">
+        <div class="hero-form">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% endwith %}
+        
+        
+            <form method="GET" action="{{ url_for('crud.reservation') }}">
+                <input type="text" name="ville_depart" placeholder="Ville de départ" required>
+                <input type="text" name="ville_arrivee" placeholder="Ville d'arrivée" required>
+                <input type="date" name="date_depart" required>
+                <button type="submit">Rechercher</button>
+            </form>
+        </div>
+        
+        
+    </div>
+</section>
+
+
+<!-- Advantages -->
+<section class="advantages">
+    <div class="advantage">
+        <img src="/static/image/icon-confort.png" alt="Confort">
+        <h3>Confort & sécurité</h3>
+        <p>Des bus modernes et confortables pour un voyage agréable et sûr.</p>
+    </div>
+    <div class="advantage">
+        <img src="/static/image/icon-chauffeur.png" alt="Chauffeurs">
+        <h3>Chauffeurs professionnels</h3>
+        <p>Nos conducteurs expérimentés garantissent un trajet fiable et ponctuel.</p>
+    </div>
+    <div class="advantage">
+        <img src="/static/image/icon-prix.png" alt="Prix abordables">
+        <h3>Prix abordables</h3>
+        <p>Voyagez sans vous ruiner grâce à nos tarifs compétitifs.</p>
+    </div>
+</section>
+
+<!-- Section trajets populaires -->
+<section class="trips">
+    <h2>Nos trajets populaires</h2>
+    <div class="trip-list">
+        <div class="trip">
+            <img src="/static/image/douala-yaounde.jpg" alt="Douala → Yaoundé">
+            <h4>Douala → Yaoundé</h4>
+            <p>Durée : 4h | Prix : 8 000 FCFA</p>
+        </div>
+        <div class="trip">
+            <img src="/static/image/bamenda-bafoussam.jpg" alt="Bamenda → Bafoussam">
+            <h4>Bamenda → Bafoussam</h4>
+            <p>Durée : 6h | Prix : 10 000 FCFA</p>
+        </div>
+        <div class="trip">
+            <img src="/static/image/kribi-douala.jpg" alt="Kribi → Douala">
+            <h4>Kribi → Douala</h4>
+            <p>Durée : 3h | Prix : 7 000 FCFA</p>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials">
+    <h2>Avis clients</h2>
+    <p class="testimonial">"Voyager avec MBOA TRAVEL est toujours un plaisir ! Les bus sont confortables et les chauffeurs très professionnels." – Fatou</p>
+    <p class="testimonial">"J’ai pu réserver mon trajet facilement et à bon prix. Je recommande vivement !" – Jean-Paul</p>
+</section>
+
+{% include 'public/footer.html' %}
+</body>
+</html>

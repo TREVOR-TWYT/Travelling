@@ -1,0 +1,36 @@
+{% extends "admin/layout.html" %}
+{% block content %}
+<h2>Liste des personnels</h2>
+
+<a href="{{ url_for('crud.create_personnel') }}">Ajouter un personnel</a>
+
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Rôle</th>
+            <th>Agence</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in personnels %}
+        <tr>
+            <td>{{ p.id_personnel }}</td>
+            <td>{{ p.nom }}</td>
+            <td>{{ p.prenom }}</td>
+            <td>{{ p.role }}</td>
+            <td>{{ p.agence.nom_agence if p.agence else '—' }}</td>
+            <td>
+                <a href="{{ url_for('crud.edit_personnel', id_personnel=p.id_personnel) }}">Modifier</a> |
+                <form action="{{ url_for('crud.delete_personnel', id_personnel=p.id_personnel) }}" method="POST" style="display:inline;">
+                    <button type="submit" onclick="return confirm('Voulez-vous vraiment supprimer ce personnel ?')">Supprimer</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

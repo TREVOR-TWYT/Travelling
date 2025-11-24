@@ -1,0 +1,11 @@
+<h2>Récapitulatif de votre réservation</h2>
+<p>Voyage : {{ voyage.trajet.ville_depart }} → {{ voyage.trajet.ville_arrivee }}</p>
+<p>Standing choisi : **{{ standing }}**</p>
+<p>Nombre de places : **{{ nombre_places }}**</p>
+<hr>
+<h3>Prix Total : **{{ prix_total | format_currency }} FCFA**</h3>
+<hr>
+
+<a href="{{ url_for('crud.choix_sieges_et_paiement', id_voyage=voyage.id_voyage) }}" class="btn-primary">
+    Passer au choix des sièges et au paiement
+</a>

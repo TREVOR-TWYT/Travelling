@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Profil - MBOA TRAVEL</title>
+    <link rel="stylesheet" href="/static/css/profile.css">
+</head>
+<body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-container">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+{% include 'public/header.html' %}
+
+<div class="form-container">
+    <h2>Mon Profil</h2>
+    <form method="POST">
+        <input type="text" name="nom" value="{{ client.nom }}" required>
+        <input type="text" name="prenom" value="{{ client.prenom }}">
+        <input type="text" name="telephone" value="{{ client.telephone }}" required>
+        <input type="email" name="email" value="{{ client.email }}">
+        <button type="submit">Mettre à jour</button>
+    </form>
+    <a class="btn" href="{{ url_for('crud.dashboard') }}">Retour au dashboard</a>
+</div>
+{% include 'public/footer.html' %}
+</body>
+</html>

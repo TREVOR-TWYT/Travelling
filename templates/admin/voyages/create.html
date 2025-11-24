@@ -1,0 +1,47 @@
+{% extends "admin/layout.html" %}
+{% block content %}
+<h2>Créer un nouveau voyage</h2>
+
+<form action="" method="POST">
+    <label>Trajet :</label>
+    <select name="id_trajet" required>
+        {% for t in trajets %}
+            <option value="{{ t.id_trajet }}">{{ t.ville_depart }} → {{ t.ville_arrivee }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Véhicule :</label>
+    <select name="immatriculation" required>
+        {% for veh in vehicules %}
+            <option value="{{ veh.immatriculation }}">{{ veh.immatriculation }} ({{ veh.type }})</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Agence :</label>
+    <select name="id_agence">
+        <option value="">Aucune</option>
+        {% for a in agences %}
+            <option value="{{ a.id_agence }}">{{ a.nom_agence }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Date de départ :</label>
+    <input type="date" name="date_depart" required><br><br>
+
+    <label>Heure de départ :</label>
+    <input type="time" name="heure_depart" required><br><br>
+
+    <label>Standing :</label>
+    <select name="standing" required>
+        <option value="Standard">Standard</option>
+        <option value="VIP">VIP</option>
+    </select><br><br>
+
+    <label>Places réservées :</label>
+    <input type="number" name="places_reservees" value="0"><br><br>
+
+    <button type="submit">Créer</button>
+</form>
+
+<a href="{{ url_for('crud.list_voyages') }}">Retour à la liste</a>
+{% endblock %}

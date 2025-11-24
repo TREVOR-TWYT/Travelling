@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}MBOA-TRAVELl{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style_admin.css">
+</head>
+<body>
+    <header>
+        <h1>MBOA-TRAVEL</h1>
+        <nav>
+            <a href="{{ url_for('crud.dashboardAdmin') }}">Dashboard</a>
+            <a href="{{ url_for('crud.list_agences') }}">Agences</a>
+            <a href="{{ url_for('crud.list_personnels') }}">Personnels</a>
+            <a href="{{ url_for('crud.list_vehicules') }}">Véhicules</a>
+            <a href="{{ url_for('crud.trajets_list') }}">Trajets</a>
+            <a href="{{ url_for('crud.list_voyages') }}">Voyages</a>
+            <a href="{{ url_for('crud.list_clients') }}">Clients</a>
+            <a href="{{ url_for('crud.reservationAdmin') }}">Réservations</a>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        &copy; {{ current_year if current_year else "2025" }} Mboa-travel. Tous droits réservés.
+    </footer>
+</body>
+</html>

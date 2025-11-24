@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact – BlueVoyage</title>
+    <link rel="stylesheet" href="/static/css/contact.css">
+</head>
+<body>
+  {% include 'public/header.html' %}
+
+    <section class="contact-section">
+        <div class="contact-container">
+
+            <h1>Contactez-nous</h1>
+            <p class="contact-intro">
+                Une question, une réservation ou besoin d'aide ?  
+                Notre équipe vous répond rapidement.
+            </p>
+
+            <div class="contact-grid">
+              {% if success %}
+            <div style="background-color:#e0f7ff; padding:12px; border-radius:8px; color:#005f99; margin-bottom:20px;">
+               Votre message a été envoyé avec succès ! Nous vous contacterons très bientôt.
+            </div>
+              {% endif %}
+
+
+                <!-- LEFT SIDE : FORMULAIRE -->
+                <form class="contact-form" method="POST" action="/contact">
+                    <label>Nom complet</label>
+                    <input type="text" name="name" placeholder="Entrez votre nom" required>
+
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="Votre adresse email" required>
+
+                    <label>Message</label>
+                    <textarea name="message" placeholder="Écrivez votre message..." required></textarea>
+
+                    <button type="submit" class="contact-btn">Envoyer</button>
+                </form>
+
+                <!-- RIGHT SIDE : INFOS -->
+                <div class="contact-info">
+                    <h2>Informations</h2>
+
+                    <p><strong>📍 Adresse :</strong><br>
+                    Rond-point Damas, Yaoundé, Cameroun</p>
+
+                    <p><strong>📞 Téléphone :</strong><br>
+                    +237 6 70 00 00 00</p>
+
+                    <p><strong>📧 Email :</strong><br>
+                    support@bluevoyage.com</p>
+
+                    <p><strong>🕒 Horaires :</strong><br>
+                    Lun – Sam : 8h – 19h</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    {% include 'public/footer.html' %}
+</body>
+</html>

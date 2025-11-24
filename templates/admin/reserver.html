@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Réserver un voyage</h2>
+
+<form action="/reservation" method="POST">
+
+    <label>Nom :</label>
+    <input type="text" name="nom" required>
+
+    <label>Prénom :</label>
+    <input type="text" name="prenom">
+
+    <label>Téléphone :</label>
+    <input type="text" name="telephone" required>
+
+    <label>Email :</label>
+    <input type="email" name="email">
+
+    <label>Voyage :</label>
+    <select name="id_voyage" required>
+        {% for v in voyages %}
+            <option value="{{ v.id_voyage }}">
+                {{ v.trajet.ville_depart }} → {{ v.trajet.ville_arrivee }} | {{ v.date_depart }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label>Mode de paiement :</label>
+    <select name="mode" required>
+        <option>Cash</option>
+        <option>Mobile Money</option>
+        <option>Carte bancaire</option>
+    </select>
+
+    <label>Montant :</label>
+    <input type="number" name="montant" required>
+
+    <button type="submit">Confirmer la réservation</button>
+</form>
+{% endblock %}

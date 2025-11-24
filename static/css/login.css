@@ -1,0 +1,121 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5faff;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header & Footer (si tu veux override le header inclus) */
+header {
+    background-color: #003366;
+    color: white;
+    padding: 15px 0;
+}
+
+header nav a {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+header nav a:hover {
+    text-decoration: underline;
+}
+
+footer {
+    background-color: #003366;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Flash messages */
+.flash-container {
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+.flash {
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+}
+
+.flash.success {
+    background-color: #007acc;
+}
+
+.flash.danger {
+    background-color: #cc0000;
+}
+
+.flash.warning {
+    background-color: #ff9900;
+}
+
+.flash.info {
+    background-color: #0066cc;
+}
+
+/* Form Container */
+.form-container {
+    max-width: 400px;
+    margin: 80px auto 40px;
+    padding: 40px 30px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.form-container h2 {
+    color: #003366;
+    margin-bottom: 25px;
+}
+
+.form-container input {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 10px 0 20px;
+    border: 1px solid #bcd2e8;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.form-container button {
+    width: 100%;
+    padding: 14px;
+    background-color: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form-container button:hover {
+    background-color: #004c99;
+}
+
+.form-container p {
+    margin-top: 15px;
+    color: #003366;
+}
+
+.form-container p a {
+    color: #0066cc;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.form-container p a:hover {
+    text-decoration: underline;
+}

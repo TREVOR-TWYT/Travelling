@@ -1,0 +1,16 @@
+{% extends "admin/layout.html" %}
+{% block content %}
+<h2>Créer une nouvelle agence</h2>
+
+<form action="" method="POST">
+    <label>Nom de l'agence :</label>
+    <input type="text" name="nom_agence" required><br><br>
+
+    <label>Adresse :</label>
+    <input type="text" name="adresse"><br><br>
+
+    <button type="submit">Créer</button>
+</form>
+
+<a href="{{ url_for('crud.list_agences') }}">Retour à la liste</a>
+{% endblock %}
