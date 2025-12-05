@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Réservation confirmée !</h2>
+
+<p><strong>Référence réservation :</strong> {{ reservation.num_reservation }}</p>
+<p><strong>Client :</strong> {{ client.nom }} {{ client.prenom }}</p>
+<p><strong>Paiement :</strong> {{ paiement.montant }} FCFA ({{ paiement.mode }})</p>
+
+<a href="/reservation">Faire une nouvelle réservation</a>
+{% endblock %}

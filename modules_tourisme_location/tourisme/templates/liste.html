@@ -1,0 +1,10 @@
+<h1>Liste des activités touristiques</h1>
+<a href='/tourisme/ajouter'>Ajouter</a>
+<ul>
+{% for tour in tours %}
+  <li>{{ tour.nom }} - {{ tour.prix }}$
+    <a href='/tourisme/modifier/{{ tour.id }}'>Modifier</a>
+    <a href='/tourisme/supprimer/{{ tour.id }}'>Supprimer</a>
+  </li>
+{% endfor %}
+</ul>

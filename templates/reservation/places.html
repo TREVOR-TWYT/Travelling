@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Places disponibles</h2>
+
+<p>Voyage : {{ voyage.ville_depart }} → {{ voyage.ville_arrivee }}</p>
+<p>Date : {{ voyage.date_depart }}</p>
+<h3>Places restantes : {{ dispo }}</h3>
+
+{% endblock %}
