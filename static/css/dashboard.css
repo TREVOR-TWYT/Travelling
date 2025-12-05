@@ -38,3 +38,32 @@ input[type="text"], input[type="email"], input[type="password"] {
     border: 1px solid #ccc;
     border-radius: 5px;
 }
+
+.flash-container {
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+.flash {
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+}
+
+.flash.success {
+    background-color: #007acc;
+}
+
+.flash.danger {
+    background-color: #cc0000;
+}
+
+.flash.warning {
+    background-color: #ff9900;
+}
+
+.flash.info {
+    background-color: #0066cc;
+}

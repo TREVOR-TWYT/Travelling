@@ -7,12 +7,12 @@
     <nav>
         <ul>
             <li><a href="{{ url_for('index') }}">Accueil</a></li>
-            <li><a href="{{ url_for('crud.get_trajets') }}">Nos trajets</a></li>
+            <li><a href="{{ url_for('crud.trajets_list') }}">Nos trajets</a></li>
             <li><a href="{{ url_for('crud.reservation') }}">Réserver</a></li>
             <li><a href="{{ url_for('crud.contact') }}">Contact</a></li>
 
             {% if 'client_id' in session %}
-                <li><a href="{{ url_for('crud.dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('crud.dashboardClient') }}">Dashboard</a></li>
                 <li><a href="{{ url_for('crud.logout') }}">Déconnexion</a></li>
             {% else %}
                 <li><a href="{{ url_for('crud.login') }}">Connexion</a></li>

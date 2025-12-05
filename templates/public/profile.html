@@ -19,6 +19,14 @@
 
 {% include 'public/header.html' %}
 
+<div class="container">
+
+<div class ="side-message">
+  <h2> Mon profil </h2>
+  <p>Des informations a modifier ?</p>
+  <p>Entre tes <strong>nouvelles informations</strong> et mets a jour ton profil.</p>
+</div>
+
 <div class="form-container">
     <h2>Mon Profil</h2>
     <form method="POST">
@@ -28,7 +36,8 @@
         <input type="email" name="email" value="{{ client.email }}">
         <button type="submit">Mettre à jour</button>
     </form>
-    <a class="btn" href="{{ url_for('crud.dashboard') }}">Retour au dashboard</a>
+    <a class="btn" href="{{ url_for('crud.dashboardClient') }}">Retour au dashboard</a>
+</div>
 </div>
 {% include 'public/footer.html' %}
 </body>

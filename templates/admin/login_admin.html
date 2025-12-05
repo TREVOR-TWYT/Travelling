@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Administrateur</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_login.css') }}">
+</head>
+<body>
+
+<div class="login-container">
+    <h2>Espace Administrateur</h2>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form action="/admin-login" method="POST">
+        <label for="username">Nom d'utilisateur</label>
+        <input type="text" id="username" name="username" placeholder="Entrez votre identifiant" required>
+
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" name="password" placeholder="Mot de passe" required>
+
+        <button type="submit">Se connecter</button>
+    </form>
+</div>
+
+</body>
+</html>

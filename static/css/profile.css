@@ -6,34 +6,6 @@ body {
     padding: 0;
 }
 
-/* Header & Footer */
-header {
-    background-color: #003366;
-    color: white;
-    padding: 15px 0;
-}
-
-header nav a {
-    color: white;
-    margin: 0 15px;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-header nav a:hover {
-    text-decoration: underline;
-}
-
-footer {
-    background-color: #003366;
-    color: white;
-    text-align: center;
-    padding: 20px 0;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-}
-
 /* Flash messages */
 .flash-container {
     max-width: 500px;
@@ -63,6 +35,7 @@ footer {
 .flash.info {
     background-color: #0066cc;
 }
+
 
 /* Form Container */
 .form-container {
@@ -123,4 +96,43 @@ footer {
 
 .form-container p a:hover {
     text-decoration: underline;
+}
+
+.side-message {
+    max-width: 350px;
+    margin: 80px auto 40px;
+    padding: 40px 30px;
+    background-color: #eaf3ff;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    text-align: left;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0);}
+    50% {transform: translateY(-8px);}
+    100% { transform: translateY(0);}
+}
+
+.side-message h2 {
+    color: #003366;
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+.side-message p {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #003366;
+    opacity: 0.9;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+   /* gap : 5px;*/
+    width: 75%;
 }

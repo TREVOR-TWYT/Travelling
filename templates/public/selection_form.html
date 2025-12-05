@@ -1,0 +1,47 @@
+<h2>Options de réservation pour {{ voyage.trajet.ville_depart }} → {{ voyage.trajet.ville_arrivee }}</h2>
+<p>Départ le {{ voyage.date_depart }} à {{ voyage.heure_depart }}</p>
+
+<form method="POST" action="{{ url_for('crud.selection_options', id_voyage=voyage.id_voyage) }}">
+    
+    <label for="nombre_places">Nombre de places :</label>
+    <input type="number" id="nombre_places" name="nombre_places" min="1" required>
+
+    <label for="standing">Standing :</label>
+    <select id="standing" name="standing" required>
+        <option value="Standard">Standard ({{ voyage.trajet.tarif_standard }} FCFA)</option>
+        <option value="VIP">VIP ({{ voyage.trajet.tarif_vip }} FCFA)</option>
+    </select>
+    
+    <button type="submit" class="btn">Calculer le Prix & Confirmer</button>
+</form>
+
+<script>
+    // OPTIONNEL : Script JavaScript pour afficher le prix total instantanément côté client
+    document.addEventListener('DOMContentLoaded', function() {
+        const placesInput = document.getElementById('nombre_places');
+        const standingSelect = document.getElementById('standing');
+        const tarifs = {
+            "Standard": {{ voyage.trajet.tarif_standard | default(0) }},
+            "VIP": {{ voyage.trajet.tarif_vip | default(0) }}
+        };
+        
+        const priceDisplay = document.createElement('p');
+        priceDisplay.id = 'prix-affichage';
+        document.querySelector('form').insertBefore(priceDisplay, document.querySelector('form button'));
+
+        function updatePrice() {
+            const places = parseInt(placesInput.value) || 0;
+            const selectedStanding = standingSelect.value;
+            const prixUnitaire = tarifs[selectedStanding];
+            const prixTotal = places * prixUnitaire;
+            
+            priceDisplay.textContent = `Prix Total Estimé : ${prixTotal.toLocaleString()} FCFA`;
+        }
+
+        placesInput.addEventListener('input', updatePrice);
+        standingSelect.addEventListener('change', updatePrice);
+
+        // Initialiser l'affichage
+        updatePrice();
+    });
+</script>

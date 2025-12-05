@@ -7,7 +7,8 @@
 </head>
 <body>
 
-{% with messages = get_flashed_messages(with_categories=true) %}
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     <div class="flash-container">
       {% for category, message in messages %}
@@ -17,9 +18,19 @@
   {% endif %}
 {% endwith %}
 
+
 {% include 'public/header.html' %}
 
-<div class="form-container">
+<div class="container">
+
+  <div class ="side-message">
+    <h2> Bienvenue </h2>
+    <p>Nouveau sur l'application?.</p>
+    <p>Entre <strong>tes informations</strong> pour t'inscrire.</p>
+  </div>
+
+  <div class="form-box">
+
     <h2>Créer un compte</h2>
     <form method="POST">
         <input type="text" name="nom" placeholder="Nom" required>
@@ -30,6 +41,7 @@
         <button type="submit">S’inscrire</button>
     </form>
     <p>Déjà un compte ? <a href="{{ url_for('crud.login') }}">Se connecter</a></p>
+  </div>
 </div>
 {% include 'public/footer.html' %}
 </body>

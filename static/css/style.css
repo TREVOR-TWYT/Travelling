@@ -6,7 +6,11 @@ body {
     font-family: 'Montserrat', sans-serif;
     line-height: 1.6;
     color: #333;
-    background-color: #ffffff;
+    background-image: url("/static/image/background1.jpg");
+    background-size: cover;        /* L’image couvre toute la page */
+    background-position: center;   /* Centre l’image */
+    background-repeat: no-repeat;  /* Pas de répétition */
+    background-attachment: fixed;  /* Effet léger de parallaxe */
 }
 
 /*body {
@@ -145,6 +149,7 @@ header nav ul li a:hover {
 
 
 /* Formulaire compact dans hero */
+
 .hero-form {
     background: rgba(255, 255, 255, 0.95);
     padding: 20px;
