@@ -16,9 +16,9 @@ app.register_blueprint(crud)
 #def index():
 #    return render_template("acceuil.html")
 
-#@app.route("/admin/layout")
-#def admin():
-#   return render_template("/admin/layout.html")
+@app.route("/admin/layout")
+def admin():
+   return render_template("/admin/layout.html")
 
 @app.route("/")
 def public_index():
