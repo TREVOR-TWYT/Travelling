@@ -3,53 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mboa-travel - Réservation</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <title>Réservation - MBOA TRAVEL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reservation.css') }}">
 </head>
 <body>
+    <!-- Header -->
+    <header>
+        <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Accueil</a></li>
+                <li><a href="#">Nos trajets</a></li>
+                <li><a href="{{ url_for('public_dashboard') }}">Horaires & Tarifs</a></li>
+                <li><a href="{{ url_for('public_contact') }}">Contact</a></li>
+                <li><a href="{{ url_for('public_login') }}">Connexion</a></li>
+            </ul>
+        </nav>
+    </header>
 
-<!-- Header -->
-<header>
-    <img src="/static/image/logo1.png" alt="Logo MBOA TRAVEL">
-    <nav>
-        <ul>
-            <li><a href="/">Accueil</a></li>
-            <li><a href="#">Nos trajets</a></li>
-            <li><a href="#">Horaires & Tarifs</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-    </nav>
-</header>
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="breadcrumb-content">
+            <a href="{{ url_for('index') }}">Accueil</a> / <span>Réservation</span>
+        </div>
+    </div>
 
-<!-- Reservation Section -->
-<section class="reservation">
-    <h2>Réservez votre voyage</h2>
-    <form method="POST" action="/reservation/submit">
-        <input type="text" name="ville_depart" placeholder="Ville de départ" value="{{ request.args.get('ville_depart', '') }}" required>
-        <input type="text" name="ville_arrivee" placeholder="Ville d'arrivée" value="{{ request.args.get('ville_arrivee', '') }}" required>
-        <input type="date" name="date_depart" value="{{ request.args.get('date_depart', '') }}" required>
-        <select name="voyage_id" required>
-            <option value="">Sélectionner un trajet</option>
-            {% for voyage in voyages %}
-                {% if voyage.trajet.ville_depart == request.args.get('ville_depart') and voyage.trajet.ville_arrivee == request.args.get('ville_arrivee') %}
-                <option value="{{ voyage.id_voyage }}">
-                    {{ voyage.trajet.ville_depart }} → {{ voyage.trajet.ville_arrivee }} 
-                    | {{ voyage.date_depart.strftime('%d/%m/%Y') }} à {{ voyage.heure_depart.strftime('%H:%M') }} 
-                    | Prix: {{ voyage.trajet.tarif_standard if voyage.standing == 'Standard' else voyage.trajet.tarif_vip }} FCFA
-                </option>
-                {% endif %}
-            {% endfor %}
-        </select>
-        <input type="number" name="passagers" placeholder="Nombre de passagers" min="1" max="10" required>
-        <button type="submit">Confirmer la réservation</button>
-    </form>
-</section>
+    <!-- Main Content -->
+    <main class="reservation-container">
+        <div class="reservation-header">
+            <h1>🎫 Réservez votre voyage</h1>
+            <p>Complétez le formulaire ci-dessous pour effectuer votre réservation</p>
+        </div>
 
-<!-- Footer -->
-<footer>
-    <p>&copy; 2025 MBOA TRAVEL. Tous droits réservés.</p>
-    <p>Contact : <a href="mailto:contact@MBOA-TRAVEL.cm">contact@MBOA-TRAVEL.cm</a> | Téléphone : +237 6 99 99 99 99</p>
-</footer>
+        <!-- Search Form Section -->
+        <section class="search-section">
+            <h2>🔍 Rechercher un trajet</h2>
+            <form method="GET" action="{{ url_for('crud.reservation') }}" class="search-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ville_depart">📍 Ville de départ</label>
+                        <input type="text" 
+                               id="ville_depart" 
+                               name="ville_depart" 
+                               placeholder="Ex: Yaoundé" 
+                               value="{{ ville_depart or '' }}" 
+                               required>
+                    </div>
 
+                    <div class="form-group">
+                        <label for="ville_arrivee">📍 Ville d'arrivée</label>
+                        <input type="text" 
+                               id="ville_arrivee" 
+                               name="ville_arrivee" 
+                               placeholder="Ex: Douala" 
+                               value="{{ ville_arrivee or '' }}" 
+                               required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="date_depart">📅 Date de départ</label>
+                        <input type="date" 
+                               id="date_depart" 
+                               name="date_depart" 
+                               value="{{ date_depart or '' }}" 
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="passagers">👥 Nombre de passagers</label>
+                        <select id="passagers" name="passagers" required>
+                            <option value="">Sélectionner</option>
+                            {% for i in range(1, 11) %}
+                            <option value="{{ i }}" {% if passagers == i|string %}selected{% endif %}>{{ i }} passager{% if i > 1 %}s{% endif %}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-search">🔎 Rechercher des trajets</button>
+            </form>
+        </section>
+
+        <!-- Results Section -->
+        {% if voyages %}
+        <section class="results-section">
+            <h2>✅ Trajets disponibles ({{ voyages|length }} résultat{% if voyages|length > 1 %}s{% endif %})</h2>
+            
+            <div class="voyages-list">
+                {% for voyage in voyages %}
+                <div class="voyage-card">
+                    <div class="voyage-header">
+                        <div class="route">
+                            <span class="city-from">{{ voyage.trajet.ville_depart }}</span>
+                            <span class="arrow">→</span>
+                            <span class="city-to">{{ voyage.trajet.ville_arrivee }}</span>
+                        </div>
+                        <div class="standing-badge standing-{{ voyage.standing|lower }}">
+                            {{ voyage.standing }}
+                        </div>
+                    </div>
+
+                    <div class="voyage-details">
+                        <div class="detail-item">
+                            <span class="icon">📅</span>
+                            <span class="label">Date:</span>
+                            <span class="value">{{ voyage.date_depart.strftime('%d/%m/%Y') }}</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="icon">🕒</span>
+                            <span class="label">Heure:</span>
+                            <span class="value">{{ voyage.heure_depart.strftime('%H:%M') }}</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="icon">🚌</span>
+                            <span class="label">Véhicule:</span>
+                            <span class="value">{{ voyage.vehicule.type }} ({{ voyage.vehicule.immatriculation }})</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="icon">🪑</span>
+                            <span class="label">Places disponibles:</span>
+                            <span class="value">{{ voyage.vehicule.capacite - voyage.places_reservees }} / {{ voyage.vehicule.capacite }}</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="icon">🏢</span>
+                            <span class="label">Agence:</span>
+                            <span class="value">{{ voyage.agence.nom_agence }}</span>
+                        </div>
+
+                        <div class="detail-item price-item">
+                            <span class="icon">💰</span>
+                            <span class="label">Prix:</span>
+                            <span class="value price">
+                                {% if voyage.standing == 'Standard' %}
+                                    {{ voyage.trajet.tarif_standard }}
+                                {% else %}
+                                    {{ voyage.trajet.tarif_vip }}
+                                {% endif %}
+                                FCFA
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="voyage-footer">
+                        <form method="POST" action="{{ url_for('crud.reservation') }}" class="reservation-form">
+                            <input type="hidden" name="id_voyage" value="{{ voyage.id_voyage }}">
+                            
+                            <div class="client-info">
+                                <input type="text" name="nom" placeholder="Nom *" required>
+                                <input type="text" name="prenom" placeholder="Prénom">
+                                <input type="tel" name="telephone" placeholder="Téléphone *" required>
+                                <input type="email" name="email" placeholder="Email">
+                            </div>
+
+                            <div class="payment-info">
+                                <select name="mode" required>
+                                    <option value="">Mode de paiement *</option>
+                                    <option value="Espèces">💵 Espèces</option>
+                                    <option value="Mobile Money">📱 Mobile Money</option>
+                                    <option value="Orange Money">🟠 Orange Money</option>
+                                    <option value="Carte bancaire">💳 Carte bancaire</option>
+                                </select>
+
+                                <input type="hidden" 
+                                       name="montant" 
+                                       value="{% if voyage.standing == 'Standard' %}{{ voyage.trajet.tarif_standard }}{% else %}{{ voyage.trajet.tarif_vip }}{% endif %}">
+                            </div>
+
+                            <button type="submit" class="btn-reserve">
+                                ✅ Réserver ce trajet
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% elif ville_depart or ville_arrivee %}
+        <section class="no-results">
+            <div class="empty-state">
+                <div class="empty-icon">😔</div>
+                <h3>Aucun trajet disponible</h3>
+                <p>Nous n'avons pas trouvé de trajet correspondant à vos critères de recherche.</p>
+                <p>Veuillez essayer avec d'autres dates ou villes.</p>
+            </div>
+        </section>
+        {% endif %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 MBOA TRAVEL. Tous droits réservés.</p>
+        <p>Contact : <a href="mailto:contact@mboa-travel.cm">contact@mboa-travel.cm</a> | Téléphone : +237 6 99 99 99 99</p>
+    </footer>
 </body>
 </html>

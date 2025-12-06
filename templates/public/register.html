@@ -2,32 +2,67 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Inscription</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - MBOA TRAVEL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">>
 </head>
-
 <body>
+    <div class="register-container">
+        <div class="register-box">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="MBOA TRAVEL">
+            </div>
+            
+            <h2>Créer un compte</h2>
+            <p class="subtitle">Rejoignez MBOA TRAVEL et voyagez en toute simplicité</p>
 
-<div class="login-container">
-    <h2>Créer un compte client</h2>
+            {% if error %}
+            <div class="error-message">
+                {{ error }}
+            </div>
+            {% endif %}
 
-    <form method="POST" action="/register">
-        <label>Nom</label>
-        <input type="text" name="nom" required>
+            <form method="POST" action="/register">
+                <div class="form-group">
+                    <label for="nom">Nom *</label>
+                    <input type="text" id="nom" name="nom" placeholder="Votre nom" required>
+                </div>
 
-        <label>Prénom</label>
-        <input type="text" name="prenom">
+                <div class="form-group">
+                    <label for="prenom">Prénom</label>
+                    <input type="text" id="prenom" name="prenom" placeholder="Votre prénom">
+                </div>
 
-        <label>Téléphone</label>
-        <input type="text" name="telephone" required>
+                <div class="form-group">
+                    <label for="telephone">Téléphone *</label>
+                    <input type="tel" id="telephone" name="telephone" placeholder="+237 6 XX XX XX XX" required>
+                </div>
 
-        <button type="submit">S'inscrire</button>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="votre@email.com">
+                </div>
 
-        <p class="bottom-text">
-            Déjà un compte ? <a href="/login">Se connecter</a>
-        </p>
-    </form>
-</div>
+                <div class="form-group">
+                    <label for="cni">Numéro CNI</label>
+                    <input type="text" id="cni" name="cni" placeholder="Numéro de carte d'identité">
+                </div>
 
+                <button type="submit" class="btn-register">S'inscrire</button>
+            </form>
+
+            <div class="login-link">
+                <p>Vous avez déjà un compte ? <a href="{{ url_for('public_login') }}">Connectez-vous</a></p>
+            </div>
+
+            <div class="back-home">
+                <a href="{{ url_for('index') }}">← Retour à l'accueil</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 MBOA TRAVEL. Tous droits réservés.</p>
+    </footer>
 </body>
 </html>

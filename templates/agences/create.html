@@ -1,16 +1,24 @@
-{% extends "layout.html" %}
+{% extends "admin/layout.html" %}
+
+{% block title %}Créer une Agence - Admin{% endblock %}
+
 {% block content %}
-<h2>Créer une nouvelle agence</h2>
+<h2 class="page-title">Créer une Nouvelle Agence</h2>
 
-<form action="" method="POST">
-    <label>Nom de l'agence :</label>
-    <input type="text" name="nom_agence" required><br><br>
+<form method="POST" action="{{ url_for('crud.create_agence') }}">
+    <div class="form-group">
+        <label for="nom_agence">Nom de l'agence *</label>
+        <input type="text" id="nom_agence" name="nom_agence" placeholder="Ex: MBOA TRAVEL Kribi" required>
+    </div>
 
-    <label>Adresse :</label>
-    <input type="text" name="adresse"><br><br>
+    <div class="form-group">
+        <label for="adresse">Adresse *</label>
+        <input type="text" id="adresse" name="adresse" placeholder="Ex: Boulevard de la Mer, Kribi" required>
+    </div>
 
-    <button type="submit">Créer</button>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-success">✅ Créer l'agence</button>
+        <a href="{{ url_for('crud.list_agences') }}" class="btn btn-secondary">❌ Annuler</a>
+    </div>
 </form>
-
-<a href="{{ url_for('crud.list_agences') }}">Retour à la liste</a>
 {% endblock %}

@@ -13,12 +13,12 @@
     <img src="/static/image/logo3.png" alt="Logo MBOA TRAVEL">
     <nav>
         <ul>
-            <li><a href="#">Accueil</a></li>
-            <li><a href="#">Nos trajets</a></li>
+            <li><a href="{{ url_for('index')}}">Accueil</a></li>
+            <li><a href="{{url_for('trajets_list')}}">Nos trajets</a></li>
             <li><a href="{{ url_for('public_dashboard')}}">Horaires & Tarifs</a></li>
             <li><a href="{{ url_for('public_contact')}}">Contact</a>
             <li><a href="{{ url_for('public_login')}}">Connexion</a></li>
-            <li><a href="{{ url_for('public_register')}}">Inscription</a></li>
+            <li><a href="{{ url_for('public_reservation')}}">Inscription</a></li>
                 
             </li>
         </ul>

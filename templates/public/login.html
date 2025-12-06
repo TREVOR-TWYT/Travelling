@@ -15,7 +15,7 @@
     <p class="error">{{ error }}</p>
     {% endif %}
 
-    <form method="POST" action="/login">
+    <form method="POST" action="{{ url_for('public_login') }}">
         <label>Téléphone</label>
         <input type="text" name="telephone" required>
 

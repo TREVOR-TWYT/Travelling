@@ -290,7 +290,7 @@ def create_voyage():
 @crud.route("/voyages/edit/<int:id_voyage>", methods=["GET", "POST"])
 def edit_voyage(id_voyage):
     voyage = Voyage.query.get_or_404(id_voyage)
-    trajets = Traget.query.all()
+    trajets = Trajet.query.all()
     vehicules = Vehicule.query.all()
     agences = Agence.query.all()
 
@@ -326,17 +326,40 @@ def delete_voyage(id_voyage):
 
 @crud.route("/reservation", methods=["GET", "POST"])
 def reservation():
-    # --- PAGE AVEC FORMULAIRE ---
+    # --- PAGE AVEC FORMULAIRE DE RECHERCHE (GET) ---
     if request.method == "GET":
-        voyages = Voyage.query.all()
-        return render_template("admin/reservation/form.html", voyages=voyages)
+        # Récupérer les paramètres de recherche
+        ville_depart = request.args.get("ville_depart")
+        ville_arrivee = request.args.get("ville_arrivee")
+        date_depart = request.args.get("date_depart")
+        passagers = request.args.get("passagers")
+        
+        # Filtrer les voyages selon les critères
+        query = Voyage.query.join(Trajet)
+        
+        if ville_depart:
+            query = query.filter(Trajet.ville_depart.ilike(f"%{ville_depart}%"))
+        
+        if ville_arrivee:
+            query = query.filter(Trajet.ville_arrivee.ilike(f"%{ville_arrivee}%"))
+        
+        if date_depart:
+            query = query.filter(Voyage.date_depart == date_depart)
+        
+        voyages = query.all()
+        
+        return render_template("admin/reservation/form.html", 
+                             voyages=voyages,
+                             ville_depart=ville_depart,
+                             ville_arrivee=ville_arrivee,
+                             date_depart=date_depart,
+                             passagers=passagers)
 
-    # --- TRAITEMENT FORMULAIRE ---
+    # --- TRAITEMENT FORMULAIRE DE RÉSERVATION (POST) ---
     nom = request.form["nom"]
     prenom = request.form.get("prenom")
     telephone = request.form["telephone"]
     email = request.form.get("email")
-
     id_voyage = request.form["id_voyage"]
     mode_paiement = request.form["mode"]
     montant = int(request.form["montant"])
@@ -364,7 +387,13 @@ def reservation():
     db.session.add(paiement)
     db.session.commit()
 
-    # 3️⃣ Créer la réservation
+    # 3️⃣ Récupérer le voyage et incrémenter les places réservées
+    voyage = Voyage.query.get(id_voyage)
+    if voyage:
+        voyage.places_reservees += 1
+        db.session.commit()
+
+    # 4️⃣ Créer la réservation
     reservation = Reservation(
         num_reservation=f"RSV-{uuid.uuid4().hex[:8].upper()}",
         date_reservation=datetime.datetime.utcnow(),
@@ -383,7 +412,6 @@ def reservation():
         client=client,
         paiement=paiement
     )
-
 #
 # TABLEAU DE BORD
 #

@@ -1,0 +1,399 @@
+/* =====================
+   Breadcrumb
+===================== */
+.breadcrumb {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 15px 50px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.breadcrumb-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    color: #666;
+    font-size: 14px;
+}
+
+.breadcrumb-content a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.breadcrumb-content a:hover {
+    text-decoration: underline;
+}
+
+/* =====================
+   Reservation Container
+===================== */
+.reservation-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.reservation-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.reservation-header h1 {
+    color: #003366;
+    font-size: 36px;
+    font-weight: 900;
+    margin-bottom: 10px;
+}
+
+.reservation-header p {
+    color: #666;
+    font-size: 18px;
+}
+
+/* =====================
+   Search Section
+===================== */
+.search-section {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+}
+
+.search-section h2 {
+    color: #003366;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+.search-form .form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    color: #003366;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group select {
+    padding: 12px 15px;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #0056b3;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+.btn-search {
+    width: 100%;
+    padding: 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 10px;
+}
+
+.btn-search:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 123, 255, 0.4);
+}
+
+/* =====================
+   Results Section
+===================== */
+.results-section {
+    margin-top: 40px;
+}
+
+.results-section h2 {
+    color: #003366;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.voyages-list {
+    display: grid;
+    gap: 25px;
+}
+
+/* =====================
+   Voyage Card
+===================== */
+.voyage-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.voyage-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.voyage-header {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.route {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: white;
+}
+
+.city-from,
+.city-to {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.arrow {
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.standing-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.standing-standard {
+    background-color: #28a745;
+    color: white;
+}
+
+.standing-vip {
+    background-color: #ffc107;
+    color: #333;
+}
+
+/* Voyage Details */
+.voyage-details {
+    padding: 25px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.detail-item .icon {
+    font-size: 20px;
+}
+
+.detail-item .label {
+    color: #666;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.detail-item .value {
+    color: #333;
+    font-weight: 500;
+    margin-left: auto;
+}
+
+.price-item {
+    background-color: #e7f3ff;
+    border: 2px solid #007bff;
+}
+
+.price-item .value.price {
+    color: #007bff;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* Voyage Footer - Reservation Form */
+.voyage-footer {
+    padding: 25px;
+    background-color: #f8f9fa;
+    border-top: 2px solid #e9ecef;
+}
+
+.reservation-form .client-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.reservation-form .client-info input {
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.reservation-form .client-info input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.reservation-form .payment-info {
+    margin-bottom: 15px;
+}
+
+.reservation-form .payment-info select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.reservation-form .payment-info select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.btn-reserve {
+    width: 100%;
+    padding: 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+}
+
+.btn-reserve:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+}
+
+/* =====================
+   No Results
+===================== */
+.no-results {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 40px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+}
+
+.empty-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+}
+
+.empty-state h3 {
+    color: #003366;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.empty-state p {
+    color: #666;
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+/* =====================
+   Responsive
+===================== */
+@media (max-width: 768px) {
+    .breadcrumb {
+        padding: 15px 20px;
+    }
+
+    .reservation-container {
+        padding: 20px 15px;
+    }
+
+    .reservation-header h1 {
+        font-size: 28px;
+    }
+
+    .search-section {
+        padding: 20px;
+    }
+
+    .search-form .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .voyage-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .route {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .voyage-details {
+        grid-template-columns: 1fr;
+    }
+
+    .reservation-form .client-info {
+        grid-template-columns: 1fr;
+    }
+}

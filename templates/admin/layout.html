@@ -2,12 +2,13 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}MBOA-TRAVELl{% endblock %}</title>
-    <link rel="stylesheet" href="/static/css/style_admin.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>{% block title %}Admin - Travelling App{% endblock %}</title>
 </head>
 <body>
     <header>
-        <h1>MBOA-TRAVEL</h1>
+        <h1>Travelling App - Administration</h1>
         <nav>
             <a href="{{ url_for('crud.dashboard') }}">Dashboard</a>
             <a href="{{ url_for('crud.list_agences') }}">Agences</a>
@@ -21,11 +22,14 @@
     </header>
 
     <main>
-        {% block content %}{% endblock %}
+        {% block content %}
+        <!-- Le contenu de chaque page ira ici -->
+        {% endblock %}
     </main>
 
     <footer>
-        &copy; {{ current_year if current_year else "2025" }} Mboa-travel. Tous droits réservés.
+        <a href="{{ url_for('index') }}">Retour à l'accueil</a>
+        &copy; 2025 Travelling App
     </footer>
 </body>
 </html>
