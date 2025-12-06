@@ -79,3 +79,29 @@ button:hover {
     margin-bottom: 15px;
     font-weight: 600;
 }
+
+
+
+/*style pour le bouton de switch entre admin et client*/
+
+
+.switch-link-admin {
+    text-align: right; /* Pour le positionner discrètement en haut à droite */
+    margin-bottom: 20px; 
+}
+
+.switch-link-admin a {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #007bff; /* Bleu plus visible pour le contexte admin */
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.85em;
+    transition: background-color 0.3s;
+}
+
+.switch-link-admin a:hover {
+    background-color: #0056b3;
+}

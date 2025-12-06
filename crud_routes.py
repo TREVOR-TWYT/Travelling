@@ -451,7 +451,7 @@ def register():
                 return redirect(url_for("crud.register"))
 
         # Hachage du mot de passe
-        hashed_pw = generate_password_hash(password)
+       # hashed_pw = generate_password_hash(password)
 
         # Création du nouveau client
         new_client = Client(
@@ -459,7 +459,7 @@ def register():
             prenom=prenom,
             telephone=telephone,
             email=email,
-            password=hashed_pw
+            password=password
         )
 
         db.session.add(new_client)
@@ -481,7 +481,7 @@ def login():
         password = request.form["password"]
 
         client = Client.query.filter_by(telephone=telephone).first()
-        if not client or not check_password_hash(client.password, password):
+        if not client or client.password != password:
             flash("Téléphone ou mot de passe incorrect.", "danger")
             return redirect(url_for("crud.login"))
 

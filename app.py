@@ -3,7 +3,7 @@ from models import db
 from crud_routes import crud
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:azerty@localhost/Travelling'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://alex:Bf1im16y@localhost/travelling'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -12,15 +12,15 @@ db.init_app(app)
 app.register_blueprint(crud)
 
 #route pour la page d'acceuil
+#@app.route("/")
+#def index():
+#    return render_template("acceuil.html")
+
+#@app.route("/admin/layout")
+#def admin():
+#   return render_template("/admin/layout.html")
+
 @app.route("/")
-def index():
-    return render_template("acceuil.html")
-
-@app.route("/admin/layout")
-def admin():
-    return render_template("/admin/layout.html")
-
-@app.route("/public/index")
 def public_index():
     return render_template("/public/index.html")
 
@@ -49,7 +49,7 @@ def public_dashboard():
 app.secret_key = "super_clef_secrete_à_modifier"
 
 ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "123"
+ADMIN_PASSWORD = "admin"
 
 @app.route("/admin-login", methods=["GET", "POST"])
 def admin_login():
