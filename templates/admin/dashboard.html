@@ -1,0 +1,40 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2>Tableau de bord Administrateur</h2>
+
+<p>Bienvenue dans le tableau de bord. Gérez toutes les entités de l'application Travelling :</p>
+
+<div class="dashboard-grid">
+    <div class="card">
+        <h3>Agences</h3>
+        <a href="{{ url_for('crud.list_agences') }}">Gérer</a>
+    </div>
+    <div class="card">
+        <h3>Personnels</h3>
+        <a href="{{ url_for('crud.list_personnels') }}">Gérer</a>
+    </div>
+    <div class="card">
+        <h3>Véhicules</h3>
+        <a href="{{ url_for('crud.list_vehicules') }}">Gérer</a>
+    </div>
+    <div class="card">
+        <h3>Trajets</h3>
+        <a href="{{ url_for('crud.trajets_list') }}">Gérer</a>
+    </div>
+    <div class="card">
+        <h3>Voyages</h3>
+        <a href="{{ url_for('crud.list_voyages') }}">Gérer</a>
+    </div>
+    <div class="card">
+        <h3>Clients</h3>
+        <a href="{{ url_for('crud.list_clients') }}">Gérer</a>
+    </div>
+    <div class="card">
+        <h3>Réservations</h3>
+        <a href="{{ url_for('crud.reservation') }}">Gérer</a>
+    </div>
+</div>
+{% endblock %}

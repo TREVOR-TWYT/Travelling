@@ -1,0 +1,31 @@
+{% extends "admin/layout.html" %}
+{% block content %}
+<h2>Modifier le personnel #{{ personnel.id_personnel }}</h2>
+
+<form action="" method="POST">
+    <label>Nom :</label>
+    <input type="text" name="nom" value="{{ personnel.nom }}" required><br><br>
+
+    <label>Prénom :</label>
+    <input type="text" name="prenom" value="{{ personnel.prenom }}"><br><br>
+
+    <label>Rôle :</label>
+    <select name="role" required>
+        {% for r in ['Chauffeur','Agent','Manager','Controleur','Livreur'] %}
+            <option value="{{ r }}" {% if r==personnel.role %}selected{% endif %}>{{ r }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Agence :</label>
+    <select name="id_agence">
+        <option value="">— Aucune —</option>
+        {% for a in agences %}
+            <option value="{{ a.id_agence }}" {% if personnel.id_agence==a.id_agence %}selected{% endif %}>{{ a.nom_agence }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <button type="submit">Enregistrer</button>
+</form>
+
+<a href="{{ url_for('crud.list_personnels') }}">Retour à la liste</a>
+{% endblock %}

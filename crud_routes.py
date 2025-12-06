@@ -9,7 +9,7 @@ crud = Blueprint("crud", __name__)
 @crud.route("/agences")
 def list_agences():
     agences = Agence.query.all()
-    return render_template("agences/list.html", agences=agences)
+    return render_template("admin/agences/list.html", agences=agences)
 
 # CREER UNE AGENCE
 @crud.route("/agences/new", methods=["GET", "POST"])
@@ -22,7 +22,7 @@ def create_agence():
         db.session.add(agence)
         db.session.commit()
         return redirect(url_for("crud.list_agences"))
-    return render_template("agences/create.html")
+    return render_template("admin/agences/create.html")
 
 # MODIFIER UNE AGENCE
 @crud.route("/agences/edit/<int:id_agence>", methods=["GET", "POST"])
@@ -33,7 +33,7 @@ def edit_agence(id_agence):
         agence.adresse = request.form["adresse"]
         db.session.commit()
         return redirect(url_for("crud.list_agences"))
-    return render_template("agences/edit.html", agence=agence)
+    return render_template("admin/agences/edit.html", agence=agence)
 
 # SUPPRIMER UNE AGENCE
 @crud.route("/agences/delete/<int:id_agence>", methods=["POST"])
@@ -48,7 +48,7 @@ def delete_agence(id_agence):
 @crud.route("/personnels")
 def list_personnels():
     personnels = Personnel.query.all()
-    return render_template("personnels/list.html", personnels=personnels)
+    return render_template("admin/personnels/list.html", personnels=personnels)
 
 # CREER UN PERSONNEL
 @crud.route("/personnels/new", methods=["GET", "POST"])
@@ -64,7 +64,7 @@ def create_personnel():
         db.session.add(personnel)
         db.session.commit()
         return redirect(url_for("crud.list_personnels"))
-    return render_template("personnels/create.html", agences=agences)
+    return render_template("admin/personnels/create.html", agences=agences)
 
 # MODIFIER UN PERSONNEL
 @crud.route("/personnels/edit/<int:id_personnel>", methods=["GET", "POST"])
@@ -78,7 +78,7 @@ def edit_personnel(id_personnel):
         personnel.id_agence = request.form.get("id_agence")
         db.session.commit()
         return redirect(url_for("crud.list_personnels"))
-    return render_template("personnels/edit.html", personnel=personnel, agences=agences)
+    return render_template("admin/personnels/edit.html", personnel=personnel, agences=agences)
 
 # SUPPRIMER UN PERSONNEL
 @crud.route("/personnels/delete/<int:id_personnel>", methods=["POST"])
@@ -97,7 +97,7 @@ def delete_personnel(id_personnel):
 # -------------------------------------------------
 @crud.route("/clients/new", methods=["GET"])
 def new_client_form():
-    return render_template("clients/new_client.html")
+    return render_template("admin/clients/new_client.html")
 
 
 @crud.route("/clients/new", methods=["POST"])
@@ -128,7 +128,7 @@ def create_client_form():
 @crud.route("/clients", methods=["GET"])
 def list_clients():
     clients = Client.query.all()
-    return render_template("clients/list_clients.html", clients=clients)
+    return render_template("admin/clients/list_clients.html", clients=clients)
 
 
 
@@ -158,7 +158,7 @@ def delete_client(id):
 @crud.route("/trajets")
 def trajets_list():
     trajets = Trajet.query.all()
-    return render_template("trajets/list.html", trajets=trajets)
+    return render_template("admin/trajets/list.html", trajets=trajets)
 
 
 @crud.route("/trajets/create", methods=["GET", "POST"])
@@ -174,7 +174,7 @@ def trajets_create():
         db.session.commit()
         return redirect("/trajets")
 
-    return render_template("trajets/create.html")
+    return render_template("admin/trajets/create.html")
 
 
 @crud.route("/trajets/<int:id>/edit", methods=["GET", "POST"])
@@ -189,7 +189,7 @@ def trajets_edit(id):
         db.session.commit()
         return redirect("/trajets")
 
-    return render_template("trajets/edit.html", trajet=t)
+    return render_template("admin/trajets/edit.html", trajet=t)
 
 
 
@@ -198,7 +198,7 @@ def trajets_edit(id):
 @crud.route("/vehicules")
 def list_vehicules():
     vehicules = Vehicule.query.all()
-    return render_template("vehicules/list.html", vehicules=vehicules)
+    return render_template("admin/vehicules/list.html", vehicules=vehicules)
 
 @crud.route("/vehicules/new", methods=["GET", "POST"])
 def create_vehicule():
@@ -218,7 +218,7 @@ def create_vehicule():
         db.session.commit()
         return redirect(url_for("crud.list_vehicules"))
 
-    return render_template("vehicules/create.html")
+    return render_template("admin/vehicules/create.html")
 
 @crud.route("/vehicules/edit/<string:immatriculation>", methods=["GET", "POST"])
 def edit_vehicule(immatriculation):
@@ -230,7 +230,7 @@ def edit_vehicule(immatriculation):
         db.session.commit()
         return redirect(url_for("crud.list_vehicules"))
 
-    return render_template("vehicules/edit.html", vehicule=vehicule)
+    return render_template("admin/vehicules/edit.html", vehicule=vehicule)
 
 @crud.route("/vehicules/delete/<string:immatriculation>", methods=["POST"])
 def delete_vehicule(immatriculation):
@@ -247,7 +247,7 @@ def delete_vehicule(immatriculation):
 @crud.route("/voyages", methods=["GET"])
 def list_voyages():
     voyages = Voyage.query.all()
-    return render_template("voyages/list.html", voyages=voyages)
+    return render_template("admin/voyages/list.html", voyages=voyages)
 
 
 # ---------------------
@@ -281,7 +281,7 @@ def create_voyage():
         db.session.commit()
         return redirect(url_for("crud.list_voyages"))
 
-    return render_template("voyages/create.html", trajets=trajets, vehicules=vehicules, agences=agences)
+    return render_template("admin/voyages/create.html", trajets=trajets, vehicules=vehicules, agences=agences)
 
 
 # ---------------------
@@ -306,7 +306,7 @@ def edit_voyage(id_voyage):
         db.session.commit()
         return redirect(url_for("crud.list_voyages"))
 
-    return render_template("voyages/edit.html", voyage=voyage, trajets=trajets, vehicules=vehicules, agences=agences)
+    return render_template("admin/voyages/edit.html", voyage=voyage, trajets=trajets, vehicules=vehicules, agences=agences)
 
 
 # ---------------------
@@ -329,7 +329,7 @@ def reservation():
     # --- PAGE AVEC FORMULAIRE ---
     if request.method == "GET":
         voyages = Voyage.query.all()
-        return render_template("reservation/form.html", voyages=voyages)
+        return render_template("admin/reservation/form.html", voyages=voyages)
 
     # --- TRAITEMENT FORMULAIRE ---
     nom = request.form["nom"]
@@ -378,7 +378,7 @@ def reservation():
     db.session.commit()
 
     return render_template(
-        "reservation/success.html",
+        "admin/reservation/success.html",
         reservation=reservation,
         client=client,
         paiement=paiement
@@ -393,7 +393,7 @@ def dashboard():
     total_voyages = Voyage.query.count()
     total_reservations = Reservation.query.count()
 
-    return render_template("dashboard.html",
+    return render_template("/admin/dashboard.html",
                            total_clients=total_clients,
                            total_voyages=total_voyages,
                            total_reservations=total_reservations)

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+
+<body>
+
+<div class="login-container">
+    <h2>Connexion</h2>
+
+    {% if error %}
+    <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST" action="/login">
+        <label>Téléphone</label>
+        <input type="text" name="telephone" required>
+
+        <button type="submit">Se connecter</button>
+
+        <p class="bottom-text">
+            Pas encore inscrit ? <a href="/register">Créer un compte</a>
+        </p>
+    </form>
+</div>
+
+</body>
+</html>

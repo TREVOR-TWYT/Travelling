@@ -1,0 +1,23 @@
+{% extends "admin/layout.html" %}
+{% block content %}
+
+<h2>Modifier un Trajet</h2>
+
+<form method="post">
+
+    <label>Ville de départ :</label>
+    <input name="ville_depart" value="{{ trajet.ville_depart }}" required>
+
+    <label>Ville d'arrivée :</label>
+    <input name="ville_arrivee" value="{{ trajet.ville_arrivee }}" required>
+
+    <label>Tarif standard :</label>
+    <input type="number" name="tarif_standard" value="{{ trajet.tarif_standard }}" required>
+
+    <label>Tarif VIP :</label>
+    <input type="number" name="tarif_vip" value="{{ trajet.tarif_vip }}" required>
+
+    <button type="submit">Mettre à jour</button>
+</form>
+
+{% endblock %}

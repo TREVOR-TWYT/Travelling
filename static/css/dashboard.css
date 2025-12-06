@@ -1,0 +1,54 @@
+body {
+    margin: 0;
+    background: #eef6ff;
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    background: #0055aa;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+}
+
+.logout-btn {
+    position: absolute;
+    right: 20px;
+    top: 25px;
+    background: white;
+    padding: 8px 15px;
+    border-radius: 6px;
+    color: #0055aa;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.dashboard-section {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.dashboard-section h2 {
+    color: #003d80;
+}
+
+.dashboard-actions {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.action-btn {
+    background: #0055aa;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.action-btn:hover {
+    background: #003d80;
+}

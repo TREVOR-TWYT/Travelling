@@ -1,0 +1,16 @@
+{% extends "admin/layout.html" %}
+{% block content %}
+<h2>Modifier l'agence #{{ agence.id_agence }}</h2>
+
+<form action="" method="POST">
+    <label>Nom de l'agence :</label>
+    <input type="text" name="nom_agence" value="{{ agence.nom_agence }}" required><br><br>
+
+    <label>Adresse :</label>
+    <input type="text" name="adresse" value="{{ agence.adresse }}"><br><br>
+
+    <button type="submit">Enregistrer</button>
+</form>
+
+<a href="{{ url_for('crud.list_agences') }}">Retour à la liste</a>
+{% endblock %}

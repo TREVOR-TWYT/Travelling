@@ -7,9 +7,8 @@ def create_app():
     app = Flask(__name__)
 
     # Configuration DB
-    app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://trevor:TREFRIED1707@localhost/travelling"
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:azerty@localhost/Travelling'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
 
     # Import des modèles pour que SQLAlchemy les charge
@@ -21,6 +20,6 @@ def create_app():
 
     @app.route("/")
     def home():
-        return "<h1>Application Travelling opérationnelle !</h1>"
+        return "<h1>Application Mboa travel opérationnelle !</h1>"
 
     return app

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mboa-travel - Réservation</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<!-- Header -->
+<header>
+    <img src="/static/image/logo1.png" alt="Logo MBOA TRAVEL">
+    <nav>
+        <ul>
+            <li><a href="/">Accueil</a></li>
+            <li><a href="#">Nos trajets</a></li>
+            <li><a href="#">Horaires & Tarifs</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- Reservation Section -->
+<section class="reservation">
+    <h2>Réservez votre voyage</h2>
+    <form method="POST" action="/reservation/submit">
+        <input type="text" name="ville_depart" placeholder="Ville de départ" value="{{ request.args.get('ville_depart', '') }}" required>
+        <input type="text" name="ville_arrivee" placeholder="Ville d'arrivée" value="{{ request.args.get('ville_arrivee', '') }}" required>
+        <input type="date" name="date_depart" value="{{ request.args.get('date_depart', '') }}" required>
+        <select name="voyage_id" required>
+            <option value="">Sélectionner un trajet</option>
+            {% for voyage in voyages %}
+                {% if voyage.trajet.ville_depart == request.args.get('ville_depart') and voyage.trajet.ville_arrivee == request.args.get('ville_arrivee') %}
+                <option value="{{ voyage.id_voyage }}">
+                    {{ voyage.trajet.ville_depart }} → {{ voyage.trajet.ville_arrivee }} 
+                    | {{ voyage.date_depart.strftime('%d/%m/%Y') }} à {{ voyage.heure_depart.strftime('%H:%M') }} 
+                    | Prix: {{ voyage.trajet.tarif_standard if voyage.standing == 'Standard' else voyage.trajet.tarif_vip }} FCFA
+                </option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <input type="number" name="passagers" placeholder="Nombre de passagers" min="1" max="10" required>
+        <button type="submit">Confirmer la réservation</button>
+    </form>
+</section>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 MBOA TRAVEL. Tous droits réservés.</p>
+    <p>Contact : <a href="mailto:contact@MBOA-TRAVEL.cm">contact@MBOA-TRAVEL.cm</a> | Téléphone : +237 6 99 99 99 99</p>
+</footer>
+
+</body>
+</html>
