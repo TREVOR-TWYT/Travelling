@@ -3,33 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <title>{% block title %}Admin - Travelling App{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <title>{% block title %}Admin - MBOA TRAVEL{% endblock %}</title>
 </head>
 <body>
     <header>
-        <h1>Travelling App - Administration</h1>
+        <h1>🚌 MBOA TRAVEL - Administration</h1>
         <nav>
-            <a href="{{ url_for('crud.dashboard') }}">Dashboard</a>
-            <a href="{{ url_for('crud.list_agences') }}">Agences</a>
-            <a href="{{ url_for('crud.list_personnels') }}">Personnels</a>
-            <a href="{{ url_for('crud.list_vehicules') }}">Véhicules</a>
-            <a href="{{ url_for('crud.trajets_list') }}">Trajets</a>
-            <a href="{{ url_for('crud.list_voyages') }}">Voyages</a>
-            <a href="{{ url_for('crud.list_clients') }}">Clients</a>
-            <a href="{{ url_for('crud.reservation') }}">Réservations</a>
+            <a href="{{ url_for('admin') }}">📊 Tableau de bord</a>
+            <a href="{{ url_for('crud.dashboard') }}">📈 Dashboard</a>
+            <a href="{{ url_for('crud.list_agences') }}">🏢 Agences</a>
+            <a href="{{ url_for('crud.list_personnels') }}">👥 Personnels</a>
+            <a href="{{ url_for('crud.list_clients') }}">👤 Clients</a>
+            <a href="{{ url_for('crud.trajets_list') }}">🛣️ Trajets</a>
+            <a href="{{ url_for('crud.list_vehicules') }}">🚌 Véhicules</a>
+            <a href="{{ url_for('crud.list_voyages') }}">✈️ Voyages</a>
+            <a href="{{ url_for('crud.reservation') }}">📝 Réservations</a>
+            <a href="{{ url_for('public_index') }}" target="_blank">🌐 Site</a>
+            <a href="{{ url_for('admin_logout') }}" class="logout-btn">🚪 Déconnexion</a>
         </nav>
     </header>
 
     <main>
+        <!-- Messages flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {% if category == 'error' %}⚠️{% elif category == 'success' %}✅{% else %}ℹ️{% endif %}
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
         {% block content %}
         <!-- Le contenu de chaque page ira ici -->
+        <div class="welcome-message">
+            <h2>Bienvenue dans l'espace d'administration</h2>
+            <p>Utilisez le menu ci-dessus pour naviguer dans les différentes sections.</p>
+        </div>
         {% endblock %}
     </main>
 
     <footer>
-        <a href="{{ url_for('index') }}">Retour à l'accueil</a>
-        &copy; 2025 Travelling App
+        <div class="footer-links">
+            <a href="{{ url_for('public_index') }}">🏠 Retour au site</a>
+            <a href="{{ url_for('liens_rapides') }}">🔗 Liens rapides</a>
+        </div>
+        <div class="footer-copyright">
+            <span>&copy; 2025 MBOA TRAVEL - Tous droits réservés</span>
+        </div>
     </footer>
 </body>
 </html>
