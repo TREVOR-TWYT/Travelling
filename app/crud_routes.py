@@ -715,3 +715,29 @@ def saisie_client_info():
 
     return render_template("public/saisie_client_info.html")
 
+
+@crud.route("/admin-login", methods=["GET", "POST"])
+def admin_login():
+    if session.get('admin'):
+        return redirect(url_for('admin'))
+    
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "")
+        
+        if username == ADMIN_USERNAME and check_password_hash(ADMIN_PASSWORD_HASH, password):
+            session["admin"] = True
+            session.permanent = True
+            flash('Connexion réussie !', 'success')
+            return redirect(url_for('admin'))
+        
+        flash('Identifiants incorrects', 'error')
+        return render_template("admin/login_admin.html", error="Identifiants incorrects")
+    
+    return render_template("admin/login_admin.html")
+
+
+@crud.route("/liens-rapides")
+def liens_rapides():
+    """Page avec tous les liens utiles pour le développement"""
+    return render_template("public/liens_rapides.html")

@@ -21,7 +21,7 @@ body {
 }
 
 .flash.success {
-    background-color: #007acc;
+    background-color:  #7a4dff;
 }
 
 .flash.danger {
@@ -33,69 +33,16 @@ body {
 }
 
 .flash.info {
-    background-color: #0066cc;
+    background-color:  #7a4dff;
 }
 
-
-/* Form Container */
-.form-container {
-    max-width: 450px;
-    margin: 80px auto 40px;
-    padding: 40px 30px;
-    background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.form-container h2 {
-    color: #003366;
-    margin-bottom: 25px;
-}
-
-.form-container input {
-    width: 100%;
-    padding: 12px 15px;
-    margin: 10px 0 20px;
-    border: 1px solid #bcd2e8;
-    border-radius: 8px;
-    font-size: 16px;
-}
-
-.form-container button,
-.form-container .btn {
-    width: 100%;
-    padding: 14px;
-    background-color: #0066cc;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    text-decoration: none;
-    display: inline-block;
-    margin-top: 10px;
-}
-
-.form-container button:hover,
-.form-container .btn:hover {
-    background-color: #004c99;
-}
-
-.form-container p {
-    margin-top: 15px;
-    color: #003366;
-}
-
-.form-container p a {
-    color: #0066cc;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.form-container p a:hover {
-    text-decoration: underline;
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+   /* gap : 5px;*/
+    width: 65%;
 }
 
 .side-message {
@@ -116,7 +63,7 @@ body {
 }
 
 .side-message h2 {
-    color: #003366;
+    color: #764ba2;
     margin-bottom: 15px;
     font-size: 22px;
 }
@@ -124,7 +71,7 @@ body {
 .side-message p {
     margin-top: 10px;
     font-size: 16px;
-    color: #003366;
+    color: #764ba2 /*#003366*/;
     opacity: 0.9;
 }
 
@@ -134,5 +81,126 @@ body {
     justify-content: center;
     align-items: flex-start;
    /* gap : 5px;*/
-    width: 75%;
+    width: 65%;
 }
+
+.register-box {
+    background: white;
+    border-radius: 15px;
+   /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);*/
+    padding: 40px;
+    animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo img {
+    max-width: 150px;
+    height: auto;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 28px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+.btn-register {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 10px;
+}
+
+.btn-register:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-register:active {
+    transform: translateY(0);
+}
+
+.form-box {
+    max-width: 400px;
+    margin: 80px auto 40px;
+    padding: 40px 30px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.form-box h2 {
+    color: #003366;
+    margin-bottom: 25px;
+}
+
+.form-box input {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 10px 0 20px;
+    border: 1px solid #bcd2e8;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.form-box p {
+    margin-top: 15px;
+    color: #764ba2;
+}
+
+.form-box p a {
+    color: #764ba2;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.form-box p a:hover {
+    text-decoration: underline;
+}
+
+.loader {
+    width: 20px;
+    height: 20px;
+    border: 3px solid #dcd0ff;
+    border-top-color: #7a4dff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-top: 10px;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+

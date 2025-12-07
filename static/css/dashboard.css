@@ -1,69 +1,215 @@
-/* dashboard.css et profile.css */
-
-.dashboard-container, .container {
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 30px;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    text-align: center;
+/* ==========================
+   RESET + BASE
+========================== */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f0ff; /* gris-violet très clair */
 }
 
-h2 {
-    color: #0056b3;
-    margin-bottom: 20px;
+/* ==========================
+   STRUCTURE GLOBALE
+========================== */
+.layout {
+    display: flex;
+    min-height: calc(100vh - 120px); /* espace pour header + footer */
 }
 
-.dashboard-actions a, button {
-    display: inline-block;
-    margin: 10px;
-    padding: 12px 20px;
-    background-color: #0056b3;
-    color: #fff;
-    text-decoration: none;
+/* ==========================
+   SIDEBAR (Menu à gauche)
+========================== */
+.sidebar {
+    width: 250px;
+    background: white;
+    height: auto;
+    border-right: 2px solid #e3dbff;
+    padding: 25px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/* Photo de profil arrondie */
+.profil-pic {
+    width: 100px;
+    height: 100px;
+    background: #ede6ff;
+    margin: 0 auto 10px auto; /* centre horizontal + espace sous l'icône */
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 50px; /* taille de l’icône / emoji */
+}
+
+
+/* Titre "Espace client" */
+.profil-section h3 {
+    margin-top: 12px;
+    color: #4b3b87;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* Liens du menu */
+.menu-links a {
+    display: block;
+    padding: 12px;
+    margin-top: 10px;
     border-radius: 8px;
-    font-weight: bold;
+    font-size: 15px;
+    text-decoration: none;
+    color: #4b3b87;
+    font-weight: 600;
+    transition: 0.25s;
+}
+
+.menu-links a:hover {
+    background: #f2eaff;
+    padding-left: 18px;
+}
+
+/* Déconnexion */
+.logout {
+    color: #d13b3b !important;
+}
+
+.logout:hover {
+    background: #ffe6e6;
+}
+
+/* ==========================
+   CONTENU À DROITE
+========================== */
+.content {
+    flex: 1;
+    padding: 30px;
+}
+
+/* Titres */
+.content h2 {
+    color: #4b3b87;
+    margin-bottom: 5px;
+}
+
+/* Sous-titre */
+.content p {
+    color: #6e6c7a;
+}
+
+/* ==========================
+   STATISTIQUES (4 boîtes)
+========================== */
+.stats {
+    display: flex;
+    gap: 20px;
+    margin: 25px 0;
+    flex-wrap: wrap;
+}
+
+.stat-box {
+    background: white;
+    padding: 20px;
+    flex: 1;
+    min-width: 180px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(90, 72, 150, 0.1);
+    text-align: center;
     transition: 0.3s;
 }
 
-.dashboard-actions a:hover, button:hover {
-    background-color: #003f7f;
+.stat-box:hover {
+    transform: translateY(-5px);
 }
 
-input[type="text"], input[type="email"], input[type="password"] {
-    width: 90%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+/* ==========================
+   DESTINATIONS
+========================== */
+.destinations {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+    flex-wrap: wrap;
 }
 
-.flash-container {
-    max-width: 500px;
-    margin: 20px auto;
+.destination-card {
+    background: white;
+    padding: 18px;
+    flex: 1;
+    min-width: 220px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(90, 72, 150, 0.1);
+    transition: 0.3s;
 }
 
-.flash {
-    padding: 12px 20px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    color: white;
+.destination-card:hover {
+    transform: translateY(-5px);
+}
+
+.destination-card a {
+    text-decoration: none;
+    color: #6b4bff;
     font-weight: bold;
 }
 
-.flash.success {
-    background-color: #007acc;
+/* ==========================
+   DERNIÈRE RÉSERVATION
+========================== */
+.reservation-box {
+    background: white;
+    padding: 25px;
+    border-left: 5px solid #7d5fff;
+    border-radius: 10px;
+    margin-top: 30px;
+    box-shadow: 0 4px 10px rgba(90, 72, 150, 0.1);
 }
 
-.flash.danger {
-    background-color: #cc0000;
+.reservation-box a {
+    color: #6b4bff;
+    font-weight: bold;
+    text-decoration: none;
 }
 
-.flash.warning {
-    background-color: #ff9900;
+/* ==========================
+   BOUTONS D’ACTIONS RAPIDES
+========================== */
+.quick-actions {
+    margin-top: 30px;
 }
 
-.flash.info {
-    background-color: #0066cc;
+.quick-actions .btn {
+    display: inline-block;
+    background: #6b4bff;
+    color: white;
+    padding: 12px 22px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    margin-right: 15px;
+    transition: 0.3s;
+}
+
+.quick-actions .btn:hover {
+    background: #4b37cc;
+    transform: translateY(-3px);
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+@media (max-width: 900px) {
+    .layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid #e3dbff;
+        margin-bottom: 20px;
+    }
+
+    .content {
+        margin-left: 0;
+    }
 }

@@ -7,6 +7,8 @@
 </head>
 <body>
 
+  {% include 'public/header.html' %}
+
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     <div class="flash-container">
@@ -17,16 +19,111 @@
   {% endif %}
 {% endwith %}
 
-{% include 'public/header.html' %}
 
-<div class="dashboard-container">
-    <h2>Bienvenue {{ client.nom }} !</h2>
-    <div class="dashboard-actions">
-        <a class="btn" href="{{ url_for('crud.profile') }}">Modifier mon profil</a>
-        <a class="btn" href="{{ url_for('crud.reservation') }}">Réserver un trajet</a>
-        <a class="btn" href="{{ url_for('crud.trajets_list') }}">Voir nos trajets</a>
-        <a class="btn logout" href="{{ url_for('crud.logout') }}">Se déconnecter</a>
-    </div>
+<!-- ==========================
+          STRUCTURE GLOBALE
+          sidebar (gauche) + contenu (droite)
+    =========================== -->
+    <div class="layout">
+
+      <!-- ==========================
+            MENU À GAUCHE
+      =========================== -->
+      <aside class="sidebar">
+        <div class="profil-section">
+          <div class="profile-pic">👤</div>
+          <h3>Espace client</h3>
+        </div>
+
+        <nav class="menu-links">
+          <a href="{{ url_for('crud.reservation') }}">📝 Faire une réservation</a></li>
+          <a href="{{ url_for('crud.profile') }}">👤 Modifier mon profil</a></li>
+          <a href="{{ url_for('crud.trajets_list') }}">📍 Voir les trajets</a></li>
+          <a href="/mes_reservations">📅 Mes réservations</a></li>
+          <a href="{{ url_for('crud.logout') }}" class="logout">🚪 Se déconnecter</a></li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- ==========================
+            CONTENU À DROITE
+      =========================== -->
+      <main class="content">
+
+          <!-- Message d'accueil -->
+          <h2>Bienvenue, {{ client.nom }} 👋</h2>
+          <p>Prêt(e) pour votre prochaine aventure ?</p>
+
+          <!-- ======== STATISTIQUES ========= -->
+          <div class="stats">
+
+              <div class="stat-box">
+                  <h3>✈️ Voyages effectués</h3>
+                  <p>3 voyages</p>
+              </div>
+
+              <div class="stat-box">
+                  <h3>📅 Réservations en cours</h3>
+                  <p>1 réservation</p>
+              </div>
+
+              <div class="stat-box">
+                  <h3>🌍 Destinations</h3>
+                  <p>22 disponibles</p>
+              </div>
+
+              <div class="stat-box">
+                  <h3>🔔 Notifications</h3>
+                  <p>0 nouvelle</p>
+              </div>
+
+          </div>
+
+          <!-- ======== DESTINATIONS RECOMMANDÉES ========= -->
+          <h2>Destinations recommandées 🌴</h2>
+
+          <div class="destinations">
+
+              <div class="destination-card">
+                  <h3>Bafoussam → Yaoundé 🇨🇲 </h3>
+                  <p>À partir de 10 000 FCFA</p>
+                  <a href="{{ url_for('crud.trajets_list') }}">Voir plus →</a>
+              </div>
+
+              <div class="destination-card">
+                  <h3>Douala → Yaoundé 🇨🇲</h3>
+                  <p>Trajets disponibles chaque jour</p>
+                  <a href="{{ url_for('crud.trajets_list') }}">Voir plus →</a>
+              </div>
+
+              <div class="destination-card">
+                  <h3>Kribi 🇨🇲</h3>
+                  <p>Réduction exceptionnelle -15%</p>
+                  <a href="{{ url_for('crud.trajets_list') }}">Voir plus →</a>
+              </div>
+
+          </div>
+
+          <!-- ======== DERNIÈRE RÉSERVATION ========= -->
+          <h2>Votre dernière réservation 📄</h2>
+
+          <div class="reservation-box">
+              <p><strong>Trajet :</strong> Douala → Yaoundé</p>
+              <p><strong>Date :</strong> 12 Décembre 2025</p>
+              <p><strong>Statut :</strong> Confirmé ✅</p>
+              <a href="{{ url_for('crud.reservation') }}">Voir toutes les réservations →</a>
+          </div>
+
+          <!-- ======== BOUTONS D’ACTIONS RAPIDES ========= -->
+          <div class="quick-actions">
+              <a class="btn" href="{{ url_for('crud.reservation') }}">📝 Nouvelle réservation</a>
+              <a class="btn" href="{{ url_for('crud.trajets_list') }}">📍 Voir les trajets</a>
+              <a class="btn" href="{{ url_for('crud.profile') }}">👤 Modifier mon profil</a>
+          </div>
+
+      </main>
+  </div>
+
 </div>
 {% include 'public/footer.html' %}
 </body>

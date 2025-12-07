@@ -5,8 +5,12 @@
     <title>Inscription - MBOA TRAVEL</title>
     <link rel="stylesheet" href="/static/css/register.css">
 </head>
+
 <body>
 
+  {% include 'public/header.html' %}
+
+  <div class="register-container">
 
   {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -19,30 +23,61 @@
 {% endwith %}
 
 
-{% include 'public/header.html' %}
-
-<div class="container">
-
   <div class ="side-message">
     <h2> Bienvenue </h2>
     <p>Nouveau sur l'application?.</p>
     <p>Entre <strong>tes informations</strong> pour t'inscrire.</p>
   </div>
 
+  <div class="register-box">
   <div class="form-box">
 
-    <h2>Créer un compte</h2>
-    <form method="POST">
+          <div class="logo">
+              <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="MBOA TRAVEL">
+          </div>
+          
+          <h2>Créer un compte</h2>
+          <p class="subtitle">Rejoignez MBOA TRAVEL et voyagez en toute simplicité</p>
+  
+
+    <!--  FORMULAIRE CORRIGÉ AVEC IDs -->
+    <form method="POST" id="registerForm">
         <input type="text" name="nom" placeholder="Nom" required>
         <input type="text" name="prenom" placeholder="Prénom">
         <input type="text" name="telephone" placeholder="Téléphone" required>
         <input type="email" name="email" placeholder="Email">
         <input type="password" name="password" placeholder="Mot de passe" required>
-        <button type="submit">S’inscrire</button>
+        
+        <button type="submit" class="btn-register" id="submitBtn">S’inscrire</button>
+
+        <!-- Loader -->
+        <div id="loader" class="loader" style="display: none;"></div>
     </form>
+
+    <!--  SCRIPT 100% FONCTIONNEL AVEC DÉLAI -->
+    <script>
+        const form = document.getElementById("registerForm");
+        const loader = document.getElementById("loader");
+        const btn = document.getElementById("submitBtn");
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();  // empêche l’envoi immédiat
+
+            btn.disabled = true; 
+            loader.style.display = "inline-block"; // affiche le rond
+
+            // ⏱️ délai avant envoi (2000 ms = 2 secondes)
+            setTimeout(() => {
+                form.submit();
+            }, 2000);
+        });
+    </script>
+
     <p>Déjà un compte ? <a href="{{ url_for('crud.login') }}">Se connecter</a></p>
   </div>
+  </div>
 </div>
+
 {% include 'public/footer.html' %}
 </body>
 </html>

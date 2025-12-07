@@ -7,6 +7,10 @@
 </head>
 <body>
 
+  {% include 'public/header.html' %}
+
+<div class="login-container">
+
  {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     <div class="flash-container">
@@ -17,28 +21,58 @@
   {% endif %}
 {% endwith %}
 
-
-{% include 'public/header.html' %}
-
-<div class="container">
-
 <div class ="side-message">
       <h2> Bienvenue </h2>
       <p>Accede facilement a ton espace personnel.</p>
       <p>Entre ton <strong>email</strong> et ton <strong>mot de passe</strong> pour te connecter.</p>
 </div>
 
+
+<div class="register-box">
 <div class="form-box">
-    <h2>Connexion</h2>
-    <form method="POST">
+
+  <div class="logo">
+    <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="MBOA TRAVEL">
+</div>
+
+<h2>Connexion</h2>
+<p class="subtitle">Rejoignez MBOA TRAVEL et voyagez en toute simplicité</p>
+
+    <form method="POST" id="loginForm">
         <input type="email" name="email" placeholder="Email" required>
         <input type="password" name="password" placeholder="Mot de passe" required>
-        <button type="submit">Se connecter</button>
+        <button type="submit" class="btn-register" id="submitBtn">Se connecter</button>
+        
+        <!-- Loader -->
+        <div id="loader" class="loader" style="display: none;"></div>
     </form>
-    <p>Vous n'avez pas de compte ? <a href="{{ url_for('crud.register') }}">S’inscrire</a></p>
+
+    <!--  SCRIPT 100% FONCTIONNEL AVEC DÉLAI -->
+    <script>
+        const form = document.getElementById("loginForm");
+        const loader = document.getElementById("loader");
+        const btn = document.getElementById("submitBtn");
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();  // empêche l’envoi immédiat
+
+            btn.disabled = true; 
+            loader.style.display = "inline-block"; // affiche le rond
+
+            // ⏱️ délai avant envoi (2000 ms = 2 secondes)
+            setTimeout(() => {
+                form.submit();
+            }, 2000);
+        });
+    </script>
+    
+    <p class="bottom-text"> Vous n'avez pas de compte ? <a href="{{ url_for('crud.register') }}">S’inscrire</a></p>
+
+</div>
 </div>
 </div>
 
 {% include 'public/footer.html' %}
 </body>
 </html>
+

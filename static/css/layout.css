@@ -9,16 +9,17 @@ body {
 }
 
 header {
-    background-color: #0056b3; /* bleu foncé */
+    background-color:  #764ba2; /* bleu foncé */
     color: #fff;
-    padding: 15px 50px;
+    height: 120px;
+    padding: 0px 25px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
 header img {
-    height: 50px;
+    height: 0px;
 }
 
 header nav ul {
@@ -32,7 +33,7 @@ header nav ul {
 header nav ul li a {
     color: #fff;
     text-decoration: none;
-    font-weight: 500;
+    /*font-weight: 0;*/
     transition: 0.3s;
 }
 
@@ -41,7 +42,7 @@ header nav ul li a:hover {
 }
 
 footer {
-    background-color: #003f7f; /* bleu plus foncé */
+    background-color:  #764ba2; /* bleu plus foncé */
     color: #fff;
     text-align: center;
     padding: 15px 0;
@@ -57,3 +58,4 @@ footer a {
 footer a:hover {
     text-decoration: underline;
 }
+

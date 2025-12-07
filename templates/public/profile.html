@@ -7,6 +7,10 @@
 </head>
 <body>
 
+  {% include 'public/header.html' %}
+
+  <div class="container">
+
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     <div class="flash-container">
@@ -17,9 +21,6 @@
   {% endif %}
 {% endwith %}
 
-{% include 'public/header.html' %}
-
-<div class="container">
 
 <div class ="side-message">
   <h2> Mon profil </h2>
@@ -27,16 +28,49 @@
   <p>Entre tes <strong>nouvelles informations</strong> et mets a jour ton profil.</p>
 </div>
 
-<div class="form-container">
-    <h2>Mon Profil</h2>
-    <form method="POST">
+<div class="register-box">
+<div class="form-box">
+
+      <div class="logo">
+        <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="MBOA TRAVEL">
+    </div>
+    
+    <h2>Mon profil</h2>
+    <p class="subtitle">Modifier votre profil</p>
+
+    <form method="POST" id="profilForm">
+
         <input type="text" name="nom" value="{{ client.nom }}" required>
         <input type="text" name="prenom" value="{{ client.prenom }}">
         <input type="text" name="telephone" value="{{ client.telephone }}" required>
         <input type="email" name="email" value="{{ client.email }}">
-        <button type="submit">Mettre à jour</button>
+        <button type="submit" class="btn-register" id="submitBtn">Mettre à jour</button>
+
+        <!-- Loader -->
+        <div id="loader" class="loader" style="display: none;"></div>
     </form>
+
+    <!--  SCRIPT 100% FONCTIONNEL AVEC DÉLAI -->
+    <script>
+        const form = document.getElementById("profilForm");
+        const loader = document.getElementById("loader");
+        const btn = document.getElementById("submitBtn");
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();  // empêche l’envoi immédiat
+
+            btn.disabled = true; 
+            loader.style.display = "inline-block"; // affiche le rond
+
+            // ⏱️ délai avant envoi (2000 ms = 2 secondes)
+            setTimeout(() => {
+                form.submit();
+            }, 2000);
+        });
+    </script>
+    
     <a class="btn" href="{{ url_for('crud.dashboardClient') }}">Retour au dashboard</a>
+</div>
 </div>
 </div>
 {% include 'public/footer.html' %}

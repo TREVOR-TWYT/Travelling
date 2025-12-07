@@ -1,12 +1,18 @@
-
-.container {
+.register-container {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: flex-start;
    /* gap : 5px;*/
-    width: 75%;
+    width: 65%;
 }
+/*
+
+.register-container {
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+}*/
 
 /* Form Container */
 .form-box {
@@ -33,10 +39,10 @@
     font-size: 16px;
 }
 
-.form-box button {
+/*.form-box button {
     width: 100%;
     padding: 14px;
-    background-color: #0066cc;
+    background-color: #764ba2;
     color: white;
     border: none;
     border-radius: 8px;
@@ -47,15 +53,15 @@
 
 .form-box button:hover {
     background-color: #004c99;
-}
+}*/
 
 .form-box p {
     margin-top: 15px;
-    color: #003366;
+    color: #764ba2;
 }
 
 .form-box p a {
-    color: #0066cc;
+    color: #764ba2;
     text-decoration: none;
     font-weight: bold;
 }
@@ -83,7 +89,7 @@
 }
 
 .side-message h2 {
-    color: #003366;
+    color: #764ba2;
     margin-bottom: 15px;
     font-size: 22px;
 }
@@ -91,7 +97,7 @@
 .side-message p {
     margin-top: 10px;
     font-size: 16px;
-    color: #003366;
+    color: #764ba2 /*#003366*/;
     opacity: 0.9;
 }
 
@@ -109,7 +115,7 @@
 }
 
 .flash.success {
-    background-color: #007acc;
+    background-color:/* #007acc*/ #764ba2;
 }
 
 .flash.danger {
@@ -121,5 +127,94 @@
 }
 
 .flash.info {
-    background-color: #0066cc;
+    background-color:/* #0066cc*/ #764ba2;
 }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.register-box {
+    background: white;
+    border-radius: 15px;
+   /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);*/
+    padding: 40px;
+    animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo img {
+    max-width: 150px;
+    height: auto;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 28px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+.btn-register {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 10px;
+}
+
+.btn-register:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-register:active {
+    transform: translateY(0);
+}
+
+
+.loader {
+    width: 20px;
+    height: 20px;
+    border: 3px solid #dcd0ff;
+    border-top-color: #7a4dff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-top: 10px;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
