@@ -198,12 +198,25 @@ def public_dashboard():
 
 
 @app.route("/public/trajets")
-@app.route("/public/index/trajets")
-@app.route("/trajets")
+@app.route("/trajets-publics")
 def public_trajets():
-    trajets = Trajet.query.all()
-    return render_template("/public/trajets.html", trajets=trajets)
-
+    """Route publique pour afficher les trajets aux clients"""
+    # Récupérer les filtres optionnels
+    depart = request.args.get('depart', '')
+    arrivee = request.args.get('arrivee', '')
+    
+    # Construire la requête
+    query = Trajet.query
+    
+    if depart:
+        query = query.filter(Trajet.ville_depart.ilike(f"%{depart}%"))
+    
+    if arrivee:
+        query = query.filter(Trajet.ville_arrivee.ilike(f"%{arrivee}%"))
+    
+    trajets = query.all()
+    
+    return render_template("public/trajets.html", trajets=trajets)
 
 @app.route("/logout")
 @app.route("/public/logout")

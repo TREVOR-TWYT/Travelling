@@ -1,0 +1,562 @@
+/* ============================================
+   HERO SECTION TRAJETS
+   ============================================ */
+.trajets-hero {
+    position: relative;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    padding: 100px 0 80px;
+    text-align: center;
+    color: var(--white);
+    overflow: hidden;
+}
+
+.trajets-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><path fill="rgba(255,255,255,0.05)" d="M0,300 Q300,200 600,300 T1200,300 L1200,600 L0,600 Z"/></svg>');
+    background-size: cover;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.trajets-hero h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.trajets-hero p {
+    font-size: 20px;
+    opacity: 0.95;
+    margin-bottom: 50px;
+    animation: fadeInUp 0.8s ease-out 0.2s backwards;
+}
+
+.hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    flex-wrap: wrap;
+    animation: fadeInUp 0.8s ease-out 0.4s backwards;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-number {
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: #ffd700;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.stat-label {
+    font-size: 14px;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ============================================
+   SECTION CONTENU
+   ============================================ */
+.trajets-content {
+    padding: 60px 0;
+    background: var(--bg-light);
+}
+
+/* ============================================
+   SECTION FILTRAGE
+   ============================================ */
+.filter-section {
+    background: var(--white);
+    padding: 40px;
+    border-radius: 20px;
+    margin-bottom: 50px;
+    box-shadow: var(--shadow-lg);
+}
+
+.filter-title {
+    font-size: 24px;
+    color: var(--text-dark);
+    margin-bottom: 25px;
+    font-weight: 700;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 20px;
+    align-items: end;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-filter {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.btn-filter:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-reset {
+    padding: 12px 25px;
+    background: var(--white);
+    color: var(--text-light);
+    border: 2px solid var(--border-color, #e5e7eb);
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-reset:hover {
+    background: var(--bg-light);
+    border-color: var(--text-light);
+}
+
+/* ============================================
+   EN-TÊTE DES RÉSULTATS
+   ============================================ */
+.results-header {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.results-header h2 {
+    font-size: 32px;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.results-header p {
+    font-size: 16px;
+    color: var(--text-light);
+}
+
+/* ============================================
+   GRILLE DES TRAJETS
+   ============================================ */
+.trajets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px;
+}
+
+/* ============================================
+   CARTE TRAJET
+   ============================================ */
+.trajet-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 0;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    overflow: hidden;
+    border: 2px solid transparent;
+}
+
+.trajet-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-color);
+}
+
+.trajet-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    padding: 25px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.trajet-route {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: var(--white);
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.ville-depart,
+.ville-arrivee {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.route-arrow {
+    font-size: 28px;
+    opacity: 0.8;
+}
+
+.trajet-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--white);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+}
+
+.trajet-info {
+    padding: 30px;
+}
+
+.info-row {
+    margin-bottom: 20px;
+}
+
+.info-row:last-child {
+    margin-bottom: 0;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: var(--bg-light);
+    border-radius: 12px;
+    transition: var(--transition);
+}
+
+.info-item:hover {
+    background: #e8eaed;
+}
+
+.info-icon {
+    font-size: 28px;
+    min-width: 40px;
+    text-align: center;
+}
+
+.info-details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.info-label {
+    color: var(--text-light);
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    color: var(--text-dark);
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.tarif-standard {
+    color: var(--success-color);
+}
+
+.tarif-vip {
+    color: var(--primary-color);
+}
+
+.trajet-footer {
+    padding: 0 30px 30px;
+}
+
+.btn-reserver {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px 25px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: var(--white);
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 16px;
+    transition: var(--transition);
+}
+
+.btn-reserver:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-reserver .arrow {
+    font-size: 20px;
+    transition: transform 0.3s;
+}
+
+.btn-reserver:hover .arrow {
+    transform: translateX(5px);
+}
+
+/* ============================================
+   PAS DE TRAJETS
+   ============================================ */
+.no-trajets {
+    text-align: center;
+    padding: 80px 40px;
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: var(--shadow-sm);
+}
+
+.no-trajets-icon {
+    font-size: 80px;
+    margin-bottom: 30px;
+    opacity: 0.5;
+}
+
+.no-trajets h3 {
+    color: var(--text-dark);
+    font-size: 28px;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.no-trajets p {
+    color: var(--text-light);
+    font-size: 16px;
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.no-trajets-hint {
+    font-size: 14px;
+    font-style: italic;
+}
+
+.btn-voir-tous {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 14px 35px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: var(--white);
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-voir-tous:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* ============================================
+   SECTION CTA
+   ============================================ */
+.cta-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    border-radius: 20px;
+    padding: 60px 40px;
+    text-align: center;
+    color: var(--white);
+    box-shadow: var(--shadow-lg);
+}
+
+.cta-content h2 {
+    font-size: 32px;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.cta-content p {
+    font-size: 18px;
+    margin-bottom: 35px;
+    opacity: 0.95;
+}
+
+.cta-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.btn-cta-primary,
+.btn-cta-secondary {
+    padding: 16px 35px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    transition: var(--transition);
+}
+
+.btn-cta-primary {
+    background: var(--white);
+    color: var(--primary-color);
+}
+
+.btn-cta-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+}
+
+.btn-cta-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--white);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-cta-secondary:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 992px) {
+    .trajets-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+
+    .filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-actions {
+        width: 100%;
+    }
+
+    .btn-filter,
+    .btn-reset {
+        flex: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .trajets-hero h1 {
+        font-size: 36px;
+    }
+
+    .hero-stats {
+        gap: 30px;
+    }
+
+    .stat-number {
+        font-size: 32px;
+    }
+
+    .trajets-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-section {
+        padding: 25px;
+    }
+
+    .trajet-route {
+        font-size: 18px;
+        flex-direction: column;
+        text-align: center;
+        gap: 5px;
+    }
+
+    .route-arrow {
+        transform: rotate(90deg);
+    }
+
+    .cta-section {
+        padding: 40px 25px;
+    }
+
+    .cta-content h2 {
+        font-size: 24px;
+    }
+
+    .cta-actions {
+        flex-direction: column;
+    }
+
+    .btn-cta-primary,
+    .btn-cta-secondary {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .trajets-hero {
+        padding: 60px 0 40px;
+    }
+
+    .trajets-hero h1 {
+        font-size: 28px;
+    }
+
+    .filter-section {
+        padding: 20px;
+    }
+
+    .trajet-card {
+        border-radius: 15px;
+    }
+
+    .trajet-info {
+        padding: 20px;
+    }
+
+    .no-trajets {
+        padding: 50px 25px;
+    }
+
+    .no-trajets-icon {
+        font-size: 60px;
+    }
+}
+```
+
+## **Structure finale des fichiers :**
+```
+Travelling/
+├── static/
+│   └── css/
+│       ├── admin.css
+│       ├── login_admin.css
+│       ├── public_style.css
+│       └── trajets.css          ← Nouveau fichier
+└── templates/
+    └── public/
+        ├── index.html
+        ├── trajets.html         ← Nouveau fichier
+        └── ...
