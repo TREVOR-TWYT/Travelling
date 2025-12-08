@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Liste des Locations</h2>
+
+<a href="{{ url_for('locations.add_location') }}">
+    <button>+ Nouvelle location</button>
+</a>
+
+<table border="1" cellpadding="6" style="margin-top:20px; width:100%; background:white;">
+    <tr style="background:#003366; color:white;">
+        <th>ID</th>
+        <th>Client</th>
+        <th>Véhicule</th>
+        <th>Date début</th>
+        <th>Date fin</th>
+        <th>Prix total</th>
+        <th>Statut</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for loc in locations %}
+    <tr>
+        <td>{{ loc.id }}</td>
+        <td>{{ loc.client_id }}</td>
+        <td>{{ loc.vehicule_id }}</td>
+        <td>{{ loc.date_debut }}</td>
+        <td>{{ loc.date_fin }}</td>
+        <td>{{ loc.prix_total }}</td>
+        <td>{{ loc.statut }}</td>
+        <td>
+            <a href="{{ url_for('locations.edit_location', id=loc.id) }}">Modifier</a> |
+            <a href="{{ url_for('locations.delete_location', id=loc.id) }}">Supprimer</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>{% if tour %}Modifier{% else %}Nouveau{% endif %} Circuit</h2>
+
+<form method="POST">
+    <label>Nom</label>
+    <input type="text" name="nom" required value="{% if tour %}{{ tour.nom }}{% endif %}">
+
+    <label>Description</label>
+    <textarea name="description">{% if tour %}{{ tour.description }}{% endif %}</textarea>
+
+    <label>Durée</label>
+    <input type="text" name="duree" value="{% if tour %}{{ tour.duree }}{% endif %}">
+
+    <label>Prix</label>
+    <input type="number" step="0.01" name="prix" value="{% if tour %}{{ tour.prix }}{% endif %}">
+
+    <label>Agence</label>
+    <select name="agence_id">
+        {% for agence in agences %}
+        <option value="{{ agence.id }}" {% if tour and tour.agence_id == agence.id %}selected{% endif %}>{{ agence.nom }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">{% if tour %}Mettre à jour{% else %}Créer{% endif %}</button>
+</form>
+{% endblock %}

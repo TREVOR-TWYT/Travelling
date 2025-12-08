@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Liste des Circuits Touristiques</h2>
+
+<a href="{{ url_for('tourisme.add_tourisme') }}">
+    <button>+ Nouveau circuit</button>
+</a>
+
+<table border="1" cellpadding="6" style="margin-top:20px; width:100%; background:white;">
+    <tr style="background:#003366; color:white;">
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Durée</th>
+        <th>Prix</th>
+        <th>Agence</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for tour in tours %}
+    <tr>
+        <td>{{ tour.id }}</td>
+        <td>{{ tour.nom }}</td>
+        <td>{{ tour.description }}</td>
+        <td>{{ tour.duree }}</td>
+        <td>{{ tour.prix }}</td>
+        <td>{{ tour.agence_id }}</td>
+        <td>
+            <a href="{{ url_for('tourisme.edit_tourisme', id=tour.id) }}">Modifier</a> |
+            <a href="{{ url_for('tourisme.delete_tourisme', id=tour.id) }}">Supprimer</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

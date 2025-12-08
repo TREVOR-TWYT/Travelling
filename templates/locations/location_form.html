@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>{% if location %}Modifier{% else %}Nouvelle{% endif %} Location</h2>
+
+<form method="POST">
+    <label>Client</label>
+    <select name="client_id">
+        {% for client in clients %}
+        <option value="{{ client.id_client }}" {% if location and location.client_id == client.id_client %}selected{% endif %}>{{ client.nom }} {{ client.prenom }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Véhicule</label>
+    <select name="vehicule_id">
+        {% for veh in vehicules %}
+        <option value="{{ veh.id }}" {% if location and location.vehicule_id == veh.id %}selected{% endif %}>{{ veh.nom }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Date début</label>
+    <input type="date" name="date_debut" required value="{% if location %}{{ location.date_debut }}{% endif %}">
+
+    <label>Date fin</label>
+    <input type="date" name="date_fin" required value="{% if location %}{{ location.date_fin }}{% endif %}">
+
+    <label>Prix total</label>
+    <input type="number" step="0.01" name="prix_total" required value="{% if location %}{{ location.prix_total }}{% endif %}">
+
+    <label>Statut</label>
+    <input type="text" name="statut" value="{% if location %}{{ location.statut }}{% endif %}">
+
+    <button type="submit">{% if location %}Mettre à jour{% else %}Créer{% endif %}</button>
+</form>
+{% endblock %}

@@ -36,5 +36,14 @@
         <h3>Réservations</h3>
         <a href="{{ url_for('crud.reservation') }}">Gérer</a>
     </div>
+    <!-- Ajout des modules Location et Tourisme -->
+    <div class="card">
+        <h3>Locations</h3>
+        <a href="{{ url_for('locations.list_locations') }}">Gérer</a>
+    </div>
+    <div class="card">
+        <h3>Tourisme</h3>
+        <a href="{{ url_for('tourisme.list_tourisme') }}">Gérer</a>
+    </div>
 </div>
 {% endblock %}

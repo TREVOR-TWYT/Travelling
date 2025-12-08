@@ -152,3 +152,39 @@ class Colis(db.Model):
 
     expedition = db.relationship("Expedition", back_populates="colis")
     personnel_traiteur = db.relationship("Personnel", back_populates="colis_traite")
+    
+   # ==========================
+# Module Locations
+# ==========================
+class Location(db.Model):
+    __tablename__ = "location"
+
+    id = db.Column(db.Integer, primary_key=True)
+    client_id = db.Column(db.Integer, db.ForeignKey('client.id_client'), nullable=False)
+    vehicule_id = db.Column(db.String(20), db.ForeignKey('vehicule.immatriculation'), nullable=False)
+    date_debut = db.Column(db.Date, nullable=False)
+    date_fin = db.Column(db.Date, nullable=False)
+    prix_total = db.Column(db.Float, nullable=False)
+    statut = db.Column(db.String(50), default="En cours")
+
+    # Relations
+    client = db.relationship("Client", backref="locations")
+    vehicule = db.relationship("Vehicule", backref="locations")
+
+# ==========================
+# Module Tourisme
+# ==========================
+class Tourisme(db.Model):
+    __tablename__ = "tourisme"
+
+    id = db.Column(db.Integer, primary_key=True)
+    nom = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text)
+    duree = db.Column(db.String(50))  # ex: "3 jours"
+    prix = db.Column(db.Float)
+    agence_id = db.Column(db.Integer, db.ForeignKey('agence.id_agence'), nullable=True)
+
+    # Relation
+    agence = db.relationship("Agence", backref="tourismes")
+
+   
