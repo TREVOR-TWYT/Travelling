@@ -98,10 +98,34 @@ def public_index():
     return render_template("/public/index.html")
 
 
-@app.route("/public/reservation")
-@app.route("/public/index/reservation")
+@app.route("/public/reservation", methods=["GET"])
+@app.route("/public/index/reservation", methods=["GET"])
 def public_reservation():
-    return render_template("/public/reservation.html")
+    """Page de réservation publique avec recherche de voyages"""
+    # Récupérer les paramètres de recherche
+    ville_depart = request.args.get('ville_depart', '')
+    ville_arrivee = request.args.get('ville_arrivee', '')
+    date_depart = request.args.get('date_depart', '')
+    
+    # Si des critères de recherche sont fournis, filtrer les voyages
+    if ville_depart or ville_arrivee or date_depart:
+        query = Voyage.query.join(Trajet)
+        
+        if ville_depart:
+            query = query.filter(Trajet.ville_depart.ilike(f"%{ville_depart}%"))
+        
+        if ville_arrivee:
+            query = query.filter(Trajet.ville_arrivee.ilike(f"%{ville_arrivee}%"))
+        
+        if date_depart:
+            query = query.filter(Voyage.date_depart == date_depart)
+        
+        voyages = query.all()
+    else:
+        # Afficher tous les voyages disponibles
+        voyages = Voyage.query.all()
+    
+    return render_template("/public/reservation.html", voyages=voyages)
 
 
 @app.route("/public/login")
@@ -161,6 +185,7 @@ def handle_register():
         prenom=prenom,
         telephone=telephone,
         email=email,
+        password=generate_password_hash("default123"),
         cni=cni
     )
     db.session.add(client)

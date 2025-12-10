@@ -1,4 +1,5 @@
 from flask import Blueprint, request, render_template, jsonify, redirect, url_for
+from werkzeug.security import generate_password_hash
 from models import*
 import datetime
 import uuid
@@ -368,11 +369,14 @@ def reservation():
     client = Client.query.filter_by(telephone=telephone).first()
 
     if not client:
+
         client = Client(
             nom=nom,
             prenom=prenom,
             telephone=telephone,
-            email=email
+            email=email,
+            password=generate_password_hash("default123"),
+            cni="none"
         )
         db.session.add(client)
         db.session.commit()

@@ -39,6 +39,7 @@ class Client(db.Model):
     telephone = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True)
     cni = db.Column(db.String(50))
+    password = db.Column(db.String(255), nullable=False)
 
     reservations = db.relationship("Reservation", back_populates="client")
     expeditions = db.relationship("Expedition", back_populates="client")
