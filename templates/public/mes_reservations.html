@@ -99,7 +99,7 @@
                 <img src="{{ url_for('static', filename='image/no-data.png') }}" alt="Aucune réservation" style="max-width: 200px; opacity: 0.5;">
                 <h3>Aucune réservation trouvée</h3>
                 <p>Vous n'avez pas encore effectué de réservation.</p>
-                <a href="{{ url_for('index') }}" class="btn-primary">Réserver un voyage</a>
+                <a href="{{ url_for('public_reservation') }}" class="btn-primary">Réserver un voyage</a>
             </div>
         </div>
         {% endif %}

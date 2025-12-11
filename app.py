@@ -1,15 +1,24 @@
 from flask import Flask, request, render_template, redirect, session, url_for, flash
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 from functools import wraps
-from models import *
-from crud_routes import crud
+from models import*  # db déclaré dans models.py
+from crud_routes import crud  # importe les routes après db
+from flask_migrate import Migrate   # ✅ AJOUT
+import datetime
+import uuid
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://trevor:TREFRIED1707@localhost/travelling"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'trefried1707'
 
-db.init_app(app)
+
+db.init_app(app)   # lie db à app
+
+
+# ✅ INITIALISATION FLASK-MIGRATE
+migrate = Migrate(app, db)
 
 # Register blueprint
 app.register_blueprint(crud)
@@ -126,6 +135,79 @@ def public_reservation():
         voyages = Voyage.query.all()
     
     return render_template("/public/reservation.html", voyages=voyages)
+
+@app.route('/reservation/confirmation', methods=['POST'])
+def reservation_confirmation():
+    try:
+        id_voyage = request.form.get("id_voyage")
+        montant = int(request.form.get("montant"))
+        nom = request.form.get("nom")
+        prenom = request.form.get("prenom")
+        telephone = request.form.get("telephone")
+        email = request.form.get("email")
+        mode_paiement = request.form.get("mode")
+
+        # 1️⃣ Vérifier le voyage
+        voyage = db.session.get(Voyage, id_voyage)
+        if not voyage:
+            flash("Voyage introuvable.", "error")
+            return redirect(url_for('public_reservation'))
+
+        # 2️⃣ Vérifier si le client existe déjà (par téléphone)
+        client = Client.query.filter_by(telephone=telephone).first()
+        if not client:
+            client = Client(
+                nom=nom,
+                prenom=prenom,
+                telephone=telephone,
+                email=email,
+                password=generate_password_hash("default123"),  # Set a default password or manage it differently
+                cni="none"
+            )
+            db.session.add(client)
+            db.session.commit()
+
+        # 3️⃣ Création d'un paiement
+        paiement = Paiement(
+            montant=montant,
+            date_paiement=datetime.datetime.utcnow(),
+            mode=mode_paiement,
+            reference_transaction=f"REF-{uuid.uuid4().hex[:10].upper()}"
+        )
+        db.session.add(paiement)
+        db.session.commit()
+            # 4️⃣ Incrémenter les places réservées pour le voyage
+        voyage.places_reservees += 1
+        db.session.commit()
+
+        # 5️⃣ Créer la réservation
+        reservation = Reservation(
+            num_reservation=f"RSV-{uuid.uuid4().hex[:8].upper()}",
+            date_reservation=datetime.datetime.utcnow(),
+            statut="Confirmée",
+            id_client=client.id_client,
+            id_voyage=id_voyage,
+            id_paiement=paiement.id_paiement
+        )
+        db.session.add(reservation)
+        db.session.commit()
+
+        flash("🎉 Réservation effectuée avec succès !", "success")
+
+        # On affiche une page de confirmation
+        return render_template(
+            "/public/confirmation.html",
+            voyage=voyage,
+            client=client,
+            montant=montant,
+            mode=mode_paiement,
+            reservation=reservation
+        )
+
+    except Exception as e:
+        print(e)
+        flash("Une erreur s'est produite lors de la réservation.", "error")
+        return redirect(url_for('public_reservation'))
 
 
 @app.route("/public/login")
@@ -300,6 +382,4 @@ def internal_server_error(e):
 
 
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
     app.run(debug=True, host="0.0.0.0")

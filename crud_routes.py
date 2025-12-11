@@ -1,8 +1,10 @@
 from flask import Blueprint, request, render_template, jsonify, redirect, url_for
 from werkzeug.security import generate_password_hash
-from models import*
+from models import*  # importe db directement depuis models
 import datetime
 import uuid
+
+#db = models.db
 
 crud = Blueprint("crud", __name__)
 
