@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends "layout.html" %}
 {% block content %}
 <h2>Liste des agences</h2>
@@ -9,11 +10,31 @@
         <tr>
             <th>ID</th>
             <th>Nom</th>
+=======
+{% extends "admin/layout.html" %}
+
+{% block title %}Liste des Agences - Admin{% endblock %}
+
+{% block content %}
+<h2 class="page-title">Liste des Agences</h2>
+
+<div style="margin-bottom: 20px;">
+    <a href="{{ url_for('crud.create_agence') }}" class="btn btn-success">+ Nouvelle Agence</a>
+</div>
+
+{% if agences %}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nom Agence</th>
+>>>>>>> origin/master
             <th>Adresse</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
+<<<<<<< HEAD
         {% for a in agences %}
         <tr>
             <td>{{ a.id_agence }}</td>
@@ -24,9 +45,32 @@
                 <form action="{{ url_for('crud.delete_agence', id_agence=a.id_agence) }}" method="POST" style="display:inline;">
                     <button type="submit" onclick="return confirm('Voulez-vous vraiment supprimer cette agence ?')">Supprimer</button>
                 </form>
+=======
+        {% for agence in agences %}
+        <tr>
+            <td>{{ agence.id_agence }}</td>
+            <td>{{ agence.nom_agence }}</td>
+            <td>{{ agence.adresse }}</td>
+            <td>
+                <div class="action-buttons">
+                    <a href="{{ url_for('crud.edit_agence', id_agence=agence.id_agence) }}" class="btn btn-sm">Modifier</a>
+                    <form method="POST" action="{{ url_for('crud.delete_agence', id_agence=agence.id_agence) }}" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette agence ?')">Supprimer</button>
+                    </form>
+                </div>
+>>>>>>> origin/master
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+<<<<<<< HEAD
 {% endblock %}
+=======
+{% else %}
+<div class="alert alert-info">
+    <p>Aucune agence enregistrée pour le moment.</p>
+</div>
+{% endif %}
+{% endblock %}
+>>>>>>> origin/master

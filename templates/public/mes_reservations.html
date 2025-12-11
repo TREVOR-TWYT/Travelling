@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Réservations - MBOA TRAVEL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mes_reservations.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
+            <h1>Mes Réservations</h1>
+            <a href="{{ url_for('public_dashboard') }}" class="btn-back">← Retour au tableau de bord</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="welcome-section">
+            <h2>Bonjour, {{ client.prenom }} {{ client.nom }}</h2>
+            <p>Voici la liste de toutes vos réservations</p>
+        </div>
+
+        {% if reservations %}
+        <div class="reservations-grid">
+            {% for reservation in reservations %}
+            <div class="reservation-card">
+                <div class="card-header">
+                    <span class="reservation-number">{{ reservation.num_reservation }}</span>
+                    <span class="status-badge status-{{ reservation.statut|lower }}">{{ reservation.statut }}</span>
+                </div>
+                
+                <div class="card-body">
+                    <div class="info-row">
+                        <span class="label">📍 Trajet :</span>
+                        <span class="value">{{ reservation.voyage.trajet.ville_depart }} → {{ reservation.voyage.trajet.ville_arrivee }}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">📅 Date :</span>
+                        <span class="value">{{ reservation.voyage.date_depart.strftime('%d/%m/%Y') }}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">🕒 Heure :</span>
+                        <span class="value">{{ reservation.voyage.heure_depart.strftime('%H:%M') }}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">🚌 Véhicule :</span>
+                        <span class="value">{{ reservation.voyage.vehicule.immatriculation }} ({{ reservation.voyage.vehicule.type }})</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">🏢 Agence :</span>
+                        <span class="value">{{ reservation.voyage.agence.nom_agence }}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">⭐ Standing :</span>
+                        <span class="value">{{ reservation.voyage.standing }}</span>
+                    </div>
+                    
+                    {% if reservation.paiement %}
+                    <div class="info-row payment-info">
+                        <span class="label">💳 Montant payé :</span>
+                        <span class="value price">{{ reservation.paiement.montant }} FCFA</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">💰 Mode paiement :</span>
+                        <span class="value">{{ reservation.paiement.mode }}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">🔢 Référence :</span>
+                        <span class="value reference">{{ reservation.paiement.reference_transaction }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="info-row">
+                        <span class="label">📆 Date de réservation :</span>
+                        <span class="value">{{ reservation.date_reservation.strftime('%d/%m/%Y à %H:%M') }}</span>
+                    </div>
+                </div>
+                
+                <div class="card-footer">
+                    <button class="btn-print" onclick="window.print()">🖨️ Imprimer</button>
+                    <a href="{{ url_for('public_contact') }}" class="btn-contact">📞 Contacter l'agence</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-reservations">
+            <div class="empty-state">
+                <img src="{{ url_for('static', filename='image/no-data.png') }}" alt="Aucune réservation" style="max-width: 200px; opacity: 0.5;">
+                <h3>Aucune réservation trouvée</h3>
+                <p>Vous n'avez pas encore effectué de réservation.</p>
+                <a href="{{ url_for('index') }}" class="btn-primary">Réserver un voyage</a>
+            </div>
+        </div>
+        {% endif %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 MBOA TRAVEL. Tous droits réservés.</p>
+        <p>Contact : <a href="mailto:contact@mboa-travel.cm">contact@mboa-travel.cm</a> | Téléphone : +237 6 99 99 99 99</p>
+    </footer>
+</body>
+</html>

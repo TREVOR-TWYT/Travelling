@@ -1,0 +1,34 @@
+{% extends "admin/layout.html" %}
+{% block content %}
+<h2>Liste des véhicules</h2>
+
+<a href="{{ url_for('crud.create_vehicule') }}">Ajouter un véhicule</a>
+
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Immatriculation</th>
+            <th>Type</th>
+            <th>Capacité</th>
+            <th>Statut</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for v in vehicules %}
+        <tr>
+            <td>{{ v.immatriculation }}</td>
+            <td>{{ v.type }}</td>
+            <td>{{ v.capacite }}</td>
+            <td>{{ v.statut }}</td>
+            <td>
+                <a href="{{ url_for('crud.edit_vehicule', immatriculation=v.immatriculation) }}">Modifier</a> |
+                <form action="{{ url_for('crud.delete_vehicule', immatriculation=v.immatriculation) }}" method="POST" style="display:inline;">
+                    <button type="submit" onclick="return confirm('Supprimer ce véhicule ?')">Supprimer</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

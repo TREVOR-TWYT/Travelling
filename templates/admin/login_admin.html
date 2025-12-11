@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Admin - MBOA TRAVEL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login_admin.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
+            </div>
+            <h1>🔐 Connexion Admin</h1>
+            <p>MBOA TRAVEL - Espace d'administration</p>
+        </div>
+        
+        {% if error %}
+        <div class="error-message">
+            <span class="icon">⚠️</span>
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {% if category == 'error' %}⚠️{% elif category == 'success' %}✅{% else %}ℹ️{% endif %}
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST" action="{{ url_for('admin_login') }}" class="login-form">
+            <div class="form-group">
+                <label for="username">
+                    <span class="icon">👤</span>
+                    Nom d'utilisateur
+                </label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    placeholder="Entrez votre nom d'utilisateur"
+                    required 
+                    autofocus
+                    autocomplete="username"
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="password">
+                    <span class="icon">🔒</span>
+                    Mot de passe
+                </label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="Entrez votre mot de passe"
+                    required
+                    autocomplete="current-password"
+                >
+            </div>
+            
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox" name="remember" id="remember">
+                    <span>Se souvenir de moi</span>
+                </label>
+                <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+            </div>
+            
+            <button type="submit" class="btn-login">
+                <span>Se connecter</span>
+                <span class="arrow">→</span>
+            </button>
+        </form>
+        
+        <div class="divider">
+            <span>ou</span>
+        </div>
+        
+        <div class="back-link">
+            <a href="{{ url_for('index') }}">
+                <span class="arrow-back">←</span>
+                Retour à l'accueil
+            </a>
+        </div>
+        
+        <div class="footer-info">
+            <p>© 2025 MBOA TRAVEL - Tous droits réservés</p>
+        </div>
+    </div>
+    
+    <div class="background-animation">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+    </div>
+</body>
+</html>

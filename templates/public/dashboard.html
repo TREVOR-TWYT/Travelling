@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Espace Client - MBOA TRAVEL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
+            <h1>Bienvenue, {{ client.prenom }} {{ client.nom }}</h1>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('public_index') }}" class="btn-secondary">🏠 Accueil</a>
+            <a href="{{ url_for('logout') }}" class="logout-btn">🚪 Déconnexion</a>
+        </div>
+    </header>
+
+    <!-- Messages flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <section class="dashboard-section">
+        <h2>Que souhaitez-vous faire ?</h2>
+        <div class="dashboard-actions">
+            <a href="{{ url_for('recherche') }}" class="action-btn">
+                <span class="icon">🔍</span>
+                <h3>Rechercher un trajet</h3>
+                <p>Trouvez le voyage qui vous convient</p>
+            </a>
+            
+            <a href="{{ url_for('mes_reservations') }}" class="action-btn">
+                <span class="icon">📋</span>
+                <h3>Mes réservations</h3>
+                <p>Consultez vos réservations en cours</p>
+            </a>
+            
+            <a href="{{ url_for('public_trajets') }}" class="action-btn">
+                <span class="icon">🛣️</span>
+                <h3>Voir tous les trajets</h3>
+                <p>Découvrez toutes nos destinations</p>
+            </a>
+            
+            <a href="{{ url_for('public_contact') }}" class="action-btn">
+                <span class="icon">📞</span>
+                <h3>Contacter l'agence</h3>
+                <p>Besoin d'aide ? Contactez-nous</p>
+            </a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2025 MBOA TRAVEL - Tous droits réservés</p>
+    </footer>
+</body>
+</html>

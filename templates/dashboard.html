@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends "layout.html" %}
 
 {% block title %}Dashboard{% endblock %}
@@ -47,3 +48,39 @@
     </div>
 </div>
 {% endblock %}
+=======
+{% extends "admin/layout.html" %}
+
+{% block title %}Tableau de Bord - Admin{% endblock %}
+
+{% block content %}
+<h2 class="page-title">📊 Tableau de Bord</h2>
+
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <h3>{{ total_clients }}</h3>
+        <p>Clients</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ total_voyages }}</h3>
+        <p>Voyages</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ total_reservations }}</h3>
+        <p>Réservations</p>
+    </div>
+</div>
+
+<div class="dashboard-actions" style="margin-top: 40px;">
+    <h3 style="margin-bottom: 20px; color: #003366;">Accès rapide</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        <a href="{{ url_for('crud.create_agence') }}" class="btn">+ Nouvelle Agence</a>
+        <a href="{{ url_for('crud.create_personnel') }}" class="btn">+ Nouveau Personnel</a>
+        <a href="{{ url_for('crud.create_vehicule') }}" class="btn">+ Nouveau Véhicule</a>
+        <a href="{{ url_for('crud.trajets_create') }}" class="btn">+ Nouveau Trajet</a>
+        <a href="{{ url_for('crud.create_voyage') }}" class="btn">+ Nouveau Voyage</a>
+        <a href="{{ url_for('crud.reservation') }}" class="btn btn-success">🎫 Réservation</a>
+    </div>
+</div>
+{% endblock %}  
+>>>>>>> origin/master
