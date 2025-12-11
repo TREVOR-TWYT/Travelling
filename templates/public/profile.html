@@ -11,17 +11,6 @@
 
   <div class="container">
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div class="flash-container">
-      {% for category, message in messages %}
-        <div class="flash {{ category }}">{{ message }}</div>
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
-
-
 <div class ="side-message">
   <h2> Mon profil </h2>
   <p>Des informations a modifier ?</p>
@@ -39,6 +28,16 @@
     <p class="subtitle">Modifier votre profil</p>
 
     <form method="POST" id="profilForm">
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-container">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
 
         <input type="text" name="nom" value="{{ client.nom }}" required>
         <input type="text" name="prenom" value="{{ client.prenom }}">

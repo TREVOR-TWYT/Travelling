@@ -5,6 +5,9 @@
 
     </div>
     <nav>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
+        </div>
         <ul>
             <li><a href="{{ url_for('index') }}">Accueil</a></li>
             <li><a href="{{ url_for('crud.trajets_list') }}">Nos trajets</a></li>
@@ -12,8 +15,8 @@
             <li><a href="{{ url_for('crud.contact') }}">Contact</a></li>
 
             {% if 'client_id' in session %}
-                <li><a href="{{ url_for('crud.dashboardClient') }}">Dashboard</a></li>
-                <li><a href="{{ url_for('crud.logout') }}">Déconnexion</a></li>
+            <!--    <li><a href="{{ url_for('crud.dashboardClient') }}" class="ajout">👤 Mon espace</a></li> -->
+                <li><a href="{{ url_for('crud.logout') }}" class="logout-link">🚪 Déconnexion</a></li>
             {% else %}
                 <li><a href="{{ url_for('crud.login') }}">Connexion</a></li>
                 <li><a href="{{ url_for('crud.register') }}">Inscription</a></li>

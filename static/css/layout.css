@@ -1,5 +1,24 @@
 /* layout.css - header et footer commun */
 
+/* ============================================
+   VARIABLES & RESET
+   ============================================ */
+   :root {
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --success-color: #10b981;
+    --error-color: #ef4444;
+    --info-color: #3b82f6;
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --white: #ffffff;
+    --bg-light: #f9fafb;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
+    --transition: all 0.3s ease;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -9,8 +28,10 @@ body {
 }
 
 header {
-    background-color:  #764ba2; /* bleu foncé */
-    color: #fff;
+   /* background-color:  #764ba2; /* bleu foncé */
+   /* color: #fff;*/
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: var(--white) !important;
     height: 120px;
     padding: 0px 25px;
     display: flex;
@@ -18,8 +39,9 @@ header {
     justify-content: space-between;
 }
 
-header img {
+header .logo img {
     height: 0px;
+    width: auto;
 }
 
 header nav ul {

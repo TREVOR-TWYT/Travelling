@@ -17,8 +17,8 @@
         <nav class="main-nav">
             <ul>
                 <li><a href="{{ url_for('index') }}" class="active">🏠 Accueil</a></li>
-                <li><a href="{{ url_for('crud.trajets_list') }}">🛣️ Nos trajets</a></li>
-                <li><a href="{{ url_for('crud.contact') }}">📞 Contact</a></li>
+                <li><a href="{{ url_for('crud.trajets_list') }}" class="ajout">🛣️ Nos trajets</a></li>
+                <li><a href="{{ url_for('crud.contact') }}" class="ajout">📞 Contact</a></li>
                 
                 {% if session.get('client_id') %}
                     <!-- Si client connecté -->
@@ -112,7 +112,7 @@
                         </label>
                         <input type="date" id="date_depart" name="date_depart" required>
                     </div>
-                    
+                    <!--
                     <div class="form-group">
                         <label for="passagers">
                             <span class="icon">👥</span>
@@ -127,6 +127,7 @@
                             <option value="5">5+ passagers</option>
                         </select>
                     </div>
+                -->
                 </div>
                 
                 <button type="submit" class="btn btn-search">

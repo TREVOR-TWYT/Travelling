@@ -7,12 +7,34 @@
 </head>
 
 <body>
-
+<!---
   {% include 'public/header.html' %}
-
+-->
   <div class="register-container">
 
-  {% with messages = get_flashed_messages(with_categories=true) %}
+  <div class ="side-message">
+    <h2> Bienvenue </h2>
+    <p>Nouveau sur l'application?.</p>
+    <p>Entre <strong>tes informations</strong> pour t'inscrire.</p>
+  </div>
+
+  
+  <div class="form-box">
+
+          <div class="logo">
+            <a href="/">
+              <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="MBOA TRAVEL">
+            </a>
+          </div>
+          
+          <h2>Créer un compte</h2>
+          <p class="subtitle">Rejoignez MBOA TRAVEL et voyagez en toute simplicité</p>
+  
+
+    <!--  FORMULAIRE CORRIGÉ AVEC IDs -->
+    <form method="POST" id="registerForm">
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     <div class="flash-container">
       {% for category, message in messages %}
@@ -22,26 +44,6 @@
   {% endif %}
 {% endwith %}
 
-
-  <div class ="side-message">
-    <h2> Bienvenue </h2>
-    <p>Nouveau sur l'application?.</p>
-    <p>Entre <strong>tes informations</strong> pour t'inscrire.</p>
-  </div>
-
-  <div class="register-box">
-  <div class="form-box">
-
-          <div class="logo">
-              <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="MBOA TRAVEL">
-          </div>
-          
-          <h2>Créer un compte</h2>
-          <p class="subtitle">Rejoignez MBOA TRAVEL et voyagez en toute simplicité</p>
-  
-
-    <!--  FORMULAIRE CORRIGÉ AVEC IDs -->
-    <form method="POST" id="registerForm">
         <input type="text" name="nom" placeholder="Nom" required>
         <input type="text" name="prenom" placeholder="Prénom">
         <input type="text" name="telephone" placeholder="Téléphone" required>
@@ -75,9 +77,9 @@
 
     <p>Déjà un compte ? <a href="{{ url_for('crud.login') }}">Se connecter</a></p>
   </div>
-  </div>
 </div>
-
+<!--
 {% include 'public/footer.html' %}
+-->
 </body>
 </html>

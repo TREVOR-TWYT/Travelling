@@ -48,8 +48,7 @@ def public_dashboard():
 
 app.secret_key = "super_clef_secrete_à_modifier"
 
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "admin"
+
 
 @app.route("/admin-login", methods=["GET", "POST"])
 def admin_login():

@@ -716,6 +716,13 @@ def saisie_client_info():
     return render_template("public/saisie_client_info.html")
 
 
+
+
+
+
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "admin"
+
 @crud.route("/admin-login", methods=["GET", "POST"])
 def admin_login():
     if session.get('admin'):
@@ -725,7 +732,7 @@ def admin_login():
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
         
-        if username == ADMIN_USERNAME and check_password_hash(ADMIN_PASSWORD_HASH, password):
+        if username == ADMIN_USERNAME and password==ADMIN_PASSWORD:
             session["admin"] = True
             session.permanent = True
             flash('Connexion réussie !', 'success')
