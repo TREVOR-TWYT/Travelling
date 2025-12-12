@@ -544,19 +544,3 @@
         font-size: 60px;
     }
 }
-```
-
-## **Structure finale des fichiers :**
-```
-Travelling/
-├── static/
-│   └── css/
-│       ├── admin.css
-│       ├── login_admin.css
-│       ├── public_style.css
-│       └── trajets.css          ← Nouveau fichier
-└── templates/
-    └── public/
-        ├── index.html
-        ├── trajets.html         ← Nouveau fichier
-        └── ...

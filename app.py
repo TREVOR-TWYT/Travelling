@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, redirect, session, url_for, f
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 from functools import wraps
-from models import*  # db déclaré dans models.py
+from models import * # db déclaré dans models.py
 from crud_routes import crud  # importe les routes après db
 from flask_migrate import Migrate   # ✅ AJOUT
 import datetime
@@ -65,22 +65,29 @@ def index():
 # ============================================
 @app.route("/admin-login", methods=["GET", "POST"])
 def admin_login():
+    # Si l’admin est déjà connecté
     if session.get('admin'):
         return redirect(url_for('admin'))
     
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
-        
-        if username == ADMIN_USERNAME and check_password_hash(ADMIN_PASSWORD_HASH, password):
-            session["admin"] = True
+
+        # Recherche dans la base
+        admin = Admin.query.filter_by(nom=username).first()
+
+        # Vérification utilisateur + mot de passe
+        if admin and check_password_hash(admin.password_hash, password):
+            session["admin"] = admin.id     # On stocke l'ID en session
             session.permanent = True
             flash('Connexion réussie !', 'success')
             return redirect(url_for('admin'))
-        
+
+        # Sinon : erreur
         flash('Identifiants incorrects', 'error')
         return render_template("admin/login_admin.html", error="Identifiants incorrects")
-    
+
+    # Méthode GET → afficher page login
     return render_template("admin/login_admin.html")
 
 
@@ -95,6 +102,8 @@ def admin_logout():
 @app.route("/admin")
 @admin_required
 def admin():
+    if not session.get("admin"):
+        return redirect(url_for("admin_login"))
     return render_template("/admin/layout.html")
 
 
@@ -223,9 +232,9 @@ def public_login():
 @app.route("/public/index/login", methods=["POST"])
 @app.route("/login", methods=["POST"])
 def handle_login():
-    telephone = request.form.get("telephone")
+    password = request.form.get("password")
     
-    client = Client.query.filter_by(telephone=telephone).first()
+    client = Client.query.filter_by(password=password).first()
     
     if client:
         session['client_id'] = client.id_client
@@ -254,6 +263,7 @@ def handle_register():
     telephone = request.form.get("telephone")
     email = request.form.get("email")
     cni = request.form.get("cni")
+    password = request.form.get("password")
     
     # Vérifier si le client existe déjà
     existing_client = Client.query.filter_by(telephone=telephone).first()
@@ -267,7 +277,7 @@ def handle_register():
         prenom=prenom,
         telephone=telephone,
         email=email,
-        password=generate_password_hash("default123"),
+        password=password,
         cni=cni
     )
     db.session.add(client)
@@ -281,9 +291,14 @@ def handle_register():
 
 @app.route("/public/contact")
 @app.route("/public/index/contact")
-@app.route("/contact")
+@app.route("/contact", methods=["GET", "POST"])
 def public_contact():
+    if request.method == "POST":
+        # traitement du formulaire ici
+        flash("Message envoyé avec succès !", "success")
+        return redirect(url_for("public_contact"))
     return render_template("/public/contact.html")
+
 
 
 @app.route("/public/dashboard")
