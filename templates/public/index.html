@@ -260,53 +260,7 @@
 </section>
 
 <!-- Footer -->
-<footer class="main-footer">
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-section">
-                <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL" class="footer-logo">
-                <p>Le meilleur service de transport interurbain au Cameroun</p>
-            </div>
-            
-            <div class="footer-section">
-                <h4>Navigation</h4>
-                <ul>
-                    <li><a href="{{ url_for('public_index') }}">Accueil</a></li>
-                    <li><a href="{{ url_for('public_trajets') }}">Nos trajets</a></li>
-                    <li><a href="{{ url_for('public_contact') }}">Contact</a></li>
-                    <li><a href="{{ url_for('admin_login') }}">Administration</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h4>Contact</h4>
-                <ul>
-                    <li>📧 <a href="mailto:contact@mboa-travel.cm">contact@mboa-travel.cm</a></li>
-                    <li>📞 <a href="tel:+237699999999">+237 6 99 99 99 99</a></li>
-                    <li>📍 Yaoundé, Cameroun</li>
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h4>Suivez-nous</h4>
-                <div class="social-links">
-                    <a href="#" class="social-link">Facebook</a>
-                    <a href="#" class="social-link">Twitter</a>
-                    <a href="#" class="social-link">Instagram</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="footer-bottom">
-            <p>&copy; 2025 MBOA TRAVEL. Tous droits réservés.</p>
-            <p>
-                <a href="{{ url_for('liens_rapides') }}">Liens rapides</a> | 
-                <a href="#">Mentions légales</a> | 
-                <a href="#">Confidentialité</a>
-            </p>
-        </div>
-    </div>
-</footer>
+{% include 'footer.html' %}
 
 <script>
     // Menu mobile toggle

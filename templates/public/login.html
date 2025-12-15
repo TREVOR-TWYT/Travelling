@@ -8,23 +8,31 @@
 
 <body>
 
-<div class="login-container">
-    <h2>Connexion</h2>
+<div class="container">
 
     {% if error %}
     <p class="error">{{ error }}</p>
     {% endif %}
 
-    <form method="POST" action="{{ url_for('public_login') }}">
-        <label>Mot de passe</label>
-        <input type="text" name="password" required>
+    <div class ="side-message">
+        <h2> Bienvenue </h2>
+        <p>Accede facilement a ton espace personnel.</p>
+        <p>Entre ton <strong>email</strong> et ton <strong>mot de passe</strong> pour te connecter.</p>
+    </div>
 
-        <button type="submit">Se connecter</button>
+    <div class="form-box">
+        <h2>Connexion</h2>
+        <form method="POST" action="{{ url_for('public_login') }}">
+            <label>Mot de passe</label>
+            <input type="nom" name="nom" placeholder="nom" required>
+            <input type="password" name="password" placeholder="Mot de passe" required>
+            <button type="submit">Se connecter</button>
 
-        <p class="bottom-text">
-            Pas encore inscrit ? <a href="/register">Créer un compte</a>
-        </p>
-    </form>
+            <p class="bottom-text">
+                Pas encore inscrit ? <a href="/register">Créer un compte</a>
+            </p>
+        </form>
+    </div>
 </div>
 
 </body>
