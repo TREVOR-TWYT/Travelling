@@ -1,25 +1,47 @@
 {% extends "admin/layout.html" %}
+
 {% block content %}
-<h2>Ajouter un véhicule</h2>
+<div class="form-container">
+    <h2>Ajouter un véhicule</h2>
 
-<form action="" method="POST">
-    <label>Immatriculation :</label>
-    <input type="text" name="immatriculation" required><br><br>
+    <form action="" method="POST" class="styled-form">
+        <h3>Identification du véhicule</h3>
+        <div class="form-row">
+            
+            <div class="form-group half-width">
+                <label for="immatriculation">🔢 Immatriculation :</label>
+                <input type="text" id="immatriculation" name="immatriculation" required placeholder="Ex: CE-123-BC">
+            </div>
 
-    <label>Type :</label>
-    <input type="text" name="type" required><br><br>
+            <div class="form-group half-width">
+                <label for="type">🚌 Type :</label>
+                <input type="text" id="type" name="type" required placeholder="Ex: Bus Standard, Mini-bus VIP">
+            </div>
 
-    <label>Capacité :</label>
-    <input type="number" name="capacite" required><br><br>
+        </div>
 
-    <label>Statut :</label>
-    <select name="statut">
-        <option value="En service" selected>En service</option>
-        <option value="Hors service">Hors service</option>
-    </select><br><br>
+        <h3>Capacité et état</h3>
+        <div class="form-row">
+            
+            <div class="form-group half-width">
+                <label for="capacite">🧑‍🤝‍🧑 Capacité (places) :</label>
+                <input type="number" id="capacite" name="capacite" required min="1" placeholder="Ex: 30">
+            </div>
 
-    <button type="submit">Créer</button>
-</form>
+            <div class="form-group half-width">
+                <label for="statut">🚦 Statut :</label>
+                <select id="statut" name="statut">
+                    <option value="En service" selected>En service</option>
+                    <option value="Hors service">Hors service</option>
+                </select>
+            </div>
+            
+        </div>
 
-<a href="{{ url_for('crud.list_vehicules') }}">Retour à la liste</a>
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">➕ Créer le véhicule</button>
+            <a href="{{ url_for('crud.list_vehicules') }}" class="btn-secondary">Retour à la liste</a>
+        </div>
+    </form>
+</div>
 {% endblock %}

@@ -329,8 +329,8 @@ def public_contact():
 
 
 @app.route("/public/dashboard")
-@app.route("/public/tableau_de_bord")
-@app.route("/public/index/tableau_de_bord")
+#@app.route("/public/tableau_de_bord")
+#@app.route("/public/index/tableau_de_bord")
 def public_dashboard():
     if 'client_id' not in session:
         flash('Veuillez vous connecter pour accéder à votre tableau de bord', 'error')
@@ -399,6 +399,128 @@ def mes_reservations():
     return render_template("/public/mes_reservations.html", 
                          client=client, 
                          reservations=reservations)
+
+
+
+
+@app.route("/admin/statistiques")
+@admin_required
+def admin_statistiques():
+    """Page des statistiques pour l'administrateur"""
+    from sqlalchemy import func
+    from datetime import datetime, timedelta
+    
+    # Statistiques générales
+    total_clients = Client.query.count()
+    total_voyages = Voyage.query.count()
+    total_reservations = Reservation.query.count()
+    total_agences = Agence.query.count()
+    total_vehicules = Vehicule.query.count()
+    total_personnels = Personnel.query.count()
+    total_trajets = Trajet.query.count()
+    
+    # Revenus totaux
+    revenus_totaux = db.session.query(func.sum(Paiement.montant)).scalar() or 0
+    
+    # Statistiques du mois en cours
+    debut_mois = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    reservations_mois = Reservation.query.filter(Reservation.date_reservation >= debut_mois).count()
+    
+    revenus_mois = db.session.query(func.sum(Paiement.montant)).join(Reservation).filter(
+        Reservation.date_reservation >= debut_mois
+    ).scalar() or 0
+    
+    # Dernières réservations (5 dernières)
+    dernieres_reservations = Reservation.query.order_by(
+        Reservation.date_reservation.desc()
+    ).limit(5).all()
+    
+    top_trajets = (
+        db.session.query(
+            Trajet.ville_depart,
+            Trajet.ville_arrivee,
+            func.count(Reservation.num_reservation).label('nb_reservations')
+        )
+        .select_from(Reservation)
+        .join(Voyage, Reservation.id_voyage == Voyage.id_voyage)
+        .join(Trajet, Voyage.id_trajet == Trajet.id_trajet)
+        .group_by(
+            Trajet.id_trajet,
+            Trajet.ville_depart,
+            Trajet.ville_arrivee
+        )
+        .order_by(func.count(Reservation.num_reservation).desc())
+        .limit(5)
+        .all()
+    )
+
+    
+    # Répartition par mode de paiement
+    paiements_par_mode = db.session.query(
+        Paiement.mode,
+        func.count(Paiement.id_paiement).label('nombre'),
+        func.sum(Paiement.montant).label('montant_total')
+    ).group_by(Paiement.mode).all()
+    
+    # Véhicules par statut
+    vehicules_par_statut = db.session.query(
+        Vehicule.statut,
+        func.count(Vehicule.immatriculation).label('nombre')
+    ).group_by(Vehicule.statut).all()
+    
+    # Réservations par jour (7 derniers jours)
+    sept_jours = datetime.now() - timedelta(days=7)
+    reservations_par_jour_raw = db.session.query(
+        func.date(Reservation.date_reservation).label('date'),
+        func.count(Reservation.num_reservation).label('nombre')
+    ).filter(
+        Reservation.date_reservation >= sept_jours
+    ).group_by(
+        func.date(Reservation.date_reservation)
+    ).order_by(
+        func.date(Reservation.date_reservation)
+    ).all()
+
+    reservations_par_jour = [
+        {
+            "date": r.date.strftime("%Y-%m-%d"),
+            "nombre": r.nombre
+        }
+        for r in reservations_par_jour_raw
+    ]
+    ()
+    
+    # Taux d'occupation moyen
+    voyages_avec_places = db.session.query(
+        func.avg(Voyage.places_reservees).label('places_moyennes')
+    ).scalar() or 0
+    
+    capacite_moyenne = db.session.query(
+        func.avg(Vehicule.capacite)
+    ).join(Voyage).scalar() or 1
+    
+    taux_occupation = (voyages_avec_places / capacite_moyenne * 100) if capacite_moyenne > 0 else 0
+    
+    return render_template(
+        "admin/statistiques.html",
+        total_clients=total_clients,
+        total_voyages=total_voyages,
+        total_reservations=total_reservations,
+        total_agences=total_agences,
+        total_vehicules=total_vehicules,
+        total_personnels=total_personnels,
+        total_trajets=total_trajets,
+        revenus_totaux=revenus_totaux,
+        reservations_mois=reservations_mois,
+        revenus_mois=revenus_mois,
+        dernieres_reservations=dernieres_reservations,
+        top_trajets=top_trajets,
+        paiements_par_mode=paiements_par_mode,
+        vehicules_par_statut=vehicules_par_statut,
+        reservations_par_jour=reservations_par_jour,
+        taux_occupation=taux_occupation
+    )
+
 
 
 # ============================================

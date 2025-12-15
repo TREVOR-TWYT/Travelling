@@ -1,31 +1,55 @@
 {% extends "admin/layout.html" %}
+
 {% block content %}
-<h2>Modifier le personnel #{{ personnel.id_personnel }}</h2>
+<div class="form-container">
+    <h2>Modifier le personnel #{{ personnel.id_personnel }}</h2>
 
-<form action="" method="POST">
-    <label>Nom :</label>
-    <input type="text" name="nom" value="{{ personnel.nom }}" required><br><br>
+    <form action="" method="POST" class="styled-form">
+        <h3>Informations personnelles</h3>
+        <div class="form-row">
+            
+            <div class="form-group half-width">
+                <label for="nom">👤 Nom :</label>
+                <input type="text" id="nom" name="nom" value="{{ personnel.nom }}" required placeholder="Nom de famille">
+            </div>
 
-    <label>Prénom :</label>
-    <input type="text" name="prenom" value="{{ personnel.prenom }}"><br><br>
+            <div class="form-group half-width">
+                <label for="prenom">Prénom :</label>
+                <input type="text" id="prenom" name="prenom" value="{{ personnel.prenom }}" placeholder="Prénom(s)">
+            </div>
 
-    <label>Rôle :</label>
-    <select name="role" required>
-        {% for r in ['Chauffeur','Agent','Manager','Controleur','Livreur'] %}
-            <option value="{{ r }}" {% if r==personnel.role %}selected{% endif %}>{{ r }}</option>
-        {% endfor %}
-    </select><br><br>
+        </div>
 
-    <label>Agence :</label>
-    <select name="id_agence">
-        <option value="">— Aucune —</option>
-        {% for a in agences %}
-            <option value="{{ a.id_agence }}" {% if personnel.id_agence==a.id_agence %}selected{% endif %}>{{ a.nom_agence }}</option>
-        {% endfor %}
-    </select><br><br>
+        <h3>Rôle et affectation</h3>
+        <div class="form-row">
+            
+            <div class="form-group half-width">
+                <label for="role">🛠️ Rôle :</label>
+                <select id="role" name="role" required>
+                    {% for r in ['Chauffeur','Agent','Manager','Controleur','Livreur'] %}
+                        <option value="{{ r }}" {% if r==personnel.role %}selected{% endif %}>{{ r }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-    <button type="submit">Enregistrer</button>
-</form>
+            <div class="form-group half-width">
+                <label for="id_agence">🏢 Agence :</label>
+                <select id="id_agence" name="id_agence">
+                    <option value="">— Aucune —</option>
+                    {% for a in agences %}
+                        <option value="{{ a.id_agence }}" {% if personnel.id_agence==a.id_agence %}selected{% endif %}>
+                            {{ a.nom_agence }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+        </div>
 
-<a href="{{ url_for('crud.list_personnels') }}">Retour à la liste</a>
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">💾 Enregistrer les modifications</button>
+            <a href="{{ url_for('crud.list_personnels') }}" class="btn-secondary">Retour à la liste</a>
+        </div>
+    </form>
+</div>
 {% endblock %}

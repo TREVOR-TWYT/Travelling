@@ -8,7 +8,7 @@ body {
 
 /* Header & Footer */
 header {
-    background-color: #003366;
+    background-color: #764ba2;
     color: white;
     padding: 15px 0;
 }
@@ -25,7 +25,7 @@ header nav a:hover {
 }
 
 footer {
-    background-color: #003366;
+    background-color: #764ba2;
     color: white;
     text-align: center;
     padding: 20px 0;
@@ -76,7 +76,7 @@ footer {
 }
 
 .form-container h2 {
-    color: #003366;
+    color: #764ba2;
     margin-bottom: 25px;
 }
 
@@ -112,7 +112,7 @@ footer {
 
 .form-container p {
     margin-top: 15px;
-    color: #003366;
+    color: #764ba2;
 }
 
 .form-container p a {

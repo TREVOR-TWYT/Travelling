@@ -5,13 +5,13 @@
 }
 
 .contact-container {
-    max-width: 1100px;
+    max-width: 1100px; 
     margin: auto;
 }
 
 .contact-container h1 {
     text-align: center;
-    color: #003366;
+    color: #764ba2;
     font-size: 36px;
     margin-bottom: 10px;
 }
@@ -19,7 +19,7 @@
 .contact-intro {
     text-align: center;
     font-size: 18px;
-    color: #003366;
+    color: #764ba2;
     margin-bottom: 40px;
 }
 
@@ -40,7 +40,7 @@
 
 .contact-form label {
     font-weight: bold;
-    color: #003366;
+    color: #764ba2;
 }
 
 .contact-form input,
@@ -60,7 +60,7 @@
 .contact-btn {
     width: 100%;
     padding: 14px;
-    background: #0066cc;
+    background: #764ba2;
     color: white;
     border: none;
     border-radius: 8px;
@@ -69,10 +69,10 @@
 }
 
 .contact-btn:hover {
-    background: #004c99;
+    background: #764ba2;
 }
 
 .contact-info h2 {
-    color: #003366;
+    color: #764ba2;
     margin-bottom: 20px;
 }

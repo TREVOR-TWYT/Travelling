@@ -1,22 +1,43 @@
 {% extends "admin/layout.html" %}
+
 {% block content %}
-<h2>Modifier le véhicule {{ vehicule.immatriculation }}</h2>
+<div class="form-container">
+    <h2>Modifier le véhicule : {{ vehicule.immatriculation }}</h2>
 
-<form action="" method="POST">
-    <label>Type :</label>
-    <input type="text" name="type" value="{{ vehicule.type }}" required><br><br>
+    <form action="" method="POST" class="styled-form">
+        <div class="form-group full-width">
+            <label for="immatriculation">🔢 Immatriculation :</label>
+            <input type="text" id="immatriculation" value="{{ vehicule.immatriculation }}" readonly class="readonly-field">
+            </div>
 
-    <label>Capacité :</label>
-    <input type="number" name="capacite" value="{{ vehicule.capacite }}" required><br><br>
+        <h3>Caractéristiques</h3>
+        <div class="form-row">
+            
+            <div class="form-group half-width">
+                <label for="type">🚌 Type :</label>
+                <input type="text" id="type" name="type" value="{{ vehicule.type }}" required placeholder="Ex: Bus Standard">
+            </div>
 
-    <label>Statut :</label>
-    <select name="statut">
-        <option value="En service" {% if vehicule.statut == "En service" %}selected{% endif %}>En service</option>
-        <option value="Hors service" {% if vehicule.statut == "Hors service" %}selected{% endif %}>Hors service</option>
-    </select><br><br>
+            <div class="form-group half-width">
+                <label for="capacite">🧑‍🤝‍🧑 Capacité (places) :</label>
+                <input type="number" id="capacite" name="capacite" value="{{ vehicule.capacite }}" required min="1" placeholder="Ex: 30">
+            </div>
 
-    <button type="submit">Enregistrer</button>
-</form>
+        </div>
 
-<a href="{{ url_for('crud.list_vehicules') }}">Retour à la liste</a>
+        <h3>Statut</h3>
+        <div class="form-group full-width">
+            <label for="statut">🚦 Statut :</label>
+            <select id="statut" name="statut">
+                <option value="En service" {% if vehicule.statut == "En service" %}selected{% endif %}>En service</option>
+                <option value="Hors service" {% if vehicule.statut == "Hors service" %}selected{% endif %}>Hors service</option>
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">💾 Enregistrer les modifications</button>
+            <a href="{{ url_for('crud.list_vehicules') }}" class="btn-secondary">Retour à la liste</a>
+        </div>
+    </form>
+</div>
 {% endblock %}

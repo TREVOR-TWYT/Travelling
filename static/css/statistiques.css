@@ -1,0 +1,488 @@
+/* ============================================
+   CONTENEUR STATISTIQUES
+   ============================================ */
+.stats-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ============================================
+   EN-TÊTE
+   ============================================ */
+.stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.stats-header h1 {
+    font-size: 32px;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.stats-header p {
+    color: var(--text-light);
+    font-size: 16px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-refresh {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-refresh:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* ============================================
+   GRILLE DE STATISTIQUES
+   ============================================ */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    border-left: 5px solid var(--primary-color);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.stat-icon {
+    font-size: 48px;
+    min-width: 60px;
+    text-align: center;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+/* Couleurs spécifiques */
+.stat-clients { border-left-color: #3b82f6; }
+.stat-reservations { border-left-color: #10b981; }
+.stat-voyages { border-left-color: #8b5cf6; }
+.stat-revenus { border-left-color: #f59e0b; }
+.stat-agences { border-left-color: #ec4899; }
+.stat-vehicules { border-left-color: #06b6d4; }
+.stat-personnels { border-left-color: #6366f1; }
+.stat-trajets { border-left-color: #14b8a6; }
+
+/* ============================================
+   STATISTIQUES DE PÉRIODE
+   ============================================ */
+.period-stats {
+    margin-bottom: 40px;
+}
+
+.period-card {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: var(--shadow-md);
+}
+
+.period-card h3 {
+    font-size: 24px;
+    margin-bottom: 25px;
+}
+
+.period-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+}
+
+.period-item {
+    text-align: center;
+}
+
+.period-label {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.period-value {
+    font-size: 32px;
+    font-weight: 700;
+}
+
+/* ============================================
+   GRAPHIQUES
+   ============================================ */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.chart-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: var(--shadow-sm);
+}
+
+.chart-card h3 {
+    font-size: 18px;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.chart-full {
+    grid-column: 1 / -1;
+}
+
+.empty-message {
+    text-align: center;
+    color: var(--text-light);
+    padding: 40px 20px;
+    font-style: italic;
+}
+
+/* ============================================
+   TOP LISTE
+   ============================================ */
+.top-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.top-item {
+    display: grid;
+    grid-template-columns: 40px 1fr 100px;
+    gap: 15px;
+    align-items: center;
+    padding: 15px;
+    background: var(--bg-light);
+    border-radius: 10px;
+    transition: var(--transition);
+}
+
+.top-item:hover {
+    background: #e8eaed;
+}
+
+.top-rank {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.top-content {
+    flex: 1;
+}
+
+.top-name {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+}
+
+.top-count {
+    font-size: 14px;
+    color: var(--text-light);
+}
+
+.top-bar {
+    width: 100%;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.top-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    transition: width 0.3s ease;
+}
+
+/* ============================================
+   MODES DE PAIEMENT
+   ============================================ */
+.payment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.payment-item {
+    padding: 15px;
+    background: var(--bg-light);
+    border-radius: 10px;
+    transition: var(--transition);
+}
+
+.payment-item:hover {
+    background: #e8eaed;
+}
+
+.payment-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.payment-icon {
+    font-size: 24px;
+}
+
+.payment-mode {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.payment-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: var(--text-light);
+}
+
+.payment-amount {
+    font-weight: 700;
+    color: var(--success-color);
+}
+
+/* ============================================
+   STATUT VÉHICULES
+   ============================================ */
+.vehicle-status-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    background: var(--bg-light);
+    border-radius: 10px;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.status-active {
+    background: var(--success-color);
+}
+
+.status-maintenance {
+    background: var(--warning-color, #f59e0b);
+}
+
+.status-inactive {
+    background: var(--error-color);
+}
+
+.status-label {
+    flex: 1;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.status-count {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 18px;
+}
+
+/* ============================================
+   GRAPHIQUE
+   ============================================ */
+.line-chart {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#reservationsChart {
+    width: 100%;
+    height: 300px;
+}
+
+/* ============================================
+   SECTION RÉCENTE
+   ============================================ */
+.recent-section {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: var(--shadow-sm);
+}
+
+.recent-section h2 {
+    font-size: 24px;
+    color: var(--text-dark);
+    margin-bottom: 25px;
+    font-weight: 700;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.recent-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.recent-table thead {
+    background: var(--bg-light);
+}
+
+.recent-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.recent-table tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+    transition: var(--transition);
+}
+
+.recent-table tbody tr:hover {
+    background: var(--bg-light);
+}
+
+.recent-table td {
+    padding: 15px;
+    font-size: 14px;
+}
+
+.amount {
+    font-weight: 700;
+    color: var(--success-color);
+}
+
+.status-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-confirmed {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .stats-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .period-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .top-item {
+        grid-template-columns: 40px 1fr;
+    }
+
+    .top-bar {
+        grid-column: 1 / -1;
+    }
+
+    .recent-table {
+        font-size: 12px;
+    }
+
+    .recent-table th,
+    .recent-table td {
+        padding: 10px;
+    }
+}

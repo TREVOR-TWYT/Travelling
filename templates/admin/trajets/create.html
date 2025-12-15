@@ -1,23 +1,43 @@
 {% extends "admin/layout.html" %}
+
 {% block content %}
+<div class="form-container">
+    <h2>Créer un Trajet</h2>
 
-<h2>Créer un Trajet</h2>
+    <form method="post" class="styled-form">
+        <h3>Villes de départ et d'arrivée</h3>
+        <div class="form-row">
+            
+            <div class="form-group half-width">
+                <label for="ville_depart">📍 Ville de départ :</label>
+                <input type="text" id="ville_depart" name="ville_depart" required placeholder="Ex: Douala">
+            </div>
 
-<form method="post">
+            <div class="form-group half-width">
+                <label for="ville_arrivee">🏁 Ville d'arrivée :</label>
+                <input type="text" id="ville_arrivee" name="ville_arrivee" required placeholder="Ex: Yaoundé">
+            </div>
 
-    <label>Ville de départ :</label>
-    <input name="ville_depart" required>
+        </div>
 
-    <label>Ville d'arrivée :</label>
-    <input name="ville_arrivee" required>
+        <h3>Tarification (FCFA)</h3>
+        <div class="form-row">
+            
+            <div class="form-group half-width">
+                <label for="tarif_standard">💲 Tarif standard :</label>
+                <input type="number" id="tarif_standard" name="tarif_standard" required min="1000" placeholder="Ex: 6000">
+            </div>
 
-    <label>Tarif standard :</label>
-    <input type="number" name="tarif_standard" required>
+            <div class="form-group half-width">
+                <label for="tarif_vip">💎 Tarif VIP :</label>
+                <input type="number" id="tarif_vip" name="tarif_vip" required min="1000" placeholder="Ex: 10000">
+            </div>
 
-    <label>Tarif VIP :</label>
-    <input type="number" name="tarif_vip" required>
+        </div>
 
-    <button type="submit">Enregistrer</button>
-</form>
-
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">➕ Enregistrer le Trajet</button>
+            </div>
+    </form>
+</div>
 {% endblock %}

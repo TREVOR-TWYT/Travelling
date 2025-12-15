@@ -4,19 +4,19 @@
         <link rel="stylesheet" href="/static/css/layout.css">
 
     </div>
-    <nav>
+    <nav> 
         <ul>
             <li><a href="{{ url_for('public_index') }}">Accueil</a></li>
-            <li><a href="{{ url_for('crud.trajets_list') }}">Nos trajets</a></li>
-            <li><a href="{{ url_for('crud.reservation') }}">Réserver</a></li>
-            <li><a href="{{ url_for('crud.contact') }}">Contact</a></li>
+            <li><a href="{{ url_for('public_trajets') }}">Nos trajets</a></li>
+            <li><a href="{{ url_for('public_reservation') }}">Réserver</a></li>
+            <li><a href="{{ url_for('public_contact') }}">Contact</a></li>
 
             {% if 'client_id' in session %}
-                <li><a href="{{ url_for('crud.dashboardClient') }}">Dashboard</a></li>
-                <li><a href="{{ url_for('crud.logout') }}">Déconnexion</a></li>
+                <li><a href="{{ url_for('crud.dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('logout') }}">Déconnexion</a></li>
             {% else %}
-                <li><a href="{{ url_for('crud.login') }}">Connexion</a></li>
-                <li><a href="{{ url_for('crud.register') }}">Inscription</a></li>
+                <li><a href="{{ url_for('handle_login') }}">Connexion</a></li>
+                <li><a href="{{ url_for('handle_register') }}">Inscription</a></li>
             {% endif %}
         </ul>
     </nav>

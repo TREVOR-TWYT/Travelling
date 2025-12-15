@@ -1,53 +1,85 @@
 {% extends "admin/layout.html" %}
+
 {% block content %}
-<h2>Modifier le voyage #{{ voyage.id_voyage }}</h2>
+<div class="form-container">
+    <h2>Modifier le voyage #{{ voyage.id_voyage }}</h2>
 
-<form action="" method="POST">
-    <label>Trajet :</label>
-    <select name="id_trajet" required>
-        {% for t in trajets %}
-            <option value="{{ t.id_trajet }}" {% if t.id_trajet == voyage.id_trajet %}selected{% endif %}>
-                {{ t.ville_depart }} → {{ t.ville_arrivee }}
-            </option>
-        {% endfor %}
-    </select><br><br>
+    <form action="" method="POST" class="styled-form">
+        <h3>Informations de base du voyage</h3>
+        <div class="form-row">
+            
+            <div class="form-group half-width">
+                <label for="id_trajet">📍 Trajet :</label>
+                <select id="id_trajet" name="id_trajet" required>
+                    {% for t in trajets %}
+                        <option value="{{ t.id_trajet }}" {% if t.id_trajet == voyage.id_trajet %}selected{% endif %}>
+                            {{ t.ville_depart }} → {{ t.ville_arrivee }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-    <label>Véhicule :</label>
-    <select name="immatriculation" required>
-        {% for veh in vehicules %}
-            <option value="{{ veh.immatriculation }}" {% if veh.immatriculation == voyage.immatriculation %}selected{% endif %}>
-                {{ veh.immatriculation }} ({{ veh.type }})
-            </option>
-        {% endfor %}
-    </select><br><br>
+            <div class="form-group half-width">
+                <label for="immatriculation">🚌 Véhicule :</label>
+                <select id="immatriculation" name="immatriculation" required>
+                    {% for veh in vehicules %}
+                        <option value="{{ veh.immatriculation }}" {% if veh.immatriculation == voyage.immatriculation %}selected{% endif %}>
+                            {{ veh.immatriculation }} ({{ veh.type }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-    <label>Agence :</label>
-    <select name="id_agence">
-        <option value="">Aucune</option>
-        {% for a in agences %}
-            <option value="{{ a.id_agence }}" {% if a.id_agence == voyage.id_agence %}selected{% endif %}>
-                {{ a.nom_agence }}
-            </option>
-        {% endfor %}
-    </select><br><br>
+        </div>
 
-    <label>Date de départ :</label>
-    <input type="date" name="date_depart" value="{{ voyage.date_depart }}" required><br><br>
+        <h3>Horaires et Agence</h3>
+        <div class="form-row">
+            
+            <div class="form-group half-width">
+                <label for="date_depart">📅 Date de départ :</label>
+                <input type="date" id="date_depart" name="date_depart" value="{{ voyage.date_depart }}" required>
+            </div>
 
-    <label>Heure de départ :</label>
-    <input type="time" name="heure_depart" value="{{ voyage.heure_depart }}" required><br><br>
+            <div class="form-group half-width">
+                <label for="heure_depart">⏱️ Heure de départ :</label>
+                <input type="time" id="heure_depart" name="heure_depart" value="{{ voyage.heure_depart }}" required>
+            </div>
+        
+        </div>
 
-    <label>Standing :</label>
-    <select name="standing" required>
-        <option value="Standard" {% if voyage.standing == 'Standard' %}selected{% endif %}>Standard</option>
-        <option value="VIP" {% if voyage.standing == 'VIP' %}selected{% endif %}>VIP</option>
-    </select><br><br>
+        <div class="form-row">
 
-    <label>Places réservées :</label>
-    <input type="number" name="places_reservees" value="{{ voyage.places_reservees }}"><br><br>
+            <div class="form-group half-width">
+                <label for="standing">⭐ Standing :</label>
+                <select id="standing" name="standing" required>
+                    <option value="Standard" {% if voyage.standing == 'Standard' %}selected{% endif %}>Standard</option>
+                    <option value="VIP" {% if voyage.standing == 'VIP' %}selected{% endif %}>VIP</option>
+                </select>
+            </div>
 
-    <button type="submit">Enregistrer</button>
-</form>
+            <div class="form-group half-width">
+                <label for="places_reservees">🧑‍🤝‍🧑 Places réservées :</label>
+                <input type="number" id="places_reservees" name="places_reservees" value="{{ voyage.places_reservees }}" min="0" readonly> 
+            </div>
+            
+        </div>
+        
+        <div class="form-group full-width">
+            <label for="id_agence">🏢 Agence (Assignation) :</label>
+            <select id="id_agence" name="id_agence">
+                <option value="">Aucune</option> {% for a in agences %}
+                    <option value="{{ a.id_agence }}" {% if a.id_agence == voyage.id_agence %}selected{% endif %}>
+                        {{ a.nom_agence }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
 
-<a href="{{ url_for('crud.list_voyages') }}">Retour à la liste</a>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">💾 Enregistrer les modifications</button>
+            <a href="{{ url_for('crud.list_voyages') }}" class="btn-secondary">Retour à la liste</a>
+        </div>
+    </form>
+</div>
 {% endblock %}

@@ -9,7 +9,7 @@ body {
 }
 
 header {
-    background-color: #0056b3; /* bleu foncé */
+    background-color:  #764ba2;/* bleu foncé */
     color: #fff;
     padding: 15px 50px;
     display: flex;
@@ -41,7 +41,7 @@ header nav ul li a:hover {
 }
 
 footer {
-    background-color: #003f7f; /* bleu plus foncé */
+    background-color:  #764ba2;
     color: #fff;
     text-align: center;
     padding: 15px 0;
