@@ -1,6 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
+
 
 
 class Agence(db.Model):
@@ -12,6 +14,24 @@ class Agence(db.Model):
 
     personnels = db.relationship("Personnel", back_populates="agence")
     voyages = db.relationship("Voyage", back_populates="agence")
+    tours = db.relationship('Tourisme', backref='agence', cascade="all, delete-orphan")
+
+class Admin(db.Model):
+    __tablename__ = "admin"
+
+    id = db.Column(db.Integer, primary_key=True)
+    nom = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    def __repr__(self):
+        return f"<Admin {self.email}>"
 
 
 class Personnel(db.Model):
@@ -41,9 +61,9 @@ class Client(db.Model):
     cni = db.Column(db.String(50))
     password = db.Column(db.String(255), nullable=False)
 
-
     reservations = db.relationship("Reservation", back_populates="client")
     expeditions = db.relationship("Expedition", back_populates="client")
+    locations = db.relationship('Location', backref='client', cascade="all, delete-orphan")
 
 
 class Trajet(db.Model):
@@ -67,6 +87,7 @@ class Vehicule(db.Model):
     statut = db.Column(db.String(50), nullable=False, default="En service")
 
     voyages = db.relationship("Voyage", back_populates="vehicule")
+    locations = db.relationship('Location', backref='vehicule', cascade="all, delete-orphan")
 
 
 class Voyage(db.Model):
@@ -154,3 +175,28 @@ class Colis(db.Model):
 
     expedition = db.relationship("Expedition", back_populates="colis")
     personnel_traiteur = db.relationship("Personnel", back_populates="colis_traite")
+
+
+class Location(db.Model):
+    __tablename__ = 'location'
+    id = db.Column(db.Integer, primary_key=True)
+    client_id = db.Column(
+        db.Integer, db.ForeignKey('client.id_client'), nullable=False
+    )
+    vehicule_immatriculation = db.Column(
+        db.String(20), db.ForeignKey('vehicule.immatriculation'), nullable=False
+    )
+    date_debut = db.Column(db.Date, nullable=False)
+    date_fin = db.Column(db.Date, nullable=False)
+    prix_total = db.Column(db.Float)
+    statut = db.Column(db.String(20), default="En cours")
+
+
+class Tourisme(db.Model):
+    __tablename__ = 'tourisme'
+    id = db.Column(db.Integer, primary_key=True)
+    nom = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text)
+    duree = db.Column(db.String(50))  # ex: "3 jours"
+    prix = db.Column(db.Float)
+    agence_id = db.Column(db.Integer, db.ForeignKey('agence.id_agence'))

@@ -1,40 +1,66 @@
 {% extends "admin/layout.html" %}
 {% block content %}
-<h2>Réserver un voyage</h2>
+<div class="reservation-form-container">
+    <h2>Réserver un voyage</h2>
 
-<form action="/reservation" method="POST">
+    <form action="/reservation" method="POST" class="reservation-form">
 
-    <label>Nom :</label>
-    <input type="text" name="nom" required>
+        <h3>1. Informations du Client</h3>
+        <div class="form-row">
+            <div class="form-group half-width">
+                <label for="nom">Nom :</label>
+                <input type="text" id="nom" name="nom" required placeholder="Nom de famille">
+            </div>
+            <div class="form-group half-width">
+                <label for="prenom">Prénom :</label>
+                <input type="text" id="prenom" name="prenom" placeholder="Prénom(s)">
+            </div>
+        </div>
 
-    <label>Prénom :</label>
-    <input type="text" name="prenom">
+        <div class="form-row">
+            <div class="form-group half-width">
+                <label for="telephone">Téléphone :</label>
+                <input type="tel" id="telephone" name="telephone" required placeholder="+XXX XXX XXX XX">
+            </div>
+            <div class="form-group half-width">
+                <label for="email">Email :</label>
+                <input type="email" id="email" name="email" placeholder="example@domaine.com">
+            </div>
+        </div>
 
-    <label>Téléphone :</label>
-    <input type="text" name="telephone" required>
+        <h3>2. Détails du Voyage et Paiement</h3>
+        <div class="form-group full-width">
+            <label for="id_voyage">Voyage :</label>
+            <select id="id_voyage" name="id_voyage" required>
+                <option value="" disabled selected>Sélectionnez un trajet et une date</option>
+                {% for v in voyages %}
+                    <option value="{{ v.id_voyage }}">
+                        {{ v.trajet.ville_depart }} → {{ v.trajet.ville_arrivee }} | Le {{ v.date_depart }} à {{ v.heure_depart }} ({{ v.standing }})
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <label>Email :</label>
-    <input type="email" name="email">
-
-    <label>Voyage :</label>
-    <select name="id_voyage" required>
-        {% for v in voyages %}
-            <option value="{{ v.id_voyage }}">
-                {{ v.trajet.ville_depart }} → {{ v.trajet.ville_arrivee }} | {{ v.date_depart }}
-            </option>
-        {% endfor %}
-    </select>
-
-    <label>Mode de paiement :</label>
-    <select name="mode" required>
-        <option>Cash</option>
-        <option>Mobile Money</option>
-        <option>Carte bancaire</option>
-    </select>
-
-    <label>Montant :</label>
-    <input type="number" name="montant" required>
-
-    <button type="submit">Confirmer la réservation</button>
-</form>
+        <div class="form-row">
+            <div class="form-group half-width">
+                <label for="mode">Mode de paiement :</label>
+                <select id="mode" name="mode" required>
+                    <option value="" disabled selected>Choisissez un mode</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Mobile Money">Mobile Money</option>
+                    <option value="Carte bancaire">Carte bancaire</option>
+                </select>
+            </div>
+            <div class="form-group half-width">
+                <label for="montant">Montant a payé (FCFA) :</label>
+                <input type="number" id="montant" name="montant" required min="1000" placeholder="Ex: 15000">
+            </div>
+        </div>
+        
+        <div class="form-submit">
+             <button type="submit" class="btn-primary">Confirmer la réservation</button>
+        </div>
+       
+    </form>
+</div>
 {% endblock %}
