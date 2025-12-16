@@ -1,0 +1,313 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}Statistiques - MBOA TRAVEL{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/statistiques.css') }}">
+
+<div class="stats-container">
+    <!-- En-tête -->
+    <div class="stats-header">
+        <div>
+            <h1>📊 Statistiques et Tableaux de Bord</h1>
+            <p>Vue d'ensemble des performances de MBOA TRAVEL</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn-refresh" onclick="location.reload()">
+                <span>🔄</span>
+                <span>Actualiser</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Cartes de statistiques principales -->
+    <div class="stats-grid">
+        <div class="stat-card stat-clients">
+            <div class="stat-icon">👥</div>
+            <div class="stat-content">
+                <div class="stat-label">Total Clients</div>
+                <div class="stat-value">{{ "{:,}".format(total_clients).replace(',', ' ') }}</div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-reservations">
+            <div class="stat-icon">📋</div>
+            <div class="stat-content">
+                <div class="stat-label">Réservations</div>
+                <div class="stat-value">{{ "{:,}".format(total_reservations).replace(',', ' ') }}</div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-voyages">
+            <div class="stat-icon">✈️</div>
+            <div class="stat-content">
+                <div class="stat-label">Voyages Programmés</div>
+                <div class="stat-value">{{ "{:,}".format(total_voyages).replace(',', ' ') }}</div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-revenus">
+            <div class="stat-icon">💰</div>
+            <div class="stat-content">
+                <div class="stat-label">Revenus Totaux</div>
+                <div class="stat-value">{{ "{:,}".format(revenus_totaux).replace(',', ' ') }} FCFA</div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-agences">
+            <div class="stat-icon">🏢</div>
+            <div class="stat-content">
+                <div class="stat-label">Agences</div>
+                <div class="stat-value">{{ total_agences }}</div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-vehicules">
+            <div class="stat-icon">🚌</div>
+            <div class="stat-content">
+                <div class="stat-label">Véhicules</div>
+                <div class="stat-value">{{ total_vehicules }}</div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-personnels">
+            <div class="stat-icon">👨‍💼</div>
+            <div class="stat-content">
+                <div class="stat-label">Personnels</div>
+                <div class="stat-value">{{ total_personnels }}</div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-trajets">
+            <div class="stat-icon">🛣️</div>
+            <div class="stat-content">
+                <div class="stat-label">Trajets</div>
+                <div class="stat-value">{{ total_trajets }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiques du mois -->
+    <div class="period-stats">
+        <div class="period-card">
+            <h3>📅 Ce mois-ci</h3>
+            <div class="period-grid">
+                <div class="period-item">
+                    <div class="period-label">Réservations</div>
+                    <div class="period-value">{{ reservations_mois }}</div>
+                </div>
+                <div class="period-item">
+                    <div class="period-label">Revenus</div>
+                    <div class="period-value">{{ "{:,}".format(revenus_mois).replace(',', ' ') }} FCFA</div>
+                </div>
+                <div class="period-item">
+                    <div class="period-label">Taux d'occupation</div>
+                    <div class="period-value">{{ "%.1f"|format(taux_occupation) }}%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graphiques et tableaux -->
+    <div class="charts-grid">
+        <!-- Top trajets -->
+        <div class="chart-card">
+            <h3>🏆 Top 5 Trajets les Plus Réservés</h3>
+            <div class="top-list">
+                {% if top_trajets %}
+                    {% for trajet in top_trajets %}
+                    <div class="top-item">
+                        <div class="top-rank">{{ loop.index }}</div>
+                        <div class="top-content">
+                            <div class="top-name">{{ trajet.ville_depart }} → {{ trajet.ville_arrivee }}</div>
+                            <div class="top-count">{{ trajet.nb_reservations }} réservation{% if trajet.nb_reservations > 1 %}s{% endif %}</div>
+                        </div>
+                        <div class="top-bar">
+                            <div class="top-bar-fill" style="width: {{ (trajet.nb_reservations / top_trajets[0].nb_reservations * 100) if top_trajets else 0 }}%"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="empty-message">Aucune donnée disponible</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Modes de paiement -->
+        <div class="chart-card">
+            <h3>💳 Répartition par Mode de Paiement</h3>
+            <div class="payment-list">
+                {% if paiements_par_mode %}
+                    {% for paiement in paiements_par_mode %}
+                    <div class="payment-item">
+                        <div class="payment-header">
+                            <span class="payment-icon">
+                                {% if paiement.mode == 'Cash' %}💵
+                                {% elif paiement.mode == 'Mobile Money' %}📱
+                                {% else %}💳{% endif %}
+                            </span>
+                            <span class="payment-mode">{{ paiement.mode }}</span>
+                        </div>
+                        <div class="payment-stats">
+                            <div>{{ paiement.nombre }} transaction{% if paiement.nombre > 1 %}s{% endif %}</div>
+                            <div class="payment-amount">{{ "{:,}".format(paiement.montant_total).replace(',', ' ') }} FCFA</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="empty-message">Aucune donnée disponible</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Statut des véhicules -->
+        <div class="chart-card">
+            <h3>🚌 Statut des Véhicules</h3>
+            <div class="vehicle-status-list">
+                {% if vehicules_par_statut %}
+                    {% for statut in vehicules_par_statut %}
+                    <div class="status-item">
+                        <div class="status-dot {% if statut.statut == 'En service' %}status-active{% elif statut.statut == 'En maintenance' %}status-maintenance{% else %}status-inactive{% endif %}"></div>
+                        <div class="status-label">{{ statut.statut }}</div>
+                        <div class="status-count">{{ statut.nombre }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="empty-message">Aucune donnée disponible</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Graphique réservations par jour -->
+        <div class="chart-card chart-full">
+            <h3>📈 Réservations des 7 derniers jours</h3>
+            <div class="line-chart">
+                {% if reservations_par_jour %}
+                    <canvas id="reservationsChart"></canvas>
+                {% else %}
+                    <p class="empty-message">Aucune donnée disponible</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Dernières réservations -->
+    <div class="recent-section">
+        <h2>📋 Dernières Réservations</h2>
+        <div class="table-container">
+            {% if dernieres_reservations %}
+            <table class="recent-table">
+                <thead>
+                    <tr>
+                        <th>N° Réservation</th>
+                        <th>Client</th>
+                        <th>Trajet</th>
+                        <th>Date Réservation</th>
+                        <th>Montant</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reservation in dernieres_reservations %}
+                    <tr>
+                        <td><strong>{{ reservation.num_reservation }}</strong></td>
+                        <td>{{ reservation.client.nom }} {{ reservation.client.prenom or '' }}</td>
+                        <td>{{ reservation.voyage.trajet.ville_depart }} → {{ reservation.voyage.trajet.ville_arrivee }}</td>
+                        <td>{{ reservation.date_reservation.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td class="amount">{{ "{:,}".format(reservation.paiement.montant).replace(',', ' ') }} FCFA</td>
+                        <td>
+                            <span class="status-badge {% if reservation.statut == 'Confirmée' %}status-confirmed{% else %}status-pending{% endif %}">
+                                {{ reservation.statut }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="empty-message">Aucune réservation récente</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Données pour le graphique
+const reservationsData = {{ reservations_par_jour | tojson }};
+
+// Créer le graphique si des données existent
+if (reservationsData && reservationsData.length > 0) {
+    const canvas = document.getElementById('reservationsChart');
+    const ctx = canvas.getContext('2d');
+    
+    const dates = reservationsData.map(item => {
+        const date = new Date(item.date);
+        return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
+    });
+    
+    const values = reservationsData.map(item => item.nombre);
+    const maxValue = Math.max(...values);
+    
+    // Configuration du canvas
+    canvas.width = canvas.offsetWidth;
+    canvas.height = 300;
+    
+    const padding = 40;
+    const chartWidth = canvas.width - padding * 2;
+    const chartHeight = canvas.height - padding * 2;
+    
+    // Dessiner les axes
+    ctx.strokeStyle = '#e5e7eb';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(padding, padding);
+    ctx.lineTo(padding, canvas.height - padding);
+    ctx.lineTo(canvas.width - padding, canvas.height - padding);
+    ctx.stroke();
+    
+    // Dessiner les points et lignes
+    const pointSpacing = chartWidth / (dates.length - 1 || 1);
+    
+    ctx.strokeStyle = '#667eea';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    
+    values.forEach((value, index) => {
+        const x = padding + (index * pointSpacing);
+        const y = canvas.height - padding - (value / maxValue * chartHeight);
+        
+        if (index === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
+    });
+    
+    ctx.stroke();
+    
+    // Dessiner les points
+    values.forEach((value, index) => {
+        const x = padding + (index * pointSpacing);
+        const y = canvas.height - padding - (value / maxValue * chartHeight);
+        
+        // Point
+        ctx.fillStyle = '#667eea';
+        ctx.beginPath();
+        ctx.arc(x, y, 6, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Valeur au-dessus du point
+        ctx.fillStyle = '#333';
+        ctx.font = 'bold 12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(value, x, y - 15);
+        
+        // Date en dessous
+        ctx.fillStyle = '#666';
+        ctx.font = '11px sans-serif';
+        ctx.fillText(dates[index], x, canvas.height - padding + 20);
+    });
+}
+</script>
+
+{% endblock %}

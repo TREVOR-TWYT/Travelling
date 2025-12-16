@@ -19,7 +19,7 @@
 
     <label>Agence :</label>
     <select name="id_agence">
-        <option value="">Aucune</option>
+        <!--option value="">Aucune</option-->
         {% for a in agences %}
             <option value="{{ a.id_agence }}">{{ a.nom_agence }}</option>
         {% endfor %}

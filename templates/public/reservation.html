@@ -4,40 +4,88 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Réservation - MBOA TRAVEL</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/public_style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/reservation.css') }}">
 </head>
 <body>
 
+<<<<<<< HEAD
     <!-- Header -->
     <header>
         <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
         <nav>
+=======
+<!-- Header -->
+<header class="main-header">
+    <div class="header-container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
+        </div>
+        <nav class="main-nav">
+>>>>>>> origin/master
             <ul>
-                <li><a href="{{ url_for('index') }}">Accueil</a></li>
-                <li><a href="#">Nos trajets</a></li>
-                <li><a href="{{ url_for('public_dashboard') }}">Horaires & Tarifs</a></li>
-                <li><a href="{{ url_for('public_contact') }}">Contact</a></li>
-                <li><a href="{{ url_for('public_login') }}">Connexion</a></li>
+                <li><a href="{{ url_for('public_index') }}">🏠 Accueil</a></li>
+                <li><a href="{{ url_for('public_trajets') }}">🛣️ Nos trajets</a></li>
+                <li><a href="{{ url_for('public_contact') }}">📞 Contact</a></li>
+                
+                {% if session.get('client_id') %}
+                    <li><a href="{{ url_for('public_dashboard') }}" class="user-link">👤 Mon espace</a></li>
+                    <li><a href="{{ url_for('logout') }}" class="logout-link">🚪 Déconnexion</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('public_login') }}" class="login-link">🔑 Connexion</a></li>
+                    <li><a href="{{ url_for('public_register') }}" class="register-link">📝 Inscription</a></li>
+                {% endif %}
             </ul>
         </nav>
-    </header>
-
-    <!-- Breadcrumb -->
-    <div class="breadcrumb">
-        <div class="breadcrumb-content">
-            <a href="{{ url_for('index') }}">Accueil</a> / <span>Réservation</span>
-        </div>
+        
+        <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </div>
+</header>
 
+<<<<<<< HEAD
     <!-- Main Content -->
     <main class="reservation-container">
 
+=======
+<!-- Messages flash -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-messages-container">
+            {% for category, message in messages %}
+                <div class="flash-alert flash-{{ category }}">
+                    {% if category == 'error' %}⚠️{% elif category == 'success' %}✅{% else %}ℹ️{% endif %}
+                    {{ message }}
+                    <button class="close-flash" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+    <div class="container">
+        <a href="{{ url_for('public_index') }}">Accueil</a>
+        <span class="separator">→</span>
+        <span class="current">Réservation</span>
+    </div>
+</div>
+
+<!-- Main Content -->
+<main class="reservation-container">
+    <div class="container">
+        <!-- En-tête -->
+>>>>>>> origin/master
         <div class="reservation-header">
             <h1>🎫 Réservez votre voyage</h1>
-            <p>Complétez le formulaire ci-dessous pour effectuer votre réservation</p>
+            <p>Trouvez le voyage qui vous convient et réservez en quelques clics</p>
         </div>
 
+<<<<<<< HEAD
         <!-- Search Form Section -->
         <section class="search-section">
             <h2>🔍 Rechercher un trajet</h2>
@@ -77,30 +125,74 @@
                 </div>
 
                 <button type="submit" class="btn-search">🔎 Rechercher des trajets</button>
+=======
+        <!-- Formulaire de recherche -->
+        <div class="search-box">
+            <h2>🔍 Rechercher un voyage</h2>
+            <form method="GET" action="{{ url_for('public_reservation') }}" class="search-form-inline">
+                <div class="form-inline-group">
+                    <input type="text" 
+                           name="ville_depart" 
+                           placeholder="Ville de départ" 
+                           value="{{ request.args.get('ville_depart', '') }}">
+                    
+                    <input type="text" 
+                           name="ville_arrivee" 
+                           placeholder="Ville d'arrivée" 
+                           value="{{ request.args.get('ville_arrivee', '') }}">
+                    
+                    <input type="date" 
+                           name="date_depart" 
+                           value="{{ request.args.get('date_depart', '') }}">
+                    
+                    <button type="submit" class="btn-search-inline">
+                        🔍 Rechercher
+                    </button>
+                    <div class="btn-search-inline">
+                        <a href="{{ url_for('public_reservation') }}" class="btn-reset">
+                            ↺ Réinitialiser
+                        </a>
+                    </div>
+                </div>
+>>>>>>> origin/master
             </form>
-        </section>
+        </div>
 
-        <!-- Results Section -->
+        <!-- Résultats -->
         {% if voyages %}
         <section class="results-section">
+<<<<<<< HEAD
             <h2>✅ Trajets disponibles ({{ voyages|length }} résultat{% if voyages|length > 1 %}s{% endif %})</h2>
 
             <div class="voyages-list">
                 {% for voyage in voyages %}
                 <div class="voyage-card">
 
+=======
+            <div class="results-header">
+                <h2>✅ Voyages disponibles</h2>
+                <span class="results-count">{{ voyages|length }} résultat{% if voyages|length > 1 %}s{% endif %}</span>
+            </div>
+            
+            <div class="voyages-grid">
+                {% for voyage in voyages %}
+                <div class="voyage-card">
+                    <!-- En-tête du voyage -->
+>>>>>>> origin/master
                     <div class="voyage-header">
                         <div class="route">
                             <span class="city-from">{{ voyage.trajet.ville_depart }}</span>
                             <span class="arrow">→</span>
                             <span class="city-to">{{ voyage.trajet.ville_arrivee }}</span>
                         </div>
-                        <div class="standing-badge standing-{{ voyage.standing|lower }}">
-                            {{ voyage.standing }}
+                        <div class="standing-badge {% if voyage.standing == 'VIP' %}standing-vip{% else %}standing-standard{% endif %}">
+                            {% if voyage.standing == 'VIP' %}⭐{% else %}💺{% endif %} {{ voyage.standing }}
                         </div>
                     </div>
 
+                    <!-- Détails du voyage -->
                     <div class="voyage-details">
+<<<<<<< HEAD
                         <div class="detail-item"><span class="icon">📅</span>
                             <span class="label">Date:</span>
                             <span class="value">{{ voyage.date_depart.strftime('%d/%m/%Y') }}</span>
@@ -136,10 +228,71 @@
                                 {% endif %}
                                 FCFA
                             </span>
+=======
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <span class="icon">📅</span>
+                                <div class="detail-content">
+                                    <div class="label">Date de départ</div>
+                                    <div class="value">{{ voyage.date_depart.strftime('%d/%m/%Y') }}</div>
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <span class="icon">🕒</span>
+                                <div class="detail-content">
+                                    <div class="label">Heure</div>
+                                    <div class="value">{{ voyage.heure_depart.strftime('%H:%M') }}</div>
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <span class="icon">🚌</span>
+                                <div class="detail-content">
+                                    <div class="label">Véhicule</div>
+                                    <div class="value">{{ voyage.vehicule.type }}</div>
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <span class="icon">🪑</span>
+                                <div class="detail-content">
+                                    <div class="label">Places disponibles</div>
+                                    <div class="value {% if (voyage.vehicule.capacite - voyage.places_reservees) < 5 %}text-warning{% endif %}">
+                                        {{ voyage.vehicule.capacite - voyage.places_reservees }} / {{ voyage.vehicule.capacite }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <span class="icon">🏢</span>
+                                <div class="detail-content">
+                                    <div class="label">Agence</div>
+                                    <div class="value">{{ voyage.agence.nom_agence }}</div>
+                                </div>
+                            </div>
+
+                            <div class="detail-item price-highlight">
+                                <span class="icon">💰</span>
+                                <div class="detail-content">
+                                    <div class="label">Prix par personne</div>
+                                    <div class="value price-value">
+                                        {% if voyage.standing == 'Standard' %}
+                                            {{ "{:,}".format(voyage.trajet.tarif_standard).replace(',', ' ') }}
+                                        {% else %}
+                                            {{ "{:,}".format(voyage.trajet.tarif_vip).replace(',', ' ') }}
+                                        {% endif %}
+                                        FCFA
+                                    </div>
+                                </div>
+                            </div>
+>>>>>>> origin/master
                         </div>
                     </div>
 
+                    <!-- Formulaire de réservation -->
                     <div class="voyage-footer">
+<<<<<<< HEAD
 
                         <!-- CORRECTION ICI -->
                         <form method="POST" action="{{ url_for('public_reservation') }}" class="reservation-form">
@@ -167,6 +320,82 @@
                             </div>
 
                             <button type="submit" class="btn-reserve">✅ Réserver ce trajet</button>
+=======
+                        <button class="btn-toggle-form" onclick="toggleReservationForm({{ voyage.id_voyage }})">
+                            📝 Réserver ce voyage
+                        </button>
+                        
+                        <form id="form-{{ voyage.id_voyage }}" 
+                              action="{{ url_for('reservation_confirmation') }}"
+                              method="POST" 
+                              class="reservation-form hidden">
+                            
+                            <input type="hidden" name="id_voyage" value="{{ voyage.id_voyage }}">
+                            <input type="hidden" name="montant" value="{% if voyage.standing == 'Standard' %}{{ voyage.trajet.tarif_standard }}{% else %}{{ voyage.trajet.tarif_vip }}{% endif %}">
+                            
+                            <div class="form-section">
+                                <h3 class="form-section-title">👤 Vos informations</h3>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>Nom *</label>
+                                        <input type="text" name="nom" placeholder="Votre nom" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>Prénom</label>
+                                        <input type="text" name="prenom" placeholder="Votre prénom">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>Téléphone *</label>
+                                        <input type="tel" name="telephone" placeholder="Ex: 699999999" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input type="email" name="email" placeholder="votre@email.com">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h3 class="form-section-title">💳 Mode de paiement</h3>
+                                <div class="payment-options">
+                                    <label class="payment-option">
+                                        <input type="radio" name="mode" value="Cash" required>
+                                        <span class="payment-label">
+                                            <span class="payment-icon">💵</span>
+                                            <span>Espèces</span>
+                                        </span>
+                                    </label>
+                                    
+                                    <label class="payment-option">
+                                        <input type="radio" name="mode" value="Mobile Money">
+                                        <span class="payment-label">
+                                            <span class="payment-icon">📱</span>
+                                            <span>Mobile Money</span>
+                                        </span>
+                                    </label>
+                                    
+                                    <label class="payment-option">
+                                        <input type="radio" name="mode" value="Carte bancaire">
+                                        <span class="payment-label">
+                                            <span class="payment-icon">💳</span>
+                                            <span>Carte bancaire</span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn-cancel" onclick="toggleReservationForm({{ voyage.id_voyage }})">
+                                    Annuler
+                                </button>
+                                <button type="submit" class="btn-confirm">
+                                    ✅ Confirmer la réservation
+                                </button>
+                            </div>
+>>>>>>> origin/master
                         </form>
 
                     </div>
@@ -174,6 +403,7 @@
                 {% endfor %}
             </div>
         </section>
+<<<<<<< HEAD
 
         {% elif ville_depart or ville_arrivee %}
         <section class="no-results">
@@ -192,5 +422,64 @@
         <p>&copy; 2025 MBOA TRAVEL. Tous droits réservés.</p>
     </footer>
 
+=======
+        {% else %}
+        <section class="no-results">
+            <div class="empty-state">
+                <div class="empty-icon">🚌</div>
+                <h3>Aucun voyage disponible</h3>
+                <p>Nous n'avons pas trouvé de voyage correspondant à vos critères.</p>
+                <p class="hint">Essayez de modifier vos dates ou villes de recherche.</p>
+                <a href="{{ url_for('public_index') }}" class="btn-back">
+                    ← Retour à l'accueil
+                </a>
+            </div>
+        </section>
+        {% endif %}
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="main-footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL" class="footer-logo">
+                <p>Le meilleur service de transport interurbain au Cameroun</p>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <ul>
+                    <li>📧 <a href="mailto:contact@mboa-travel.cm">contact@mboa-travel.cm</a></li>
+                    <li>📞 <a href="tel:+237699999999">+237 6 99 99 99 99</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 MBOA TRAVEL. Tous droits réservés.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function toggleMobileMenu() {
+        const nav = document.querySelector('.main-nav');
+        nav.classList.toggle('active');
+    }
+
+    function toggleReservationForm(voyageId) {
+        const form = document.getElementById(`form-${voyageId}`);
+        form.classList.toggle('hidden');
+        
+        // Scroll vers le formulaire si il s'ouvre
+        if (!form.classList.contains('hidden')) {
+            form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+</script>
+
+>>>>>>> origin/master
 </body>
 </html>

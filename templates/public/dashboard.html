@@ -33,10 +33,10 @@
     <section class="dashboard-section">
         <h2>Que souhaitez-vous faire ?</h2>
         <div class="dashboard-actions">
-            <a href="{{ url_for('recherche') }}" class="action-btn">
+            <a href="{{ url_for('public_reservation') }}" class="action-btn">
                 <span class="icon">🔍</span>
-                <h3>Rechercher un trajet</h3>
-                <p>Trouvez le voyage qui vous convient</p>
+                <h3>Faire une réservation</h3>
+                <p>Réservez pour un voyage dès maintenant</p>
             </a>
             
             <a href="{{ url_for('mes_reservations') }}" class="action-btn">
@@ -59,8 +59,7 @@
         </div>
     </section>
 
-    <footer class="footer">
-        <p>&copy; 2025 MBOA TRAVEL - Tous droits réservés</p>
-    </footer>
+    <!-- Footer -->
+    {% include 'footer.html' %}
 </body>
 </html>

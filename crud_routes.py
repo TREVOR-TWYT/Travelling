@@ -1,7 +1,14 @@
 from flask import Blueprint, request, render_template, jsonify, redirect, url_for
-from models import db, Agence, Personnel, Client, Trajet, Vehicule, Voyage, Reservation, Paiement
+
+frm models import db, Agence, Personnel, Client, Trajet, Vehicule, Voyage, Reservation, Paiement
+
+from werkzeug.security import generate_password_hash
+from models import*  # importe db directement depuis models
+
 import datetime
 import uuid
+
+#db = models.db
 
 crud = Blueprint("crud", __name__)
 
@@ -267,7 +274,15 @@ def reservation():
 
     client = Client.query.filter_by(telephone=telephone).first()
     if not client:
-        client = Client(nom=nom, prenom=prenom, telephone=telephone, email=email)
+
+        client = Client(
+            nom=nom,
+            prenom=prenom,
+            telephone=telephone,
+            email=email,
+            password=generate_password_hash("default123"),
+            cni="none"
+        )
         db.session.add(client)
         db.session.commit()
 

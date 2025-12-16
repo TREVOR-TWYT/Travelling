@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact – BlueVoyage</title>
+    <title>Contact – MBOA TRAVEL</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
     <header class="header">
-        <div class="logo">MBOA<span>TRAVEL</span></div>
+        <div class="logo"><span>MBOA TRAVEL</span></div>
         <nav class="navbar">
-            <a href="/">Accueil</a>
-            <a href="/reservations">Réservations</a>
-            <a class="active" href="/contact">Contact</a>
+            <a href="{{ url_for('public_index') }}">Accueil</a>
+            <a href="{{ url_for('public_reservation') }}">Réservations</a>
         </nav>
     </header>
 
@@ -22,11 +21,20 @@
 
             <h1>Contactez-nous</h1>
 
-            {% if success %}
-<div style="background-color:#e0f7ff; padding:12px; border-radius:8px; color:#005f99; margin-bottom:20px;">
-    Votre message a été envoyé avec succès ! Nous vous contacterons très bientôt.
-</div>
-{% endif %}
+            <!-- FLASH MESSAGES -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="flash flash-{{ category }}" 
+                       style="padding:12px; border-radius:8px; margin-bottom:20px;
+                              {% if category == 'success' %}background-color:#e0f7ff; color:#005f99;
+                              {% elif category == 'error' %}background-color:#ffe0e0; color:#990000;
+                              {% elif category == 'info' %}background-color:#f0f0f0; color:#333;{% endif %}">
+                      {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
 
             <p class="contact-intro">
                 Une question, une réservation ou besoin d'aide ?  
