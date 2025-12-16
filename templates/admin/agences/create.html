@@ -1,16 +1,28 @@
 {% extends "admin/layout.html" %}
+
 {% block content %}
-<h2>Créer une nouvelle agence</h2>
+<div class="form-container compact-form">
+    <h2>Créer une nouvelle agence</h2>
 
-<form action="" method="POST">
-    <label>Nom de l'agence :</label>
-    <input type="text" name="nom_agence" required><br><br>
+    <form method="POST" class="agence-form">
+        
+        <div class="form-group full-width">
+            <label for="nom_agence">Nom de l'agence :</label>
+            <input type="text" id="nom_agence" name="nom_agence" required placeholder="Ex: Agence Principale Yaoundé">
+        </div>
 
-    <label>Adresse :</label>
-    <input type="text" name="adresse"><br><br>
+        <div class="form-group full-width">
+            <label for="adresse">Adresse :</label>
+            <input type="text" id="adresse" name="adresse" placeholder="Ex: Quartier Mvog-Mbi, Rue 123">
+        </div>
+        
+        <div class="form-submit">
+            <button type="submit" class="btn-primary">Créer l'agence</button>
+        </div>
+    </form>
 
-    <button type="submit">Créer</button>
-</form>
-
-<a href="{{ url_for('crud.list_agences') }}">Retour à la liste</a>
+    <div class="back-link">
+        <a href="{{ url_for('crud.list_agences') }}">← Retour à la liste</a>
+    </div>
+</div>
 {% endblock %}

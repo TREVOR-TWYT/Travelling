@@ -1,16 +1,37 @@
 {% extends "admin/layout.html" %}
 {% block content %}
-<h2>Modifier l'agence #{{ agence.id_agence }}</h2>
 
-<form action="" method="POST">
-    <label>Nom de l'agence :</label>
-    <input type="text" name="nom_agence" value="{{ agence.nom_agence }}" required><br><br>
+<div class="form-container compact-form">
+    <h2>Modifier l'agence #{{ agence.id_agence }}</h2>
 
-    <label>Adresse :</label>
-    <input type="text" name="adresse" value="{{ agence.adresse }}"><br><br>
+    <form method="POST" class="agence-edit-form">
+        
+        <div class="form-group full-width">
+            <label for="nom_agence">Nom de l'agence :</label>
+            <input type="text" 
+                   id="nom_agence" 
+                   name="nom_agence" 
+                   value="{{ agence.nom_agence }}" 
+                   required 
+                   placeholder="Nom de l'agence">
+        </div>
 
-    <button type="submit">Enregistrer</button>
-</form>
+        <div class="form-group full-width">
+            <label for="adresse">Adresse :</label>
+            <input type="text" 
+                   id="adresse" 
+                   name="adresse" 
+                   value="{{ agence.adresse or '' }}" 
+                   placeholder="Adresse de l'agence (Optionnel)">
+        </div>
+        
+        <div class="form-submit">
+            <button type="submit" class="btn-primary">Enregistrer les modifications</button>
+        </div>
+    </form>
 
-<a href="{{ url_for('crud.list_agences') }}">Retour à la liste</a>
+    <div class="back-link">
+        <a href="{{ url_for('crud.list_agences') }}">← Retour à la liste des agences</a>
+    </div>
+</div>
 {% endblock %}

@@ -1,39 +1,79 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Connexion</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <title>Connexion - MBOA TRAVEL</title>
+    <link rel="stylesheet" href="/static/css/login.css">
 </head>
-
 <body>
 
-<div class="container">
 
-    {% if error %}
-    <p class="error">{{ error }}</p>
-    {% endif %}
+<div class="login-container">
 
-    <div class ="side-message">
-        <h2> Bienvenue </h2>
-        <p>Accede facilement a ton espace personnel.</p>
-        <p>Entre ton <strong>email</strong> et ton <strong>mot de passe</strong> pour te connecter.</p>
-    </div>
-
-    <div class="form-box">
-        <h2>Connexion</h2>
-        <form method="POST" action="{{ url_for('public_login') }}">
-            <label>Mot de passe</label>
-            <input type="nom" name="nom" placeholder="nom" required>
-            <input type="password" name="password" placeholder="Mot de passe" required>
-            <button type="submit">Se connecter</button>
-
-            <p class="bottom-text">
-                Pas encore inscrit ? <a href="/register">Créer un compte</a>
-            </p>
-        </form>
-    </div>
+<div class ="side-message">
+      <h2> Bienvenue </h2>
+      <p>Accede facilement a ton espace personnel.</p>
+      <p>Entre ton <strong>email</strong> et ton <strong>mot de passe</strong> pour te connecter.</p>
 </div>
+
+
+<div class="form-box">
+
+  <div class="logo">
+  <a href="/">
+    <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="MBOA TRAVEL">
+  </a>
+</div>
+
+<h2>Connexion</h2>
+<p class="subtitle">Rejoignez MBOA TRAVEL et voyagez en toute simplicité</p>
+
+    <form method="POST" id="loginForm">
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-container">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Mot de passe" required>
+        <button type="submit" class="btn-register" id="submitBtn">Se connecter</button>
+        
+        <!-- Loader -->
+        <div id="loader" class="loader" style="display: none;"></div>
+    </form>
+
+    <!--  SCRIPT 100% FONCTIONNEL AVEC DÉLAI -->
+    <script>
+        const form = document.getElementById("loginForm");
+        const loader = document.getElementById("loader");
+        const btn = document.getElementById("submitBtn");
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();  // empêche l’envoi immédiat
+
+            btn.disabled = true; 
+            loader.style.display = "inline-block"; // affiche le rond
+
+            // ⏱️ délai avant envoi (2000 ms = 2 secondes)
+            setTimeout(() => {
+                form.submit();
+            }, 2000);
+        });
+    </script>
+    
+    <p class="bottom-text"> Vous n'avez pas de compte ? <a href="{{ url_for('handle_register') }}">S’inscrire</a></p>
+
+</div>
+</div>
+
 
 </body>
 </html>
+

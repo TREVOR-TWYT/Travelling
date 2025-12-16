@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Informations Client - MBOA TRAVEL</title>
+    <link rel="stylesheet" href="/static/css/reservation.css">
+    
+    
+</head>
+<body>
+
+{% include 'public/header.html' %}
+
+<div class="trajets-container">
+    <h2>Confirmez vos informations pour la réservation</h2>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <div class="info-container">
+
+        <div class="form-section guest-form">
+            <h3>Option 1 : Réservation Rapide (Invité)</h3>
+            <p>Saisissez vos données. Votre billet sera associé à ces informations.</p>
+            
+            <form method="POST" action="{{ url_for('crud.saisie_client_info') }}">
+                
+                <label for="nom">Nom :</label>
+                <input type="text" id="nom" name="nom" required>
+
+                <label for="prenom">Prénom :</label>
+                <input type="text" id="prenom" name="prenom" required>
+
+                <label for="telephone">Téléphone :</label>
+                <input type="text" id="telephone" name="telephone" required placeholder="Ex: 6XXXXXXXX">
+                
+                <label for="cni">Numéro CNI :</label>
+                <input type="text" id="cni" name="cni" required>
+
+                <label for="email">Email :</label>
+                <input type="email" id="email" name="email" placeholder="Optionnel, pour la réception du billet">
+                
+                <input type="hidden" name="action" value="guest_submit">
+
+                <button type="submit" class="btn">
+                    Continuer (Passer au paiement)
+                </button>
+            </form>
+        </div>
+        
+        <div class="form-section login-form">
+            <h3>Option 2 : Connexion Client Existant</h3>
+            <p>Connectez-vous pour lier cette réservation à votre compte.</p>
+            
+            <form method="POST" action="{{ url_for('crud.saisie_client_info') }}"> 
+                
+                <label for="login_identifier">Email ou Téléphone :</label>
+                <input type="text" id="login_identifier" name="login_identifier" required>
+
+                <label for="login_password">Mot de passe :</label>
+                <input type="password" id="login_password" name="login_password" required>
+                
+                <input type="hidden" name="action" value="login_submit">
+
+                <button type="submit" class="btn">Se connecter & Continuer</button>
+                <p style="text-align: center; margin-top: 15px;"><a href="{{ url_for('public.mot_de_passe_oublie') }}">Mot de passe oublié ?</a></p>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+{% include 'public/footer.html' %}
+
+</body>
+</html>
