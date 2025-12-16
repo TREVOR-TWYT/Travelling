@@ -23,12 +23,6 @@ migrate = Migrate(app, db)
 # Register blueprint
 app.register_blueprint(crud)
 
-# ============================================
-# CONFIGURATION ADMIN
-# ============================================
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD_HASH = generate_password_hash("admin")
-
 
 # ============================================
 # DÉCORATEUR POUR PROTÉGER LES ROUTES ADMIN

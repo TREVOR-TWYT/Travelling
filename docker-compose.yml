@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+  # Base de données PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: mboa_travel_db
+    restart: always
+    environment:
+      POSTGRES_USER: trevor
+      POSTGRES_PASSWORD: TREFRIED1707
+      POSTGRES_DB: travelling
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mboa_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trevor -d travelling"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Application Flask
+  web:
+    build: .
+    container_name: mboa_travel_app
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=production
+      - DATABASE_URL=postgresql://trevor:TREFRIED1707@db:5432/travelling
+    volumes:
+      - .:/app
+      - static_volume:/app/static
+      - templates_volume:/app/templates
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - mboa_network
+    command: python app.py
+
+# Volumes pour la persistance des données
+volumes:
+  postgres_data:
+    driver: local
+  static_volume:
+    driver: local
+  templates_volume:
+    driver: local
+
+# Réseau pour la communication entre les conteneurs
+networks:
+  mboa_network:
+    driver: bridge
+```
+
+## **4. Créez le fichier .dockerignore**
+
+Créez un fichier `.dockerignore` à la racine :
+```
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+flask_env/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git
+.gitignore
+.mypy_cache
+.pytest_cache
+.hypothesis
+*.db
+*.sqlite
+*.sqlite3
+.DS_Store
+.env
+.vscode
+.idea
+*.swp
+*.swo
+*~
