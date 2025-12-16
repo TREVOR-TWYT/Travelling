@@ -36,9 +36,9 @@
         </div>
 
         <nav class="menu-links">
-          <a href="{{ url_for('crud.reservation') }}">📝 Faire une réservation</a></li>
-          <a href="{{ url_for('crud.trajets_list') }}">📍 Voir les trajets</a></li>
-          <a href="/mes_reservations">📅 Mes réservations</a></li>
+          <a href="{{ url_for('public_reservation') }}">📝 Faire une réservation</a></li>
+          <a href="{{ url_for('public_trajets') }}">📍 Voir les trajets</a></li>
+          <a href="{{ url_for('mes_reservations') }}">📅 Mes réservations</a></li>
           <a href="{{ url_for('logout') }}" class="logout">🚪 Se déconnecter</a></li>
           </ul>
         </nav>
@@ -86,19 +86,19 @@
               <div class="destination-card">
                   <h3>Bafoussam → Yaoundé 🇨🇲 </h3>
                   <p>À partir de 10 000 FCFA</p>
-                  <a href="{{ url_for('crud.trajets_list') }}">Voir plus →</a>
+                  <a href="{{ url_for('public_trajets') }}">Voir plus →</a>
               </div>
 
               <div class="destination-card">
                   <h3>Douala → Yaoundé 🇨🇲</h3>
                   <p>Trajets disponibles chaque jour</p>
-                  <a href="{{ url_for('crud.trajets_list') }}">Voir plus →</a>
+                  <a href="{{ url_for('public_trajets') }}">Voir plus →</a>
               </div>
 
               <div class="destination-card">
                   <h3>Kribi 🇨🇲</h3>
                   <p>Réduction exceptionnelle -15%</p>
-                  <a href="{{ url_for('crud.trajets_list') }}">Voir plus →</a>
+                  <a href="{{ url_for('public_trajets') }}">Voir plus →</a>
               </div>
 
           </div>
@@ -110,13 +110,13 @@
               <p><strong>Trajet :</strong> Douala → Yaoundé</p>
               <p><strong>Date :</strong> 12 Décembre 2025</p>
               <p><strong>Statut :</strong> Confirmé ✅</p>
-              <a href="{{ url_for('crud.reservation') }}">Voir toutes les réservations →</a>
+              <a href="{{ url_for('mes_reservations') }}?ville_depart=Douala&ville_arrivee=Yaoundé">Voir toutes les réservations →</a>
           </div>
 
           <!-- ======== BOUTONS D’ACTIONS RAPIDES ========= -->
           <div class="quick-actions">
-              <a class="btn" href="{{ url_for('crud.reservation') }}">📝 Nouvelle réservation</a>
-              <a class="btn" href="{{ url_for('crud.trajets_list') }}">📍 Voir les trajets</a>
+              <a class="btn" href="{{ url_for('public_reservation') }}">📝 Nouvelle réservation</a>
+              <a class="btn" href="{{ url_for('public_trajets') }}">📍 Voir les trajets</a>
               
           </div>
 

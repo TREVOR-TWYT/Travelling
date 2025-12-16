@@ -1,78 +1,197 @@
-/* CONTACT PAGE */
+/* --- NOUVEAU CSS POUR LE HEADER --- */
+.header {
+    background-color: #764ba2; /* Couleur principale (violet) */
+    color: white;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky; /* Rendre le header fixe */
+    top: 0;
+    z-index: 1000; /* Assurer qu'il soit au-dessus du reste du contenu */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+.logo span {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #f5faff; /* Couleur claire pour le contraste */
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: 500;
+    margin-left: 30px; /* Espacement entre les liens */
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.navbar a:hover {
+    background-color: #5b3781; /* Darken on hover */
+    color: white;
+}
+
+/* Vous pourriez ajouter une classe pour le lien actif si nécessaire, par exemple : */
+/*
+.navbar a.active {
+    background-color: #5b3781;
+    font-weight: 600;
+}
+*/
+
+/* Media Query pour les petits écrans (si la navigation devient trop serrée) */
+@media (max-width: 600px) {
+    .header {
+        flex-direction: column;
+        padding: 15px 20px;
+    }
+    .logo {
+        margin-bottom: 10px;
+    }
+    .navbar a {
+        margin: 0 10px; /* Moins d'espace pour les petits écrans */
+    }
+}
+
+/* --- 1. CONTACT SECTION --- */
 .contact-section {
-    padding: 60px 20px;
+    padding: 80px 20px; /* Augmenter le padding vertical */
     background: #f5faff;
+    /* Dégradé léger pour plus de style (optionnel) */
+    background-image: linear-gradient(135deg, #f5faff 0%, #e8f3ff 100%); 
 }
 
 .contact-container {
-    max-width: 1100px; 
+    max-width: 1100px;
     margin: auto;
 }
 
+/* --- 2. TITRES ET INTRODUCTION --- */
 .contact-container h1 {
     text-align: center;
-    color: #764ba2;
-    font-size: 36px;
-    margin-bottom: 10px;
+    color: #4c2c73; /* Couleur plus foncée pour le titre */
+    font-size: 42px;
+    margin-bottom: 5px;
+    font-weight: 700;
 }
 
 .contact-intro {
     text-align: center;
-    font-size: 18px;
-    color: #764ba2;
-    margin-bottom: 40px;
+    font-size: 20px;
+    color: #6a40a2; /* Couleur douce */
+    margin-bottom: 50px;
 }
 
+/* --- 3. GRILLE (Formulaire + Infos) --- */
 .contact-grid {
     display: flex;
     gap: 40px;
     flex-wrap: wrap;
+    align-items: stretch; /* Assurer que les colonnes ont la même hauteur */
 }
 
 .contact-form, .contact-info {
     background: white;
-    padding: 30px;
-    border-radius: 10px;
+    padding: 35px; /* Augmenter le padding interne */
+    border-radius: 12px;
     flex: 1;
     min-width: 320px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1); /* Ombre plus prononcée et moderne */
+    border: 1px solid #e0e0e0;
+}
+
+/* --- 4. FORMULAIRE --- */
+.contact-form h2 {
+    color: #764ba2;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.form-group {
+    margin-bottom: 15px; /* Espace entre les groupes de champs */
 }
 
 .contact-form label {
-    font-weight: bold;
-    color: #764ba2;
+    display: block;
+    font-weight: 600;
+    color: #4c2c73;
+    margin-bottom: 5px;
+    font-size: 15px;
 }
 
 .contact-form input,
 .contact-form textarea {
     width: 100%;
-    padding: 12px;
-    margin: 10px 0 20px;
-    border: 1px solid #bcd2e8;
+    padding: 14px;
+    margin-top: 5px;
+    border: 1px solid #c8d8f0;
     border-radius: 8px;
+    box-sizing: border-box; /* Inclure padding et border dans la largeur */
+    transition: border-color 0.3s;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    border-color: #764ba2; /* Highlight au focus */
+    outline: none;
 }
 
 .contact-form textarea {
-    height: 150px;
-    resize: none;
+    height: 140px;
+    resize: vertical; /* Permettre de redimensionner verticalement */
 }
 
+/* --- 5. BOUTON --- */
 .contact-btn {
     width: 100%;
-    padding: 14px;
+    padding: 15px;
     background: #764ba2;
     color: white;
     border: none;
     border-radius: 8px;
     font-size: 18px;
     cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-top: 15px;
+    transition: background 0.3s ease;
 }
 
 .contact-btn:hover {
-    background: #764ba2;
+    background: #5b3781; /* Darken on hover */
+    box-shadow: 0 4px 10px rgba(118, 75, 162, 0.4);
 }
 
+/* --- 6. INFOS DE CONTACT --- */
 .contact-info h2 {
-    color: #764ba2;
+    color: #4c2c73;
+    margin-bottom: 25px;
+    font-size: 24px;
+    border-bottom: 2px solid #e8f3ff;
+    padding-bottom: 10px;
+}   
+
+.contact-info-item {
     margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    font-size: 16px;
+}
+
+.contact-info-item strong {
+    display: block;
+    color: #764ba2;
+    font-weight: 700;
+    margin-bottom: 3px;
+}
+
+.contact-icon {
+    font-size: 24px;
+    color: #764ba2;
+    margin-right: 15px;
+    line-height: 1; /* Aligner l'icône correctement */
 }
