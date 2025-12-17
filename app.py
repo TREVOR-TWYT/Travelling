@@ -18,7 +18,7 @@ app = Flask(__name__)
 # Utiliser DATABASE_URL si définie (Docker), sinon config locale
 database_url = os.environ.get(
     'DATABASE_URL',
-    'postgresql://trevor:TREFRIED1707@localhost/travelling'
+    'postgresql://postgres:azerty@localhost/Travelling'
 )
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
