@@ -4,7 +4,7 @@ FROM python:3.10-slim
 # Définir le répertoire de travail
 WORKDIR /app
 
-# Installer les dépendances système nécessaires pour PostgreSQL
+# Installer les dépendances système nécessaires
 RUN apt-get update && apt-get install -y \
     gcc \
     postgresql-client \
@@ -16,17 +16,22 @@ COPY requirements.txt .
 
 # Installer les dépendances Python
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install python-dotenv
 
 # Copier tout le code de l'application
 COPY . .
 
-# Exposer le port 5000 pour Flask
+# Créer les répertoires nécessaires
+RUN mkdir -p templates/errors static/css static/image
+
+# Exposer le port 5000
 EXPOSE 5000
 
-# Variables d'environnement par défaut
+# Variables d'environnement
 ENV FLASK_APP=app.py
-ENV FLASK_ENV=production
+ENV FLASK_ENV=development
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app
 
-# Commande pour démarrer l'application
-CMD ["python", "app.py"]
+# Commande de démarrage
+CMD ["flask", "run", "--host=0.0.0.0"]

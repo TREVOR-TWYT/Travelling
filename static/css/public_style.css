@@ -57,6 +57,7 @@ body {
 }
 
 .logo img {
+    border-radius: 70px;
     height: 60px;
     width: auto;
 }
@@ -398,7 +399,8 @@ body {
     text-align: center;
     padding: 40px 30px;
     border-radius: 20px;
-    background: var(--bg-light);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: var(--white);
     transition: var(--transition);
 }
 
@@ -420,7 +422,7 @@ body {
 }
 
 .advantage-card p {
-    color: var(--text-light);
+    color: var(--text-dark);
     line-height: 1.8;
 }
 

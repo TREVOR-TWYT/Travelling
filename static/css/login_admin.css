@@ -129,6 +129,7 @@ body {
 }
 
 .login-header .logo img {
+    border-radius: 70px;
     max-width: 150px;
     height: auto;
 }

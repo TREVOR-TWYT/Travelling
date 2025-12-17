@@ -28,7 +28,7 @@
 <h2>Connexion</h2>
 <p class="subtitle">Rejoignez MBOA TRAVEL et voyagez en toute simplicité</p>
 
-    <form method="POST" id="loginForm">
+    <form method="POST" id="loginForm" action="{{ url_for('handle_client_login') }}">
 
       {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -41,9 +41,9 @@
 {% endwith %}
 
 
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Mot de passe" required>
-        <button type="submit" class="btn-register" id="submitBtn">Se connecter</button>
+            <input type="text" name="identifier" placeholder="Email ou Téléphone" required>
+            <input type="password" name="password" placeholder="Mot de passe" required>
+            <button type="submit" id="submitBtn">Se connecter</button>
         
         <!-- Loader -->
         <div id="loader" class="loader" style="display: none;"></div>
@@ -68,7 +68,7 @@
         });
     </script>
     
-    <p class="bottom-text"> Vous n'avez pas de compte ? <a href="{{ url_for('handle_register') }}">S’inscrire</a></p>
+    <p class="bottom-text"> Vous n'avez pas de compte ? <a href="{{ url_for('public_register') }}">S’inscrire</a></p>
 
 </div>
 </div>

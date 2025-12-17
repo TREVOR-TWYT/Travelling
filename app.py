@@ -2,22 +2,32 @@ from flask import Flask, request, render_template, redirect, session, url_for, f
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 from functools import wraps
-from models import * # db déclaré dans models.py
-from crud_routes import crud  # importe les routes après db
-from flask_migrate import Migrate   # ✅ AJOUT
+from models import *
+from crud_routes import crud
+from flask_migrate import Migrate
 import datetime
 import uuid
+import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://trevor:TREFRIED1707@localhost/travelling"
+
+
+# ============================================
+# CONFIGURATION POUR DOCKER
+# ============================================
+# Utiliser DATABASE_URL si définie (Docker), sinon config locale
+database_url = os.environ.get(
+    'DATABASE_URL',
+    'postgresql://trevor:TREFRIED1707@localhost/travelling'
+)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'trefried1707'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'trefried1707')
 
+db.init_app(app)
 
-db.init_app(app)   # lie db à app
-
-
-# ✅ INITIALISATION FLASK-MIGRATE
+# Initialisation Flask-Migrate
 migrate = Migrate(app, db)
 
 # Register blueprint
@@ -62,7 +72,7 @@ def admin_login():
     # Si l’admin est déjà connecté
     if session.get('admin'):
         return redirect(url_for('admin'))
-    
+
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
@@ -164,7 +174,7 @@ def reservation_confirmation():
                 prenom=prenom,
                 telephone=telephone,
                 email=email,
-                password=generate_password_hash("default123"),  # Set a default password or manage it differently
+                password_hash=generate_password_hash("default123"),  # Set a default password or manage it differently
                 cni="none"
             )
             db.session.add(client)
@@ -213,57 +223,86 @@ def reservation_confirmation():
         return redirect(url_for('public_reservation'))
 
 
-@app.route("/public/login")
-@app.route("/public/index/login")
-@app.route("/login")
+# ============================================
+# ROUTES PUBLIQUES/CLIENT (Connexion)
+# ============================================
+
+# 1. Fonction pour AFFICHER le formulaire de connexion (Méthode GET)
+# Endpoint utilisé dans url_for : 'public_login'
+@app.route("/public/login", endpoint='public_login', methods=["GET"])
+@app.route("/public/index/login", endpoint='public_login', methods=["GET"])
+@app.route("/login", endpoint='public_login', methods=["GET"])
 def public_login():
+    """Affiche la page de connexion client."""
     if session.get('client_id'):
         return redirect(url_for('public_dashboard'))
     return render_template("/public/login.html")
 
 
-@app.route("/public/login", methods=["POST"])
-@app.route("/public/index/login", methods=["POST"])
-@app.route("/login", methods=["POST"])
-def handle_login():
+# 2. Fonction pour TRAITER la soumission du formulaire (Méthode POST)
+# Endpoint utilisé par le formulaire : 'handle_client_login' (ou l'URL /login)
+@app.route("/public/login", endpoint='handle_client_login', methods=["POST"])
+@app.route("/public/index/login", endpoint='handle_client_login', methods=["POST"])
+@app.route("/login", endpoint='handle_client_login', methods=["POST"])
+def handle_client_login():
+    """Traite la soumission du formulaire de connexion client."""
+    identifier = request.form.get("identifier") 
     password = request.form.get("password")
     
-    client = Client.query.filter_by(password=password).first()
+    # Vérifier l'existence d'un identifiant
+    if not identifier or not password:
+        flash('Veuillez entrer l\'identifiant et le mot de passe.', 'error')
+        # Redirection vers l'endpoint GET
+        return redirect(url_for('public_login'))
+
+    # Tentative de recherche par Email
+    client = Client.query.filter_by(email=identifier).first()
     
-    if client:
+    # Si le client n'est pas trouvé par email, essayer par téléphone
+    if not client:
+        client = Client.query.filter_by(telephone=identifier).first()
+    
+    # Vérification: Client trouvé ET mot de passe correct
+    if client and client.check_password(password):
         session['client_id'] = client.id_client
         flash('Connexion réussie ! Bienvenue', 'success')
         return redirect(url_for('public_dashboard'))
     else:
-        flash('Client non trouvé. Veuillez vous inscrire.', 'error')
-        return render_template("/public/login.html", error="Client non trouvé")
+        # Échec : Client non trouvé OU mot de passe incorrect
+        flash('Identifiants ou mot de passe incorrects.', 'error')
+        # Retourne sur la page de login avec le message d'erreur
+        return render_template("/public/login.html", error="Identifiants incorrects")
 
+# ============================================
+# ROUTES PUBLIQUES/CLIENT (Inscription)
+# ============================================
 
-@app.route("/public/register")
-@app.route("/public/index/register")
-@app.route("/register")
+# 1. Fonction pour AFFICHER le formulaire d'inscription (Méthode GET)
+# ⭐ CORRECTION: Ajout explicite de l'endpoint 'public_register' pour Jinja
+@app.route("/public/register", endpoint='public_register', methods=["GET"])
+@app.route("/public/index/register", endpoint='public_register', methods=["GET"])
+@app.route("/register", endpoint='public_register', methods=["GET"])
 def public_register():
     if session.get('client_id'):
         return redirect(url_for('public_dashboard'))
     return render_template("/public/register.html")
 
 
-@app.route("/public/register", methods=["POST"])
-@app.route("/public/index/register", methods=["POST"])
-@app.route("/register", methods=["POST"])
+# 2. Fonction pour TRAITER l'inscription (Méthode POST)
+# ⭐ CORRECTION: Ajout explicite de l'endpoint 'handle_register' pour Flask
+@app.route("/public/register", endpoint='handle_register', methods=["POST"])
+@app.route("/public/index/register", endpoint='handle_register', methods=["POST"])
+@app.route("/register", endpoint='handle_register', methods=["POST"])
 def handle_register():
     nom = request.form.get("nom")
     prenom = request.form.get("prenom")
     telephone = request.form.get("telephone")
     email = request.form.get("email")
     cni = request.form.get("cni")
-    password = request.form.get("password")
+    password = request.form.get("password") # Mot de passe en clair
     
-    # Vérifier si le client existe déjà
-    existing_client = Client.query.filter_by(telephone=telephone).first()
-    if existing_client:
-        flash('Ce numéro de téléphone est déjà enregistré', 'error')
-        return render_template("/public/register.html", error="Ce numéro de téléphone est déjà enregistré")
+    # ... Vérification si le client existe déjà ...
+    # ...
     
     # Créer le nouveau client
     client = Client(
@@ -271,17 +310,26 @@ def handle_register():
         prenom=prenom,
         telephone=telephone,
         email=email,
-        password=password,
+        # 🟢 CORRECTION : Hacher le mot de passe et l'assigner à password_hash
+        password_hash=generate_password_hash(password),
         cni=cni
     )
     db.session.add(client)
-    db.session.commit()
     
+    try:
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        # Log l'erreur pour le debug (ex: violation d'une contrainte UNIQUE)
+        print(f"Erreur lors de l l'inscription du client : {e}")
+        flash("Une erreur est survenue (email ou CNI déjà utilisé ?)", 'error')
+        return redirect(url_for('public_register'))
+
+
     # Connecter automatiquement le client
     session['client_id'] = client.id_client
     flash('Inscription réussie ! Bienvenue chez MBOA TRAVEL', 'success')
     return redirect(url_for('public_dashboard'))
-
 
 @app.route("/public/contact")
 @app.route("/public/index/contact")

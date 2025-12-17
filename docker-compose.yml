@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Base de données PostgreSQL
   db:
@@ -26,74 +24,27 @@ services:
   web:
     build: .
     container_name: mboa_travel_app
-    restart: always
+    restart: "no"
     ports:
       - "5000:5000"
     environment:
-      - FLASK_APP=app.py
-      - FLASK_ENV=production
+      - FLASK_APP=app
       - DATABASE_URL=postgresql://trevor:TREFRIED1707@db:5432/travelling
+      - SECRET_KEY=trefried1707_docker_secret_key_2025
     volumes:
       - .:/app
-      - static_volume:/app/static
-      - templates_volume:/app/templates
     depends_on:
       db:
         condition: service_healthy
     networks:
       - mboa_network
-    command: python app.py
-
-# Volumes pour la persistance des données
+    entrypoint: ["/app/entrypoint.sh"]
+    #command: >
+  #     sh -c "python -c 'import app; with app.app_context(): app.db.create_all()' && flask run --host=0.0.0.0"
 volumes:
   postgres_data:
     driver: local
-  static_volume:
-    driver: local
-  templates_volume:
-    driver: local
 
-# Réseau pour la communication entre les conteneurs
 networks:
   mboa_network:
     driver: bridge
-```
-
-## **4. Créez le fichier .dockerignore**
-
-Créez un fichier `.dockerignore` à la racine :
-```
-__pycache__
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-flask_env/
-.venv
-pip-log.txt
-pip-delete-this-directory.txt
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.log
-.git
-.gitignore
-.mypy_cache
-.pytest_cache
-.hypothesis
-*.db
-*.sqlite
-*.sqlite3
-.DS_Store
-.env
-.vscode
-.idea
-*.swp
-*.swo
-*~

@@ -1,6 +1,24 @@
-# Ignorer les caches Python
-__pycache__/
-*.pyc
+## **5. .dockerignore**
 
-# Ignorer les dossiers de migration vides (si vous utilisez Alembic/Flask-Migrate)
-migrations/__pycache__/
+Créez `.dockerignore` :
+```
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+flask_env/
+.venv
+*.log
+.git
+.gitignore
+.DS_Store
+.vscode
+.idea
+*.swp
+*.db
+*.sqlite
+*.sqlite3
+migrations/__pycache__

@@ -4,90 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mes Réservations - MBOA TRAVEL</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/mes_reservations.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mes_reservations.css') }}"> 
 </head>
 <body>
-    <!-- Header -->
     <header>
         <div class="header-content">
-            <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
+            </div>
             <h1>Mes Réservations</h1>
-            <a href="{{ url_for('public_dashboard') }}" class="btn-back">← Retour au tableau de bord</a>
+            <nav class="header-nav">
+                <a href="{{ url_for('public_index') }}" class="btn-secondary">🏠 Accueil</a>
+                <a href="{{ url_for('public_dashboard') }}" class="btn-back">← Tableau de bord</a>
+            </nav>
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="container">
         <div class="welcome-section">
             <h2>Bonjour, {{ client.prenom }} {{ client.nom }}</h2>
-            <p>Voici la liste de toutes vos réservations</p>
+            <p>Retrouvez ici le suivi complet de toutes vos réservations effectuées.</p>
         </div>
 
         {% if reservations %}
         <div class="reservations-grid">
             {% for reservation in reservations %}
             <div class="reservation-card">
+                
                 <div class="card-header">
-                    <span class="reservation-number">{{ reservation.num_reservation }}</span>
+                    <span class="reservation-number">#{{ reservation.num_reservation }}</span>
                     <span class="status-badge status-{{ reservation.statut|lower }}">{{ reservation.statut }}</span>
                 </div>
                 
                 <div class="card-body">
-                    <div class="info-row">
-                        <span class="label">📍 Trajet :</span>
-                        <span class="value">{{ reservation.voyage.trajet.ville_depart }} → {{ reservation.voyage.trajet.ville_arrivee }}</span>
+                    
+                    <div class="info-important">
+                        <div class="info-row main-info">
+                            <span class="label">📍 Trajet</span>
+                            <span class="value main-value">{{ reservation.voyage.trajet.ville_depart }} → {{ reservation.voyage.trajet.ville_arrivee }}</span>
+                        </div>
+                        <div class="info-row main-info">
+                            <span class="label">📅 Date & Heure</span>
+                            <span class="value main-value">{{ reservation.voyage.date_depart.strftime('%d/%m/%Y') }} à {{ reservation.voyage.heure_depart.strftime('%H:%M') }}</span>
+                        </div>
                     </div>
                     
-                    <div class="info-row">
-                        <span class="label">📅 Date :</span>
-                        <span class="value">{{ reservation.voyage.date_depart.strftime('%d/%m/%Y') }}</span>
+                    <hr class="separator">
+
+                    <div class="info-section">
+                        <div class="info-row">
+                            <span class="label">🚌 Véhicule :</span>
+                            <span class="value">{{ reservation.voyage.vehicule.immatriculation }} ({{ reservation.voyage.vehicule.type }})</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">⭐ Standing :</span>
+                            <span class="value">{{ reservation.voyage.standing }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">🏢 Agence :</span>
+                            <span class="value">{{ reservation.voyage.agence.nom_agence }}</span>
+                        </div>
                     </div>
-                    
-                    <div class="info-row">
-                        <span class="label">🕒 Heure :</span>
-                        <span class="value">{{ reservation.voyage.heure_depart.strftime('%H:%M') }}</span>
-                    </div>
-                    
-                    <div class="info-row">
-                        <span class="label">🚌 Véhicule :</span>
-                        <span class="value">{{ reservation.voyage.vehicule.immatriculation }} ({{ reservation.voyage.vehicule.type }})</span>
-                    </div>
-                    
-                    <div class="info-row">
-                        <span class="label">🏢 Agence :</span>
-                        <span class="value">{{ reservation.voyage.agence.nom_agence }}</span>
-                    </div>
-                    
-                    <div class="info-row">
-                        <span class="label">⭐ Standing :</span>
-                        <span class="value">{{ reservation.voyage.standing }}</span>
-                    </div>
-                    
+
                     {% if reservation.paiement %}
-                    <div class="info-row payment-info">
-                        <span class="label">💳 Montant payé :</span>
-                        <span class="value price">{{ reservation.paiement.montant }} FCFA</span>
-                    </div>
+                    <hr class="separator">
                     
-                    <div class="info-row">
-                        <span class="label">💰 Mode paiement :</span>
-                        <span class="value">{{ reservation.paiement.mode }}</span>
-                    </div>
-                    
-                    <div class="info-row">
-                        <span class="label">🔢 Référence :</span>
-                        <span class="value reference">{{ reservation.paiement.reference_transaction }}</span>
+                    <div class="payment-info-block">
+                        <div class="info-row payment-info">
+                            <span class="label">💳 Montant payé :</span>
+                            <span class="value price">{{ reservation.paiement.montant }} FCFA</span>
+                        </div>
+                        
+                        <div class="info-row">
+                            <span class="label">💰 Mode paiement :</span>
+                            <span class="value">{{ reservation.paiement.mode }}</span>
+                        </div>
+                        
+                        <div class="info-row">
+                            <span class="label">🔢 Référence :</span>
+                            <span class="value reference">{{ reservation.paiement.reference_transaction }}</span>
+                        </div>
                     </div>
                     {% endif %}
                     
-                    <div class="info-row">
-                        <span class="label">📆 Date de réservation :</span>
+                    <hr class="separator">
+
+                    <div class="info-row date-footer">
+                        <span class="label">📆 Réservé le :</span>
                         <span class="value">{{ reservation.date_reservation.strftime('%d/%m/%Y à %H:%M') }}</span>
                     </div>
+
                 </div>
                 
                 <div class="card-footer">
-                    <button class="btn-print" onclick="window.print()">🖨️ Imprimer</button>
+                    <button class="btn-print" onclick="window.print()">🖨️ Imprimer le billet</button>
                     <a href="{{ url_for('public_contact') }}" class="btn-contact">📞 Contacter l'agence</a>
                 </div>
             </div>
@@ -98,14 +108,13 @@
             <div class="empty-state">
                 <img src="{{ url_for('static', filename='image/no-data.png') }}" alt="Aucune réservation" style="max-width: 200px; opacity: 0.5;">
                 <h3>Aucune réservation trouvée</h3>
-                <p>Vous n'avez pas encore effectué de réservation.</p>
+                <p>Vous n'avez pas encore effectué de réservation. Il est temps de planifier votre prochain voyage !</p>
                 <a href="{{ url_for('public_reservation') }}" class="btn-primary">Réserver un voyage</a>
             </div>
         </div>
         {% endif %}
     </main>
 
-    <!-- Footer -->
     {% include 'footer.html' %}
 </body>
 </html>

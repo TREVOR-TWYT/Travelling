@@ -59,11 +59,23 @@ class Client(db.Model):
     telephone = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True)
     cni = db.Column(db.String(50))
-    password = db.Column(db.String(255), nullable=False)
+    # ANCIEN: password = db.Column(db.String(255), nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False) # NOUVEAU NOM
 
     reservations = db.relationship("Reservation", back_populates="client")
     expeditions = db.relationship("Expedition", back_populates="client")
     locations = db.relationship('Location', backref='client', cascade="all, delete-orphan")
+
+    # Ajout des méthodes pour gérer le hachage
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        # Utilise le hachage stocké (self.password_hash) et le mot de passe entré (password)
+        return check_password_hash(self.password_hash, password)
+
+    reservations = db.relationship("Reservation", back_populates="client")
+    # ... (reste des relations) ...
 
 
 class Trajet(db.Model):

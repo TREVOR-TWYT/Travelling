@@ -45,10 +45,10 @@
                 <p class="price">{{ "{:,}".format(montant|int).replace(",", " ") }} FCFA</p>
             </div>
 
-            <div class="actions">
-                <a href="{{ url_for('public_reservation') }}" class="btn">↩ Retour aux voyages</a>
-            </div>
-
+                <div class="card-footer">
+                    <button class="btn-print" onclick="window.print()">🖨️ Imprimer le billet</button>
+                    <a href="{{ url_for('public_contact') }}" class="btn-contact">📞 Contacter l'agence</a>
+                </div>
         </div>
 
     </div>
