@@ -12,6 +12,8 @@ import os
 import random
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
+from init_db import init_database
+
 
 app = Flask(__name__)
 
@@ -22,7 +24,7 @@ app = Flask(__name__)
 # Utiliser DATABASE_URL si définie (Docker), sinon config locale
 database_url = os.environ.get(
     'DATABASE_URL',
-    "postgresql://trevor:TREFRIED1707@localhost/travelling"
+    "postgresql://postgres:azerty@localhost/Travelling"
 )
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
@@ -47,6 +49,22 @@ migrate = Migrate(app, db)
 # Register blueprint
 app.register_blueprint(crud)
 app.register_blueprint(tourism)
+
+
+
+
+# ============================================
+# INITIALISATION AUTOMATIQUE (SOLIDE)
+# ============================================
+with app.app_context():
+    db.create_all()
+    try:
+        # On passe directement les objets app et db ici
+        init_database(app, db) 
+    except Exception as e:
+        print(f"⚠️ Note: {e}")
+
+
 
 
 # ============================================

@@ -1,4 +1,4 @@
-from app import app, db
+#from app import app, db
 from models import *
 from werkzeug.security import generate_password_hash
 from datetime import datetime, date, time, timedelta
