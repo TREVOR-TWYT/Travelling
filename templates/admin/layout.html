@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
+<head >
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Admin - MBOA TRAVEL{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
 </head>
 <body class="admin-body">
 
@@ -51,9 +52,7 @@
             </div>
         </nav>
 
-        <div class="sidebar-footer">
-            <a href="{{ url_for('admin_logout') }}" class="logout-btn">🚪 Déconnexion</a>
-        </div>
+        
     </aside>
 
     <div class="admin-main-wrapper">
