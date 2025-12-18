@@ -1,120 +1,147 @@
-{% extends 'layout.html' %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sites Touristiques - MBOA TRAVEL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/public_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tourism.css') }}">
+</head>
+<body>
 
-{% block title %}Gestion des Sites - MBOA TRAVEL{% endblock %}
-
-{% block breadcrumb %}Tourisme / Gestion des Sites{% endblock %}
-
-{% block content %}
-<div class="admin-page-header">
-    <div class="header-text">
-        <h1>📍 Gestion des Sites Touristiques</h1>
-        <p>Gérez la visibilité et les tarifs de vos destinations.</p>
-    </div>
-    <a href="{{ url_for('tourism.admin_creer_site') }}" class="btn-add-new">
-        ➕ Ajouter un site
-    </a>
-</div>
-
-<div class="sites-grid">
-    {% for site in sites %}
-    <div class="site-card">
-        <div class="site-card-image">
-            {% if site.image_url %}
-                <img src="{{ url_for('static', filename='image/' ~ site.image_url) }}" alt="{{ site.nom_site }}">
-            {% else %}
-                <div class="image-placeholder">📷 Pas d'image</div>
-            {% endif %}
-            <span class="region-tag">{{ site.region }}</span>
+<!-- Header -->
+<header class="main-header">
+    <div class="header-container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
         </div>
-
-        <div class="site-card-body">
-            <h3>{{ site.nom_site }}</h3>
-            <p class="city-info">🏙️ {{ site.ville }}</p>
-            
-            <div class="price-info">
-                <span class="price-box">Adulte: <strong>{{ "{:,}".format(site.tarif_adulte) }} F</strong></span>
-            </div>
-
-            <div class="site-card-footer">
-                <a href="{{ url_for('tourism.admin_modifier_site', id_site=site.id_site) }}" class="btn-icon edit">✏️ Modifier</a>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="{{ url_for('public_index') }}">🏠 Accueil</a></li>
+                <li><a href="{{ url_for('public_trajets') }}">🛣️ Trajets</a></li>
+                <li><a href="{{ url_for('tourism.liste_sites') }}" class="active">🏖️ Tourisme</a></li>
+                <li><a href="{{ url_for('tourism.liste_vehicules_location') }}">🚗 Location</a></li>
+                <li><a href="{{ url_for('tourism.expedition_colis') }}">📦 Expédition</a></li>
                 
-                <form action="{{ url_for('tourism.admin_supprimer_site', id_site=site.id_site) }}" method="POST" onsubmit="return confirm('Supprimer ce site ?');">
-                    <button type="submit" class="btn-icon delete">🗑️</button>
-                </form>
-            </div>
+                {% if session.get('client_id') %}
+                    <li><a href="{{ url_for('public_dashboard') }}">👤 Mon espace</a></li>
+                    <li><a href="{{ url_for('logout') }}">🚪 Déconnexion</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('public_login') }}">🔑 Connexion</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<!-- Hero -->
+<section class="tourism-hero">
+    <div class="hero-overlay"></div>
+    <div class="container">
+        <div class="tourism-hero-content">
+            <h1>🏖️ Découvrez le Cameroun</h1>
+            <p>Explorez les plus beaux sites touristiques du pays</p>
         </div>
     </div>
-    {% else %}
-    <div class="empty-state">
-        <p>Aucun site trouvé. Commencez par en créer un !</p>
+</section>
+
+<!-- Contenu -->
+<section style="padding: 60px 0; background: var(--bg-light);">
+    <div class="container">
+        <!-- Filtres -->
+        <div class="filter-section">
+            <form method="GET" action="{{ url_for('tourism.liste_sites') }}" class="filter-form">
+                <div class="form-group">
+                    <label>Région</label>
+                    <select name="region">
+                        <option value="">Toutes les régions</option>
+                        {% for region_tuple in regions %}
+                            <option value="{{ region_tuple[0] }}" {% if request.args.get('region') == region_tuple[0] %}selected{% endif %}>
+                                {{ region_tuple[0] }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn-filter">🔍 Filtrer</button>
+            </form>
+        </div>
+
+        <!-- Grille des sites -->
+        {% if sites %}
+        <div class="items-grid">
+            {% for site in sites %}
+            <div class="item-card">
+                <div class="item-image">
+                    {% if site.image_url %}
+                        <img src="{{ site.image_url }}" alt="{{ site.nom_site }}">
+                    {% else %}
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 80px;">
+                            🏖️
+                        </div>
+                    {% endif %}
+                    <div class="item-badge">{{ site.region }}</div>
+                </div>
+                <div class="item-content">
+                    <h3 class="item-title">{{ site.nom_site }}</h3>
+                    <div class="item-location">
+                        📍 {{ site.ville }}, {{ site.region }}
+                    </div>
+                    <p class="item-description">{{ site.description or "Découvrez ce magnifique site touristique camerounais." }}</p>
+                    
+                    <div class="item-meta">
+                        <div>
+                            <span class="item-price">{{ "{:,}".format(site.tarif_adulte).replace(',', ' ') }} FCFA</span>
+                            <span class="price-label">par adulte</span>
+                        </div>
+                        {% if site.tarif_enfant %}
+                        <div>
+                            <span class="item-price" style="font-size: 18px;">{{ "{:,}".format(site.tarif_enfant).replace(',', ' ') }} FCFA</span>
+                            <span class="price-label">par enfant</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="item-actions">
+                        <a href="{{ url_for('tourism.detail_site', id_site=site.id_site) }}" class="btn-primary">
+                            Voir détails
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🏖️</div>
+            <h3>Aucun site trouvé</h3>
+            <p>Aucun site ne correspond à vos critères</p>
+            <a href="{{ url_for('tourism.liste_sites') }}" class="btn-primary" style="display: inline-block; padding: 12px 30px; text-decoration: none;">
+                Voir tous les sites
+            </a>
+        </div>
+        {% endif %}
     </div>
-    {% endfor %}
-</div>
+</section>
 
-<style>
-    .admin-page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-        background: white;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
+<!-- Footer -->
+<footer class="main-footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>MBOA TRAVEL</h4>
+                <p>Votre partenaire voyage au Cameroun</p>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>📧 contact@mboa-travel.cm</p>
+                <p>📞 +237 6 99 99 99 99</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 MBOA TRAVEL. Tous droits réservés.</p>
+        </div>
+    </div>
+</footer>
 
-    .btn-add-new {
-        background: #4f46e5;
-        color: white;
-        padding: 12px 20px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 600;
-        transition: 0.3s;
-    }
-
-    .sites-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 25px;
-    }
-
-    .site-card {
-        background: white;
-        border-radius: 15px;
-        overflow: hidden;
-        border: 1px solid #e2e8f0;
-        transition: transform 0.3s ease;
-    }
-
-    .site-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-
-    .site-card-image { position: relative; height: 180px; background: #f1f5f9; }
-    .site-card-image img { width: 100%; height: 100%; object-fit: cover; }
-    
-    .region-tag {
-        position: absolute; top: 12px; right: 12px;
-        background: rgba(0,0,0,0.6); color: white;
-        padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
-    }
-
-    .site-card-body { padding: 20px; }
-    .site-card-body h3 { font-size: 1.2rem; margin-bottom: 5px; color: #1e293b; }
-    .city-info { color: #64748b; font-size: 0.9rem; margin-bottom: 15px; }
-
-    .price-box {
-        background: #f0fdf4; color: #166534;
-        padding: 6px 12px; border-radius: 6px; font-size: 0.85rem;
-    }
-
-    .site-card-footer {
-        margin-top: 20px; padding-top: 15px;
-        border-top: 1px solid #f1f5f9;
-        display: flex; justify-content: space-between; align-items: center;
-    }
-
-    .btn-icon { text-decoration: none; font-size: 0.9rem; font-weight: 600; }
-    .edit { color: #4f46e5; }
-    .delete { color: #ef4444; background: none; border: none; cursor: pointer; }
-</style>
-{% endblock %}
+</body>
+</html> 

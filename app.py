@@ -9,6 +9,9 @@ from flask_migrate import Migrate
 import datetime
 import uuid
 import os
+import random
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer
 
 app = Flask(__name__)
 
@@ -19,12 +22,22 @@ app = Flask(__name__)
 # Utiliser DATABASE_URL si définie (Docker), sinon config locale
 database_url = os.environ.get(
     'DATABASE_URL',
-    'postgresql://trevor:TREFRIED1707@localhost/travelling'
+    "postgresql://trevor:TREFRIED1707@localhost/travelling"
 )
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'trefried1707')
+# Configuration de Flask-Mail (Exemple Gmail)
+app.config['MAIL_DEFAULT_SENDER'] = 'mboatravel@gmail.com'
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'mboatravel@gmail.com'
+app.config['MAIL_PASSWORD'] = 'epmz jjzq ujea odmy' # Le code de 16 caractères
+
+mail = Mail(app)
+s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
 db.init_app(app)
 
@@ -301,48 +314,157 @@ def handle_register():
     telephone = request.form.get("telephone")
     email = request.form.get("email")
     cni = request.form.get("cni")
-    password = request.form.get("password") # Mot de passe en clair
-    
-    # ... Vérification si le client existe déjà ...
-    # ...
-    
-    # Créer le nouveau client
-    client = Client(
-        nom=nom,
-        prenom=prenom,
-        telephone=telephone,
-        email=email,
-        # 🟢 CORRECTION : Hacher le mot de passe et l'assigner à password_hash
-        password_hash=generate_password_hash(password),
-        cni=cni
-    )
-    db.session.add(client)
-    
-    try:
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        # Log l'erreur pour le debug (ex: violation d'une contrainte UNIQUE)
-        print(f"Erreur lors de l l'inscription du client : {e}")
-        flash("Une erreur est survenue (email ou CNI déjà utilisé ?)", 'error')
+    password = request.form.get("password")
+
+    # 1. Vérification si le client existe déjà
+    existing_client = Client.query.filter((Client.email == email) | (Client.telephone == telephone)).first()
+    if existing_client:
+        flash("Un compte avec cet email ou ce numéro existe déjà.", "error")
         return redirect(url_for('public_register'))
 
+    # 2. Génération du code à 6 chiffres
+    otp_code = str(random.randint(100000, 999999))
 
-    # Connecter automatiquement le client
-    session['client_id'] = client.id_client
-    flash('Inscription réussie ! Bienvenue chez MBOA TRAVEL', 'success')
-    return redirect(url_for('public_dashboard'))
+    # 3. Stockage des infos en SESSION (temporaire)
+    # On hache le mot de passe ici pour la sécurité
+    session['temp_user'] = {
+        "nom": nom,
+        "prenom": prenom,
+        "telephone": telephone,
+        "email": email,
+        "cni": cni,
+        "password_hash": generate_password_hash(password),
+        "otp": otp_code
+    }
+
+    # 4. Envoi de l'email avec le CODE
+    try:
+        msg = Message('Votre code de vérification - MBOA TRAVEL', recipients=[email])
+        msg.body = f"Bonjour {nom},\n\nVotre code de confirmation est : {otp_code}\n\nEntrez ce code sur la page de vérification pour activer votre compte."
+        mail.send(msg)
+        
+        flash('Un code de vérification a été envoyé par email.', 'info')
+        return redirect(url_for('verify_email')) # On redirige vers la page de saisie du code
+        
+    except Exception as e:
+        print(f"Erreur mail : {e}")
+        flash("Erreur lors de l'envoi du code. Vérifiez votre adresse.", 'error')
+        return redirect(url_for('public_register'))
+
+#C'est ici qu'on compare le code tapé avec celui stocké en session. Si c'est bon, on enregistre enfin dans la base de données.
+@app.route("/verify-email", methods=["GET", "POST"])
+def verify_email():
+    if 'temp_user' not in session:
+        flash("Session expirée. Veuillez vous réinscrire.", "error")
+        return redirect(url_for('public_register'))
+
+    if request.method == "POST":
+        # ACTION 1 : RENVOYER LE CODE
+        if 'action_resend' in request.form:
+            new_otp = str(random.randint(100000, 999999))
+            user_data = session['temp_user']
+            user_data['otp'] = new_otp
+            session['temp_user'] = user_data # Mise à jour session
+            
+            try:
+                msg = Message('Nouveau code - MBOA TRAVEL', recipients=[user_data['email']])
+                msg.body = f"Votre nouveau code est : {new_otp}"
+                mail.send(msg)
+                flash("Un nouveau code a été envoyé !", "info")
+            except:
+                flash("Erreur d'envoi.", "error")
+            return render_template("public/verification_otp.html")
+
+        # ACTION 2 : VÉRIFIER LE CODE (Action par défaut)
+        code_entre = request.form.get("otp")
+        user_data = session['temp_user']
+
+        if code_entre == user_data['otp']:
+            # Création du client en base de données
+            new_client = Client(
+                nom=user_data['nom'],
+                prenom=user_data['prenom'],
+                telephone=user_data['telephone'],
+                email=user_data['email'],
+                password_hash=user_data['password_hash'],
+                cni=user_data['cni']
+            )
+            db.session.add(new_client)
+            db.session.commit()
+
+            client_id = new_client.id_client
+            session.pop('temp_user', None)
+            session['client_id'] = client_id
+            flash('Inscription réussie !', 'success')
+            return redirect(url_for('public_dashboard'))
+        else:
+            flash("Code incorrect.", "error")
+
+    return render_template("public/verification_otp.html")
+
 
 @app.route("/public/contact")
 @app.route("/public/index/contact")
 @app.route("/contact", methods=["GET", "POST"])
 def public_contact():
     if request.method == "POST":
-        # traitement du formulaire ici
-        flash("Message envoyé avec succès !", "success")
-        return redirect(url_for("public_contact"))
-    return render_template("/public/contact.html")
+        nom_complet = request.form.get("name")
+        email_client = request.form.get("email")
+        message_contenu = request.form.get("message")
 
+        # --- 1. EMAIL POUR VOUS (Notification) ---
+        msg_admin = Message(
+            subject=f"Nouveau message de {nom_complet}",
+            recipients=[app.config['MAIL_USERNAME']],
+            sender=app.config['MAIL_DEFAULT_SENDER'],
+            reply_to=email_client
+        )
+        # ✅ CORRECTION : Utilisation du bon nom d'objet et de variable
+        msg_admin.body = f"""
+Nouveau message reçu depuis MBOA TRAVEL :
+------------------------------------------
+Nom : {nom_complet}
+Email : {email_client}
+
+Message :
+{message_contenu}
+------------------------------------------
+"""
+
+        # --- 2. EMAIL POUR LE CLIENT (Accusé de réception) ---
+        msg_client = Message(
+            subject="Nous avons bien reçu votre message - MBOA TRAVEL",
+            recipients=[email_client],
+            sender=app.config['MAIL_DEFAULT_SENDER']
+        )
+        msg_client.body = f"""
+Bonjour {nom_complet},
+
+Merci d'avoir contacté MBOA TRAVEL ! 
+
+Nous avons bien reçu votre message. Notre équipe examine votre requête et vous répondra sous 24h.
+
+Détails de votre message :
+------------------------------------------
+"{message_contenu}"
+------------------------------------------
+
+Cordialement,
+L'équipe MBOA TRAVEL
+"""
+
+        try:
+            # Envoi synchronisé
+            mail.send(msg_admin)
+            mail.send(msg_client)
+            flash("Message envoyé avec succès ! Un accusé de réception vous a été envoyé.", "success")
+        except Exception as e:
+            print(f"Erreur d'envoi : {e}")
+            flash("Erreur lors de l'envoi du message.", "error")
+        
+        return redirect(url_for("public_contact"))
+
+    return render_template("public/contact.html")
 
 
 @app.route("/public/dashboard")

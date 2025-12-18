@@ -16,10 +16,10 @@
         </div>
         <nav class="main-nav">
             <ul>
-                <li><a href="{{ url_for('admin_dashboard') }}">📊 Dashboard</a></li>
-                <li><a href="{{ url_for('admin_sites') }}">🏖️ Sites</a></li>
-                <li><a href="{{ url_for('admin_excursions') }}">🎒 Excursions</a></li>
-                <li><a href="{{ url_for('admin_expeditions') }}">📦 Expéditions</a></li>
+                <li><a href="{{ url_for('admin') }}">📊 Dashboard</a></li>
+                <li><a href="{{ url_for('tourism.admin_sites') }}">🏖️ Sites</a></li>
+                <li><a href="{{ url_for('tourism.admin_excursions') }}">🎒 Excursions</a></li>
+                <li><a href="{{ url_for('tourism.admin_expeditions') }}">📦 Expéditions</a></li>
                 <li><a href="{{ url_for('admin_logout') }}" class="logout-link">🚪 Déconnexion</a></li>
             </ul>
         </nav>
@@ -39,7 +39,7 @@
     <div class="container">
         <div class="reservation-container">
             <div class="reservation-card">
-                <form method="POST" action="{{ url_for('admin_creer_excursion') }}">
+                <form method="POST" action="{{ url_for('tourism.admin_creer_excursion') }}">
                     
                     <!-- Informations générales -->
                     <div class="form-section">
@@ -181,7 +181,7 @@
                     
                     <!-- Boutons -->
                     <div style="display: flex; gap: 15px; margin-top: 30px;">
-                        <a href="{{ url_for('admin_excursions') }}" class="btn-secondary" style="flex: 1; text-align: center; padding: 16px;">
+                        <a href="{{ url_for('tourism.admin_excursions') }}" class="btn-secondary" style="flex: 1; text-align: center; padding: 16px;">
                             Annuler
                         </a>
                         <button type="submit" class="btn-submit" style="flex: 2;">

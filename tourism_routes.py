@@ -131,6 +131,53 @@ def mes_excursions():
     
     return render_template("public/tourisme/mes_excursions.html", reservations=reservations, client=client)
 
+# ============================================
+# ROUTES ADMIN - MODIFICATION ET SUPPRESSION EXCURSIONS
+# ============================================
+
+@tourism.route("/admin/excursion/modifier/<int:id_excursion>", methods=["GET", "POST"])
+@admin_required
+def admin_modifier_excursion(id_excursion):
+    """Modifier une excursion existante"""
+    excursion = Excursion.query.get_or_404(id_excursion)
+    
+    if request.method == "POST":
+        try:
+            excursion.nom_excursion = request.form["nom_excursion"]
+            excursion.date_depart = datetime.datetime.strptime(request.form["date_depart"], "%Y-%m-%d")
+            excursion.date_retour = datetime.datetime.strptime(request.form["date_retour"], "%Y-%m-%d")
+            excursion.heure_depart = datetime.datetime.strptime(request.form["heure_depart"], "%H:%M").time()
+            excursion.id_site = request.form["id_site"]
+            excursion.nb_places_disponibles = request.form["nb_places_disponibles"]
+            excursion.tarif_par_personne = request.form["tarif_par_personne"]
+            excursion.statut = request.form["statut"]
+            
+            db.session.commit()
+            flash(f"L'excursion '{excursion.nom_excursion}' a été mise à jour !", "success")
+            return redirect(url_for("tourism.admin_excursions"))
+        except Exception as e:
+            db.session.rollback()
+            flash("Erreur lors de la modification", "error")
+            
+    sites = SiteTouristique.query.all()
+    return render_template("admin/tourisme/modifier_excursion.html", excursion=excursion, sites=sites)
+
+
+@tourism.route("/admin/excursion/supprimer/<int:id_excursion>", methods=["POST"])
+@admin_required
+def admin_supprimer_excursion(id_excursion):
+    """Supprimer une excursion"""
+    excursion = Excursion.query.get_or_404(id_excursion)
+    try:
+        db.session.delete(excursion)
+        db.session.commit()
+        flash("Excursion supprimée avec succès", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash("Erreur lors de la suppression", "error")
+        
+    return redirect(url_for("tourism.admin_excursions"))
+
 
 # ============================================
 # ROUTES PUBLIQUES - LOCATION VÉHICULES
@@ -477,6 +524,18 @@ def admin_creer_excursion():
     vehicules = Vehicule.query.filter_by(statut="En service").all()
     
     return render_template("admin/tourisme/creer_excursion.html", sites=sites, agences=agences, vehicules=vehicules)
+
+@tourism.route("/admin/excursion/detail/<int:id_excursion>")
+@admin_required
+def admin_detail_excursion(id_excursion):
+    """Voir les détails d'une excursion et les réservations associées"""
+    excursion = Excursion.query.get_or_404(id_excursion)
+    # Récupérer les réservations pour cette excursion
+    reservations = ReservationExcursion.query.filter_by(id_excursion=id_excursion).all()
+    
+    return render_template("admin/tourisme/detail_excursion.html", 
+                           excursion=excursion, 
+                           reservations=reservations)
 
 
 # ============================================
