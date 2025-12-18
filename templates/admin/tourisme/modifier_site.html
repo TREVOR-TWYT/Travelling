@@ -1,0 +1,71 @@
+{% extends 'admin/layout.html' %}
+
+{% block title %}Modifier le Site Touristique{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #f0f2f5; padding-bottom: 15px;">
+        <h2 style="margin: 0; color: #2d3748;">🏝️ Modifier le site : {{ site.nom_site }}</h2>
+        <a href="{{ url_for('tourism.admin_sites') }}" style="text-decoration: none; color: #4a5568; font-weight: 600;">← Retour à la liste</a>
+    </div>
+
+    <form method="POST" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div style="grid-column: 1 / -1;">
+            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Nom du site touristique</label>
+            <input type="text" name="nom_site" value="{{ site.nom_site }}" required 
+                   style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px;">
+        </div>
+
+        <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Ville</label>
+            <input type="text" name="ville" value="{{ site.ville }}" required 
+                   style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px;">
+        </div>
+        <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Région</label>
+            <input type="text" name="region" value="{{ site.region }}" required 
+                   style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px;">
+        </div>
+
+        <div style="grid-column: 1 / -1;">
+            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Description du site</label>
+            <textarea name="description" rows="4" 
+                      style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px;">{{ site.description }}</textarea>
+        </div>
+
+        <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Tarif Adulte (FCFA)</label>
+            <input type="number" name="tarif_adulte" value="{{ site.tarif_adulte }}" required 
+                   style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px;">
+        </div>
+        <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Tarif Enfant (FCFA)</label>
+            <input type="number" name="tarif_enfant" value="{{ site.tarif_enfant }}" 
+                   style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px;">
+        </div>
+
+        <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Nom du fichier image (ex: kribi.jpg)</label>
+            <input type="text" name="image_url" value="{{ site.image_url }}" 
+                   placeholder="image.jpg"
+                   style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <small style="color: #718096;">L'image doit être dans <code>static/image/</code></small>
+        </div>
+        <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Coordonnées GPS (Optionnel)</label>
+            <input type="text" name="coordonnees_gps" value="{{ site.coordonnees_gps }}" 
+                   placeholder="2.935, 9.908"
+                   style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px;">
+        </div>
+
+        <div style="grid-column: 1 / -1; margin-top: 20px; display: flex; gap: 15px;">
+            <button type="submit" style="flex: 2; background: #3182ce; color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px;">
+                💾 Enregistrer les modifications
+            </button>
+            <button type="reset" style="flex: 1; background: #edf2f7; color: #4a5568; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer;">
+                Annuler
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

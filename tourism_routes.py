@@ -138,26 +138,36 @@ def mes_excursions():
 @tourism.route("/admin/excursion/modifier/<int:id_excursion>", methods=["GET", "POST"])
 @admin_required
 def admin_modifier_excursion(id_excursion):
-    """Modifier une excursion existante"""
     excursion = Excursion.query.get_or_404(id_excursion)
     
     if request.method == "POST":
         try:
+            # On met à jour les champs présents dans le HTML
             excursion.nom_excursion = request.form["nom_excursion"]
             excursion.date_depart = datetime.datetime.strptime(request.form["date_depart"], "%Y-%m-%d")
-            excursion.date_retour = datetime.datetime.strptime(request.form["date_retour"], "%Y-%m-%d")
-            excursion.heure_depart = datetime.datetime.strptime(request.form["heure_depart"], "%H:%M").time()
+            
+            # Gestion de l'heure (sécurité si le format change selon le navigateur)
+            heure_str = request.form["heure_depart"][:5] 
+            excursion.heure_depart = datetime.datetime.strptime(heure_str, "%H:%M").time()
+            
             excursion.id_site = request.form["id_site"]
-            excursion.nb_places_disponibles = request.form["nb_places_disponibles"]
-            excursion.tarif_par_personne = request.form["tarif_par_personne"]
+            excursion.nb_places_disponibles = int(request.form["nb_places_disponibles"])
+            excursion.tarif_par_personne = float(request.form["tarif_par_personne"])
             excursion.statut = request.form["statut"]
             
+            # SI tu as besoin de la date_retour, vérifie qu'elle est dans le form
+            if "date_retour" in request.form and request.form["date_retour"]:
+                excursion.date_retour = datetime.datetime.strptime(request.form["date_retour"], "%Y-%m-%d")
+
             db.session.commit()
-            flash(f"L'excursion '{excursion.nom_excursion}' a été mise à jour !", "success")
+            print(">>> MODIFICATION RÉUSSIE ! <<<") # Pour vérifier dans ton terminal
+            flash("Excursion mise à jour !", "success")
             return redirect(url_for("tourism.admin_excursions"))
+            
         except Exception as e:
             db.session.rollback()
-            flash("Erreur lors de la modification", "error")
+            print(f">>> ERREUR DÉTECTÉE : {e} <<<") # CE PRINT VA TE DIRE LE NOM DU CHAMP MANQUANT
+            flash(f"Erreur : {str(e)}", "error")
             
     sites = SiteTouristique.query.all()
     return render_template("admin/tourisme/modifier_excursion.html", excursion=excursion, sites=sites)
