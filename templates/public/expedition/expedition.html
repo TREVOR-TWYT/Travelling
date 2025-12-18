@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expédition de Colis - MBOA TRAVEL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/public_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tourism.css') }}">
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="{{ url_for('public_index') }}">🏠 Accueil</a></li>
+                <li><a href="{{ url_for('public_trajets') }}">🛣️ Trajets</a></li>
+                <li><a href="{{ url_for('tourism.liste_sites') }}">🏖️ Tourisme</a></li>
+                <li><a href="{{ url_for('tourism.liste_vehicules_location') }}">🚗 Location</a></li>
+                <li><a href="{{ url_for('tourism.expedition_colis') }}" class="active">📦 Expédition</a></li>
+                
+                {% if session.get('client_id') %}
+                    <li><a href="{{ url_for('public_dashboard') }}">👤 Mon espace</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('public_login') }}">🔑 Connexion</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<section class="tourism-hero">
+    <div class="hero-overlay"></div>
+    <div class="container">
+        <div class="tourism-hero-content">
+            <h1>📦 Expédition de Colis</h1>
+            <p>Envoyez vos colis partout au Cameroun en toute sécurité</p>
+        </div>
+    </div>
+</section>
+
+<section style="padding: 60px 0; background: var(--bg-light);">
+    <div class="container">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+            <!-- Formulaire d'expédition -->
+            <div class="reservation-card">
+                <div class="reservation-header">
+                    <h2>📦 Nouvelle Expédition</h2>
+                    <p>Remplissez le formulaire pour expédier votre colis</p>
+                </div>
+
+                {% if not session.get('client_id') %}
+                <div style="background: #fef3c7; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #f59e0b;">
+                    <p style="margin-bottom: 10px; color: #92400e;">
+                        ⚠️ Vous devez être connecté pour expédier un colis
+                    </p>
+                    <a href="{{ url_for('public_login') }}" class="btn-primary" style="display: inline-block; padding: 10px 20px; text-decoration: none;">
+                        Se connecter
+                    </a>
+                </div>
+                {% else %}
+                <form method="POST" action="{{ url_for('tourism.creer_expedition') }}">
+                    <!-- Itinéraire -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">🛣️ Itinéraire</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="ville_depart">Ville de départ *</label>
+                                <select id="ville_depart" name="ville_depart" required>
+                                    <option value="">Sélectionner...</option>
+                                    {% for trajet in trajets %}
+                                        <option value="{{ trajet.ville_depart }}">{{ trajet.ville_depart }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="ville_arrivee">Ville d'arrivée *</label>
+                                <select id="ville_arrivee" name="ville_arrivee" required>
+                                    <option value="">Sélectionner...</option>
+                                    {% for trajet in trajets %}
+                                        <option value="{{ trajet.ville_arrivee }}">{{ trajet.ville_arrivee }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Destinataire -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">👤 Informations du destinataire</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nom_destinataire">Nom complet *</label>
+                                <input type="text" id="nom_destinataire" name="nom_destinataire" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="telephone_destinataire">Téléphone *</label>
+                                <input type="tel" id="telephone_destinataire" name="telephone_destinataire" placeholder="699999999" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Détails du colis -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">📦 Détails du colis</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nature">Nature du colis *</label>
+                                <input type="text" id="nature" name="nature" placeholder="Ex: Vêtements, Électronique..." required>
+                            </div>
+                            <div class="form-group">
+                                <label for="poids">Poids (kg) *</label>
+                                <input type="number" id="poids" name="poids" step="0.1" min="0.1" required onchange="calculateShipping()">
+                            </div>
+                            <div class="form-group">
+                                <label for="frais">Frais d'expédition (FCFA) *</label>
+                                <input type="number" id="frais" name="frais" value="2000" min="1000" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mode de paiement -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">💳 Mode de paiement</h3>
+                        <div class="payment-options" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                            <label style="cursor: pointer;">
+                                <input type="radio" name="mode_paiement" value="Cash" required style="display: none;">
+                                <div style="padding: 20px; border: 2px solid #e5e7eb; border-radius: 10px; text-align: center;" class="payment-option">
+                                    <div style="font-size: 32px; margin-bottom: 8px;">💵</div>
+                                    <div>Espèces</div>
+                                </div>
+                            </label>
+                            <label style="cursor: pointer;">
+                                <input type="radio" name="mode_paiement" value="Mobile Money" style="display: none;">
+                                <div style="padding: 20px; border: 2px solid #e5e7eb; border-radius: 10px; text-align: center;" class="payment-option">
+                                    <div style="font-size: 32px; margin-bottom: 8px;">📱</div>
+                                    <div>Mobile Money</div>
+                                </div>
+                            </label>
+                            <label style="cursor: pointer;">
+                                <input type="radio" name="mode_paiement" value="Carte bancaire" style="display: none;">
+                                <div style="padding: 20px; border: 2px solid #e5e7eb; border-radius: 10px; text-align: center;" class="payment-option">
+                                    <div style="font-size: 32px; margin-bottom: 8px;">💳</div>
+                                    <div>Carte</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        📦 Créer l'expédition
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+
+            <!-- Suivi de colis -->
+            <div class="reservation-card">
+                <div class="reservation-header">
+                    <h2>🔍 Suivre un Colis</h2>
+                    <p>Entrez votre numéro d'expédition</p>
+                </div>
+
+                <form method="GET" action="{{ url_for('tourism.suivre_expedition') }}">
+                    <div class="form-group">
+                        <label for="num_expedition">Numéro d'expédition</label>
+                        <input type="text" id="num_expedition" name="num_expedition" placeholder="EXP-XXXXXXXXXX" style="text-transform: uppercase;">
+                    </div>
+                    <button type="submit" class="btn-primary" style="width: 100%; padding: 14px; text-decoration: none; border: none; cursor: pointer;">
+                        🔍 Suivre
+                    </button>
+                </form>
+
+                <div style="margin-top: 40px; padding: 25px; background: var(--bg-light); border-radius: 15px;">
+                    <h3 style="margin-bottom: 15px; color: var(--text-dark);">💡 Tarification</h3>
+                    <div style="font-size: 14px; color: var(--text-light); line-height: 1.8;">
+                        <p style="margin-bottom: 10px;">• 0-5 kg : 2 000 FCFA</p>
+                        <p style="margin-bottom: 10px;">• 5-10 kg : 3 500 FCFA</p>
+                        <p style="margin-bottom: 10px;">• 10-20 kg : 5 000 FCFA</p>
+                        <p>• 20+ kg : Sur devis</p>
+                    </div>
+                </div>
+
+                {% if session.get('client_id') %}
+                <div style="margin-top: 20px; text-align: center;">
+                    <a href="{{ url_for('tourism.mes_expeditions') }}" class="btn-secondary" style="display: inline-block; padding: 12px 25px; text-decoration: none;">
+                        Mes expéditions
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="main-footer">
+    <div class="container">
+        <p>&copy; 2025 MBOA TRAVEL</p>
+    </div>
+</footer>
+
+<script>
+    function calculateShipping() {
+        const poids = parseFloat(document.getElementById('poids').value) || 0;
+        let frais = 2000;
+        
+        if (poids > 20) {
+            frais = 7000;
+        } else if (poids > 10) {
+            frais = 5000;
+        } else if (poids > 5) {
+            frais = 3500;
+        }
+        
+        document.getElementById('frais').value = frais;
+    }
+
+    // Gestion du mode de paiement
+    document.querySelectorAll('input[name="mode_paiement"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            document.querySelectorAll('.payment-option').forEach(opt => {
+                opt.style.borderColor = '#e5e7eb';
+                opt.style.background = 'white';
+            });
+            this.nextElementSibling.style.borderColor = 'var(--primary-color)';
+            this.nextElementSibling.style.background = 'rgba(102, 126, 234, 0.05)';
+        });
+    });
+</script>
+
+</body>
+</html>

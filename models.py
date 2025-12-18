@@ -212,3 +212,96 @@ class Tourisme(db.Model):
     duree = db.Column(db.String(50))  # ex: "3 jours"
     prix = db.Column(db.Float)
     agence_id = db.Column(db.Integer, db.ForeignKey('agence.id_agence'))
+
+
+class SiteTouristique(db.Model):
+    __tablename__ = "site_touristique"
+    
+    id_site = db.Column(db.Integer, primary_key=True)
+    nom_site = db.Column(db.String(100), nullable=False)
+    ville = db.Column(db.String(100), nullable=False)
+    region = db.Column(db.String(100))
+    description = db.Column(db.Text)
+    tarif_adulte = db.Column(db.Integer, nullable=False)
+    tarif_enfant = db.Column(db.Integer)
+    image_url = db.Column(db.String(255))
+    coordonnees_gps = db.Column(db.String(100))
+    
+    excursions = db.relationship("Excursion", back_populates="site")
+
+
+class Excursion(db.Model):
+    __tablename__ = "excursion"
+    
+    id_excursion = db.Column(db.Integer, primary_key=True)
+    nom_excursion = db.Column(db.String(200), nullable=False)
+    date_depart = db.Column(db.Date, nullable=False)
+    date_retour = db.Column(db.Date, nullable=False)
+    heure_depart = db.Column(db.Time, nullable=False)
+    id_site = db.Column(db.Integer, db.ForeignKey("site_touristique.id_site"), nullable=False)
+    id_agence = db.Column(db.Integer, db.ForeignKey("agence.id_agence"))
+    immatriculation = db.Column(db.String(20), db.ForeignKey("vehicule.immatriculation"))
+    nb_places_disponibles = db.Column(db.Integer, nullable=False)
+    tarif_par_personne = db.Column(db.Integer, nullable=False)
+    statut = db.Column(db.String(50), default="Planifiée")  # Planifiée, En cours, Terminée, Annulée
+    
+    site = db.relationship("SiteTouristique", back_populates="excursions")
+    agence = db.relationship("Agence")
+    vehicule = db.relationship("Vehicule")
+    reservations_excursion = db.relationship("ReservationExcursion", back_populates="excursion")
+
+
+class ReservationExcursion(db.Model):
+    __tablename__ = "reservation_excursion"
+    
+    id_reservation_excursion = db.Column(db.Integer, primary_key=True)
+    num_reservation = db.Column(db.String(20), unique=True, nullable=False)
+    date_reservation = db.Column(db.TIMESTAMP, nullable=False)
+    id_client = db.Column(db.Integer, db.ForeignKey("client.id_client"), nullable=False)
+    id_excursion = db.Column(db.Integer, db.ForeignKey("excursion.id_excursion"), nullable=False)
+    nb_adultes = db.Column(db.Integer, default=1)
+    nb_enfants = db.Column(db.Integer, default=0)
+    montant_total = db.Column(db.Integer, nullable=False)
+    statut = db.Column(db.String(50), default="Confirmée")
+    id_paiement = db.Column(db.Integer, db.ForeignKey("paiement.id_paiement"))
+    
+    client = db.relationship("Client")
+    excursion = db.relationship("Excursion", back_populates="reservations_excursion")
+    paiement = db.relationship("Paiement")
+
+
+class LocationVehicule(db.Model):
+    __tablename__ = "location_vehicule"
+    
+    id_location = db.Column(db.Integer, primary_key=True)
+    num_location = db.Column(db.String(20), unique=True, nullable=False)
+    date_debut = db.Column(db.Date, nullable=False)
+    date_fin = db.Column(db.Date, nullable=False)
+    heure_debut = db.Column(db.Time, nullable=False)
+    heure_fin = db.Column(db.Time)
+    immatriculation = db.Column(db.String(20), db.ForeignKey("vehicule.immatriculation"), nullable=False)
+    id_client = db.Column(db.Integer, db.ForeignKey("client.id_client"), nullable=False)
+    tarif_journalier = db.Column(db.Integer, nullable=False)
+    caution = db.Column(db.Integer, nullable=False)
+    montant_total = db.Column(db.Integer, nullable=False)
+    statut = db.Column(db.String(50), default="En cours")  # En cours, Terminée, Annulée
+    kilometrage_depart = db.Column(db.Integer)
+    kilometrage_retour = db.Column(db.Integer)
+    id_paiement = db.Column(db.Integer, db.ForeignKey("paiement.id_paiement"))
+    
+    vehicule = db.relationship("Vehicule")
+    client = db.relationship("Client")
+    paiement = db.relationship("Paiement")
+
+
+class StatutColis(db.Model):
+    __tablename__ = "statut_colis"
+    
+    id_statut = db.Column(db.Integer, primary_key=True)
+    num_expedition = db.Column(db.String(20), db.ForeignKey("expedition.num_expedition"), nullable=False)
+    statut = db.Column(db.String(100), nullable=False)  # Enregistré, En transit, Arrivé, Livré
+    date_heure = db.Column(db.TIMESTAMP, nullable=False)
+    localisation = db.Column(db.String(200))
+    commentaire = db.Column(db.Text)
+    
+    expedition = db.relationship("Expedition")

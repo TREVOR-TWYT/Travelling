@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un Site Touristique - Admin MBOA TRAVEL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/public_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tourism.css') }}">
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="{{ url_for('admin') }}">📊 Dashboard</a></li>
+                <li><a href="{{ url_for('tourism.admin_sites') }}">🏖️ Sites</a></li>
+                <li><a href="{{ url_for('tourism.admin_excursions') }}">🎒 Excursions</a></li>
+                <li><a href="{{ url_for('tourism.admin_expeditions') }}">📦 Expéditions</a></li>
+                <li><a href="{{ url_for('admin_logout') }}" class="logout-link">🚪 Déconnexion</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<section class="tourism-hero" style="padding: 60px 0;">
+    <div class="container">
+        <div class="tourism-hero-content">
+            <h1>🏖️ Créer un Site Touristique</h1>
+            <p>Ajoutez un nouveau site touristique au catalogue</p>
+        </div>
+    </div>
+</section>
+
+<section style="padding: 60px 0; background: var(--bg-light);">
+    <div class="container">
+        <div class="reservation-container">
+            <div class="reservation-card">
+                <form method="POST" action="{{ url_for('tourism.admin_creer_site') }}" enctype="multipart/form-data">
+                    
+                    <!-- Informations générales -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">📋 Informations générales</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nom_site">Nom du site *</label>
+                                <input type="text" id="nom_site" name="nom_site" placeholder="Ex: Chutes de la Lobé" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="ville">Ville *</label>
+                                <select id="ville" name="ville" required>
+                                    <option value="">Sélectionner...</option>
+                                    <option value="Yaoundé">Yaoundé</option>
+                                    <option value="Douala">Douala</option>
+                                    <option value="Kribi">Kribi</option>
+                                    <option value="Bafoussam">Bafoussam</option>
+                                    <option value="Maroua">Maroua</option>
+                                    <option value="Limbe">Limbe</option>
+                                    <option value="Buea">Buea</option>
+                                    <option value="Bamenda">Bamenda</option>
+                                    <option value="Garoua">Garoua</option>
+                                    <option value="Ngaoundéré">Ngaoundéré</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="region">Région *</label>
+                                <select id="region" name="region" required>
+                                    <option value="">Sélectionner...</option>
+                                    <option value="Centre">Centre</option>
+                                    <option value="Littoral">Littoral</option>
+                                    <option value="Sud">Sud</option>
+                                    <option value="Ouest">Ouest</option>
+                                    <option value="Nord-Ouest">Nord-Ouest</option>
+                                    <option value="Sud-Ouest">Sud-Ouest</option>
+                                    <option value="Nord">Nord</option>
+                                    <option value="Extrême-Nord">Extrême-Nord</option>
+                                    <option value="Adamaoua">Adamaoua</option>
+                                    <option value="Est">Est</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea id="description" name="description" rows="4" placeholder="Décrivez le site touristique..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tarification -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">💰 Tarification</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="tarif_adulte">Tarif adulte (FCFA) *</label>
+                                <input type="number" id="tarif_adulte" name="tarif_adulte" min="0" step="100" placeholder="Ex: 5000" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="tarif_enfant">Tarif enfant (FCFA)</label>
+                                <input type="number" id="tarif_enfant" name="tarif_enfant" min="0" step="100" placeholder="Ex: 2500">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Localisation -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">📍 Localisation</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="coordonnees_gps">Coordonnées GPS</label>
+                                <input type="text" id="coordonnees_gps" name="coordonnees_gps" placeholder="Ex: 2.9404, 9.7067">
+                                <small style="color: var(--text-light); font-size: 12px; margin-top: 5px; display: block;">
+                                    Format: Latitude, Longitude
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Image -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">🖼️ Image</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="image">Image du site</label>
+                                <input type="file" id="image" name="image" accept="image/*">
+                                <small style="color: var(--text-light); font-size: 12px; margin-top: 5px; display: block;">
+                                    Formats acceptés: JPG, PNG, WEBP (Max 5MB)
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Boutons -->
+                    <div style="display: flex; gap: 15px; margin-top: 30px;">
+                        <a href="{{ url_for('tourism.admin_sites') }}" class="btn-secondary" style="flex: 1; text-align: center; padding: 16px;">
+                            Annuler
+                        </a>
+                        <button type="submit" class="btn-submit" style="flex: 2;">
+                            ✅ Créer le site touristique
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="main-footer">
+    <div class="container">
+        <div class="footer-bottom">
+            <p>&copy; 2025 MBOA TRAVEL - Administration</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+// Prévisualisation de l'image
+document.getElementById('image').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+            alert('L\'image ne doit pas dépasser 5MB');
+            this.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            let preview = document.querySelector('.image-preview');
+            if (!preview) {
+                preview = document.createElement('div');
+                preview.className = 'image-preview';
+                preview.style.cssText = 'margin-top: 15px; border-radius: 10px; overflow: hidden; max-width: 300px;';
+                document.getElementById('image').parentElement.appendChild(preview);
+            }
+            preview.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: auto; display: block;">`;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Validation du formulaire
+document.querySelector('form').addEventListener('submit', function(e) {
+    const tarifAdulte = parseInt(document.getElementById('tarif_adulte').value);
+    const tarifEnfant = document.getElementById('tarif_enfant').value;
+    
+    if (tarifEnfant && parseInt(tarifEnfant) >= tarifAdulte) {
+        e.preventDefault();
+        alert('Le tarif enfant doit être inférieur au tarif adulte');
+        return false;
+    }
+    
+    // Validation des coordonnées GPS
+    const coords = document.getElementById('coordonnees_gps').value;
+    if (coords && !/^-?\d+\.?\d*,\s*-?\d+\.?\d*$/.test(coords)) {
+        e.preventDefault();
+        alert('Format de coordonnées GPS invalide. Utilisez: Latitude, Longitude');
+        return false;
+    }
+});
+</script>
+
+</body>
+</html>

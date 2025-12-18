@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Locations - MBOA TRAVEL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/public_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tourism.css') }}">
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="{{ url_for('public_index') }}">🏠 Accueil</a></li>
+                <li><a href="{{ url_for('tourism.liste_vehicules_location') }}">🚗 Location</a></li>
+                <li><a href="{{ url_for('public_dashboard') }}">👤 Mon espace</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<section style="padding: 60px 0; background: var(--bg-light);">
+    <div class="container">
+        <div style="margin-bottom: 40px;">
+            <h1 style="font-size: 36px; color: var(--text-dark); margin-bottom: 10px;">🚗 Mes Locations</h1>
+            <p style="color: var(--text-light);">Retrouvez toutes vos locations de véhicules</p>
+        </div>
+
+        {% if locations %}
+        <div class="data-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>N° Location</th>
+                        <th>Véhicule</th>
+                        <th>Période</th>
+                        <th>Durée</th>
+                        <th>Tarif/jour</th>
+                        <th>Total</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for location in locations %}
+                    <tr>
+                        <td><strong>{{ location.num_location }}</strong></td>
+                        <td>
+                            {{ location.vehicule.type }}<br>
+                            <small style="color: var(--text-light);">{{ location.immatriculation }}</small>
+                        </td>
+                        <td>
+                            Du {{ location.date_debut.strftime('%d/%m/%Y') }}<br>
+                            au {{ location.date_fin.strftime('%d/%m/%Y') }}
+                        </td>
+                        <td>
+                            {% set nb_jours = (location.date_fin - location.date_debut).days + 1 %}
+                            {{ nb_jours }} jour(s)
+                        </td>
+                        <td>{{ "{:,}".format(location.tarif_journalier).replace(',', ' ') }} FCFA</td>
+                        <td style="font-weight: 700; color: var(--success-color);">
+                            {{ "{:,}".format(location.montant_total).replace(',', ' ') }} FCFA
+                        </td>
+                        <td>
+                            <span class="status-badge status-{{ location.statut.lower().replace(' ', '-').replace('é', 'e') }}">
+                                {{ location.statut }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🚗</div>
+            <h3>Aucune location</h3>
+            <p>Vous n'avez pas encore loué de véhicule</p>
+            <a href="{{ url_for('tourism.liste_vehicules_location') }}" class="btn-primary" style="display: inline-block; padding: 14px 30px; text-decoration: none; margin-top: 20px;">
+                Louer un véhicule
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<footer class="main-footer">
+    <div class="container">
+        <p>&copy; 2025 MBOA TRAVEL</p>
+    </div>
+</footer>
+
+</body>
+</html>

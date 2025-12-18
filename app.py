@@ -4,6 +4,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from functools import wraps
 from models import *
 from crud_routes import crud
+from tourism_routes import tourism
 from flask_migrate import Migrate
 import datetime
 import uuid
@@ -32,6 +33,7 @@ migrate = Migrate(app, db)
 
 # Register blueprint
 app.register_blueprint(crud)
+app.register_blueprint(tourism)
 
 
 # ============================================

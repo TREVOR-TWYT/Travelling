@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Expéditions - Admin MBOA TRAVEL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/public_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tourism.css') }}">
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="{{ url_for('admin_dashboard') }}">📊 Dashboard</a></li>
+                <li><a href="{{ url_for('admin_sites') }}">🏖️ Sites</a></li>
+                <li><a href="{{ url_for('admin_excursions') }}">🎒 Excursions</a></li>
+                <li><a href="{{ url_for('admin_expeditions') }}" class="active">📦 Expéditions</a></li>
+                <li><a href="{{ url_for('admin_logout') }}" class="logout-link">🚪 Déconnexion</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<section class="tourism-hero" style="padding: 60px 0;">
+    <div class="container">
+        <div class="tourism-hero-content">
+            <h1>📦 Gestion des Expéditions</h1>
+            <p>Suivez et gérez toutes les expéditions de colis</p>
+        </div>
+    </div>
+</section>
+
+<section style="padding: 60px 0; background: var(--bg-light);">
+    <div class="container">
+        
+        <!-- Statistiques -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px;">
+            <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: var(--shadow-md);">
+                <div style="font-size: 36px; color: var(--primary-color); margin-bottom: 10px;">
+                    {{ expeditions|length }}
+                </div>
+                <div style="color: var(--text-light); font-size: 14px;">Total expéditions</div>
+            </div>
+            
+            <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: var(--shadow-md);">
+                <div style="font-size: 36px; color: var(--warning-color); margin-bottom: 10px;">
+                    {% set en_transit = expeditions|selectattr('dernier_statut.statut', 'equalto', 'En transit')|list|length %}
+                    {{ en_transit }}
+                </div>
+                <div style="color: var(--text-light); font-size: 14px;">En transit</div>
+            </div>
+            
+            <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: var(--shadow-md);">
+                <div style="font-size: 36px; color: var(--info-color); margin-bottom: 10px;">
+                    {% set arrives = expeditions|selectattr('dernier_statut.statut', 'equalto', 'Arrivé')|list|length %}
+                    {{ arrives }}
+                </div>
+                <div style="color: var(--text-light); font-size: 14px;">Arrivés</div>
+            </div>
+            
+            <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: var(--shadow-md);">
+                <div style="font-size: 36px; color: var(--success-color); margin-bottom: 10px;">
+                    {% set livres = expeditions|selectattr('dernier_statut.statut', 'equalto', 'Livré')|list|length %}
+                    {{ livres }}
+                </div>
+                <div style="color: var(--text-light); font-size: 14px;">Livrés</div>
+            </div>
+            
+            <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: var(--shadow-md);">
+                <div style="font-size: 28px; color: var(--success-color); margin-bottom: 10px; font-weight: 700;">
+                    {% set total_revenus = namespace(value=0) %}
+                    {% for exp in expeditions %}
+                        {% set total_revenus.value = total_revenus.value + exp.frais %}
+                    {% endfor %}
+                    {{ "{:,}".format(total_revenus.value).replace(',', ' ') }}
+                </div>
+                <div style="color: var(--text-light); font-size: 14px;">Revenus (FCFA)</div>
+            </div>
+        </div>
+        
+        <!-- Filtres -->
+        <div class="filter-section">
+            <form method="GET" class="filter-form">
+                <div class="form-group">
+                    <label for="search">🔍 N° d'expédition</label>
+                    <input type="text" id="search" name="search" placeholder="EXP-XXXXXXXXXX" style="text-transform: uppercase;">
+                </div>
+                
+                <div class="form-group">
+                    <label for="statut">📊 Statut</label>
+                    <select id="statut" name="statut">
+                        <option value="">Tous les statuts</option>
+                        <option value="Enregistré">Enregistré</option>
+                        <option value="En transit">En transit</option>
+                        <option value="Arrivé">Arrivé</option>
+                        <option value="Livré">Livré</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="date_debut">📅 Du</label>
+                    <input type="date" id="date_debut" name="date_debut">
+                </div>
+                
+                <div class="form-group">
+                    <label for="date_fin">📅 Au</label>
+                    <input type="date" id="date_fin" name="date_fin">
+                </div>
+                
+                <button type="submit" class="btn-filter">Filtrer</button>
+            </form>
+        </div>
+        
+        <!-- Onglets de statut -->
+        <div style="display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap;">
+            <button class="status-tab active" data-status="all">
+                Toutes ({{ expeditions|length }})
+            </button>
+            <button class="status-tab" data-status="Enregistré">
+                Enregistrées
+            </button>
+            <button class="status-tab" data-status="En transit">
+                En transit ({{ en_transit }})
+            </button>
+            <button class="status-tab" data-status="Arrivé">
+                Arrivées ({{ arrives }})
+            </button>
+            <button class="status-tab" data-status="Livré">
+                Livrées ({{ livres }})
+            </button>
+        </div>
+        
+        <!-- Liste des expéditions -->
+        {% if expeditions %}
+        <div class="data-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>N° Expédition</th>
+                        <th>Client</th>
+                        <th>Itinéraire</th>
+                        <th>Nature</th>
+                        <th>Destinataire</th>
+                        <th>Frais</th>
+                        <th>Statut</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expedition in expeditions %}
+                    <tr data-status="{{ expedition.dernier_statut.statut if expedition.dernier_statut else 'Enregistré' }}">
+                        <td>
+                            <strong style="color: var(--primary-color); font-family: monospace;">
+                                {{ expedition.num_expedition }}
+                            </strong>
+                        </td>
+                        <td>
+                            {% if expedition.client %}
+                                {{ expedition.client.nom }} {{ expedition.client.prenom }}
+                                <div style="font-size: 12px; color: var(--text-light);">
+                                    📞 {{ expedition.client.telephone }}
+                                </div>
+                            {% else %}
+                                <span style="color: var(--text-light);">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if expedition.voyage %}
+                                <div style="font-size: 13px;">
+                                    <div>🚀 {{ expedition.voyage.trajet.ville_depart }}</div>
+                                    <div style="color: var(--text-light);">📍 {{ expedition.voyage.trajet.ville_arrivee }}</div>
+                                </div>
+                            {% else %}
+                                <span style="color: var(--text-light);">Non assigné</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span style="font-size: 13px;">{{ expedition.nature }}</span>
+                        </td>
+                        <td>
+                            {% if expedition.nom_destinataire %}
+                                {{ expedition.nom_destinataire }}
+                                <div style="font-size: 12px; color: var(--text-light);">
+                                    📞 {{ expedition.telephone_destinataire }}
+                                </div>
+                            {% else %}
+                                <span style="color: var(--text-light);">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong style="color: var(--success-color);">
+                                {{ "{:,}".format(expedition.frais).replace(',', ' ') }}
+                            </strong>
+                        </td>
+                        <td>
+                            {% if expedition.dernier_statut %}
+                            <span class="status-badge status-{{ expedition.dernier_statut.statut.lower().replace(' ', '-').replace('é', 'e') }}">
+                                {{ expedition.dernier_statut.statut }}
+                            </span>
+                            {% else %}
+                            <span class="status-badge status-enregistre">Enregistré</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div style="font-size: 13px;">
+                                {{ expedition.date_expedition.strftime('%d/%m/%Y') }}
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-light);">
+                                {{ expedition.date_expedition.strftime('%H:%M') }}
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 5px;">
+                                <a href="{{ url_for('admin_detail_expedition', num_expedition=expedition.num_expedition) }}" 
+                                   style="padding: 6px 12px; background: var(--primary-color); color: white; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600;">
+                                    👁️
+                                </a>
+                                <a href="{{ url_for('admin_modifier_statut_expedition', num_expedition=expedition.num_expedition) }}" 
+                                   style="padding: 6px 12px; background: var(--success-color); color: white; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600;">
+                                    🔄
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📦</div>
+            <h3>Aucune expédition</h3>
+            <p>Les expéditions apparaîtront ici une fois créées par les clients</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<footer class="main-footer">
+    <div class="container">
+        <div class="footer-bottom">
+            <p>&copy; 2025 MBOA TRAVEL - Administration</p>
+        </div>
+    </div>
+</footer>
+
+<style>
+.status-tab {
+    padding: 12px 24px;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 14px;
+}
+
+.status-tab:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.status-tab.active {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    border-color: transparent;
+}
+
+.status-enregistre {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status-en-transit {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-arrive {
+    background: #e0e7ff;
+    color: #3730a3;
+}
+
+.status-livre {
+    background: #d1fae5;
+    color: #065f46;
+}
+</style>
+
+<script>
+// Filtrage par statut avec les onglets
+document.querySelectorAll('.status-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        
+        const status = this.getAttribute('data-status');
+        const rows = document.querySelectorAll('.data-table tbody tr');
+        
+        rows.forEach(row => {
+            if (status === 'all' || row.getAttribute('data-status') === status) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+});
+
+// Recherche en temps réel
+let searchTimeout;
+document.getElementById('search').addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    const searchValue = this.value.toUpperCase();
+    
+    searchTimeout = setTimeout(() => {
+        document.querySelectorAll('.data-table tbody tr').forEach(row => {
+            const numExp = row.cells[0].textContent.trim();
+            
+            if (numExp.includes(searchValue)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }, 300);
+});
+
+// Export CSV
+function exportToCSV() {
+    const rows = Array.from(document.querySelectorAll('.data-table tbody tr:not([style*="display: none"])'));
+    let csv = 'N° Expédition,Client,Itinéraire,Nature,Frais,Statut,Date\n';
+    
+    rows.forEach(row => {
+        const cells = Array.from(row.cells).slice(0, -1);
+        const data = cells.map(cell => {
+            return '"' + cell.textContent.trim().replace(/"/g, '""').replace(/\s+/g, ' ') + '"';
+        });
+        csv += data.join(',') + '\n';
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'expeditions_' + new Date().toISOString().split('T')[0] + '.csv';
+    link.click();
+}
+
+// Mise à jour en temps réel (toutes les 30 secondes)
+setInterval(() => {
+    location.reload();
+}, 30000);
+</script>
+
+</body>
+</html>

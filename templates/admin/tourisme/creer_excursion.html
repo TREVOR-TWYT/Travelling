@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer une Excursion - Admin MBOA TRAVEL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/public_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tourism.css') }}">
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="{{ url_for('admin_dashboard') }}">📊 Dashboard</a></li>
+                <li><a href="{{ url_for('admin_sites') }}">🏖️ Sites</a></li>
+                <li><a href="{{ url_for('admin_excursions') }}">🎒 Excursions</a></li>
+                <li><a href="{{ url_for('admin_expeditions') }}">📦 Expéditions</a></li>
+                <li><a href="{{ url_for('admin_logout') }}" class="logout-link">🚪 Déconnexion</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<section class="tourism-hero" style="padding: 60px 0;">
+    <div class="container">
+        <div class="tourism-hero-content">
+            <h1>🎒 Créer une Excursion</h1>
+            <p>Planifiez une nouvelle excursion touristique</p>
+        </div>
+    </div>
+</section>
+
+<section style="padding: 60px 0; background: var(--bg-light);">
+    <div class="container">
+        <div class="reservation-container">
+            <div class="reservation-card">
+                <form method="POST" action="{{ url_for('admin_creer_excursion') }}">
+                    
+                    <!-- Informations générales -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">📋 Informations générales</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nom_excursion">Nom de l'excursion *</label>
+                                <input type="text" id="nom_excursion" name="nom_excursion" placeholder="Ex: Découverte des Chutes de la Lobé" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="id_site">Site touristique *</label>
+                                <select id="id_site" name="id_site" required>
+                                    <option value="">Sélectionner un site...</option>
+                                    {% for site in sites %}
+                                    <option value="{{ site.id_site }}">
+                                        {{ site.nom_site }} - {{ site.ville }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Dates et horaires -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">📅 Dates et horaires</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="date_depart">Date de départ *</label>
+                                <input type="date" id="date_depart" name="date_depart" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="date_retour">Date de retour *</label>
+                                <input type="date" id="date_retour" name="date_retour" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="heure_depart">Heure de départ *</label>
+                                <input type="time" id="heure_depart" name="heure_depart" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Durée estimée</label>
+                                <input type="text" id="duree_affichage" readonly style="background: var(--bg-light); cursor: not-allowed;">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Logistique -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">🚐 Logistique</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="id_agence">Agence organisatrice</label>
+                                <select id="id_agence" name="id_agence">
+                                    <option value="">Sélectionner une agence...</option>
+                                    {% for agence in agences %}
+                                    <option value="{{ agence.id_agence }}">{{ agence.nom_agence }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="immatriculation">Véhicule</label>
+                                <select id="immatriculation" name="immatriculation">
+                                    <option value="">Sélectionner un véhicule...</option>
+                                    {% for vehicule in vehicules %}
+                                    <option value="{{ vehicule.immatriculation }}" 
+                                            data-capacite="{{ vehicule.capacite }}">
+                                        {{ vehicule.immatriculation }} - {{ vehicule.type }} ({{ vehicule.capacite }} places)
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nb_places_disponibles">Nombre de places disponibles *</label>
+                                <input type="number" id="nb_places_disponibles" name="nb_places_disponibles" min="1" max="50" required>
+                                <small style="color: var(--text-light); font-size: 12px; margin-top: 5px; display: block;">
+                                    Sera automatiquement défini selon le véhicule si sélectionné
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tarification -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">💰 Tarification</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="tarif_par_personne">Tarif par personne (FCFA) *</label>
+                                <input type="number" id="tarif_par_personne" name="tarif_par_personne" min="0" step="500" placeholder="Ex: 25000" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="statut">Statut</label>
+                                <select id="statut" name="statut">
+                                    <option value="Planifiée" selected>Planifiée</option>
+                                    <option value="En cours">En cours</option>
+                                    <option value="Terminée">Terminée</option>
+                                    <option value="Annulée">Annulée</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Résumé -->
+                    <div class="summary-box">
+                        <h4 style="margin-bottom: 15px; color: var(--text-dark);">📊 Résumé</h4>
+                        <div class="summary-row">
+                            <span>Site sélectionné:</span>
+                            <span id="resume_site">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Durée:</span>
+                            <span id="resume_duree">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Places disponibles:</span>
+                            <span id="resume_places">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Tarif par personne:</span>
+                            <span id="resume_tarif">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Revenus potentiels:</span>
+                            <span id="resume_revenus">0 FCFA</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Boutons -->
+                    <div style="display: flex; gap: 15px; margin-top: 30px;">
+                        <a href="{{ url_for('admin_excursions') }}" class="btn-secondary" style="flex: 1; text-align: center; padding: 16px;">
+                            Annuler
+                        </a>
+                        <button type="submit" class="btn-submit" style="flex: 2;">
+                            ✅ Créer l'excursion
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="main-footer">
+    <div class="container">
+        <div class="footer-bottom">
+            <p>&copy; 2025 MBOA TRAVEL - Administration</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+// Calcul automatique de la durée
+function calculerDuree() {
+    const dateDepart = document.getElementById('date_depart').value;
+    const dateRetour = document.getElementById('date_retour').value;
+    
+    if (dateDepart && dateRetour) {
+        const debut = new Date(dateDepart);
+        const fin = new Date(dateRetour);
+        const diff = Math.ceil((fin - debut) / (1000 * 60 * 60 * 24));
+        
+        if (diff > 0) {
+            const texte = diff === 1 ? '1 jour' : `${diff} jours`;
+            document.getElementById('duree_affichage').value = texte;
+            document.getElementById('resume_duree').textContent = texte;
+        } else {
+            document.getElementById('duree_affichage').value = 'Date invalide';
+            document.getElementById('resume_duree').textContent = '-';
+        }
+    }
+}
+
+document.getElementById('date_depart').addEventListener('change', calculerDuree);
+document.getElementById('date_retour').addEventListener('change', calculerDuree);
+
+// Mise à jour automatique des places selon le véhicule
+document.getElementById('immatriculation').addEventListener('change', function() {
+    const selected = this.options[this.selectedIndex];
+    if (selected.value) {
+        const capacite = selected.getAttribute('data-capacite');
+        document.getElementById('nb_places_disponibles').value = capacite;
+        updateResume();
+    }
+});
+
+// Mise à jour du résumé
+function updateResume() {
+    // Site
+    const siteSelect = document.getElementById('id_site');
+    const siteText = siteSelect.options[siteSelect.selectedIndex].text;
+    document.getElementById('resume_site').textContent = siteSelect.value ? siteText : '-';
+    
+    // Places
+    const places = document.getElementById('nb_places_disponibles').value;
+    document.getElementById('resume_places').textContent = places || '-';
+    
+    // Tarif
+    const tarif = document.getElementById('tarif_par_personne').value;
+    if (tarif) {
+        document.getElementById('resume_tarif').textContent = 
+            parseInt(tarif).toLocaleString('fr-FR') + ' FCFA';
+        
+        // Revenus potentiels
+        if (places) {
+            const revenus = parseInt(tarif) * parseInt(places);
+            document.getElementById('resume_revenus').textContent = 
+                revenus.toLocaleString('fr-FR') + ' FCFA';
+        }
+    } else {
+        document.getElementById('resume_tarif').textContent = '-';
+        document.getElementById('resume_revenus').textContent = '0 FCFA';
+    }
+}
+
+document.getElementById('id_site').addEventListener('change', updateResume);
+document.getElementById('nb_places_disponibles').addEventListener('input', updateResume);
+document.getElementById('tarif_par_personne').addEventListener('input', updateResume);
+
+// Validation du formulaire
+document.querySelector('form').addEventListener('submit', function(e) {
+    const dateDepart = new Date(document.getElementById('date_depart').value);
+    const dateRetour = new Date(document.getElementById('date_retour').value);
+    const aujourd_hui = new Date();
+    aujourd_hui.setHours(0, 0, 0, 0);
+    
+    if (dateDepart < aujourd_hui) {
+        e.preventDefault();
+        alert('La date de départ ne peut pas être dans le passé');
+        return false;
+    }
+    
+    if (dateRetour <= dateDepart) {
+        e.preventDefault();
+        alert('La date de retour doit être après la date de départ');
+        return false;
+    }
+    
+    const tarif = parseInt(document.getElementById('tarif_par_personne').value);
+    if (tarif < 1000) {
+        e.preventDefault();
+        alert('Le tarif par personne doit être d\'au moins 1000 FCFA');
+        return false;
+    }
+});
+
+// Définir la date minimale à aujourd'hui
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('date_depart').setAttribute('min', today);
+document.getElementById('date_retour').setAttribute('min', today);
+</script>
+
+</body>
+</html>

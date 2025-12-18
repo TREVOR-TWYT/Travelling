@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suivi Expédition - MBOA TRAVEL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/public_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tourism.css') }}">
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="{{ url_for('public_index') }}">🏠 Accueil</a></li>
+                <li><a href="{{ url_for('tourism.expedition_colis') }}">📦 Expédition</a></li>
+                {% if session.get('client_id') %}
+                    <li><a href="{{ url_for('public_dashboard') }}">👤 Mon espace</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<section style="padding: 60px 0; background: var(--bg-light);">
+    <div class="container" style="max-width: 900px;">
+        <div style="margin-bottom: 40px;">
+            <h1 style="font-size: 36px; color: var(--text-dark); margin-bottom: 10px;">🔍 Suivi d'Expédition</h1>
+            <p style="color: var(--text-light);">Suivez votre colis en temps réel</p>
+        </div>
+
+        <!-- Formulaire de recherche -->
+        <div style="background: white; padding: 30px; border-radius: 15px; margin-bottom: 40px; box-shadow: var(--shadow-md);">
+            <form method="GET" action="{{ url_for('tourism.suivre_expedition') }}" style="display: flex; gap: 15px;">
+                <input type="text" 
+                       name="num_expedition" 
+                       value="{{ num_expedition }}"
+                       placeholder="Numéro d'expédition (ex: EXP-XXXXXXXXXX)" 
+                       style="flex: 1; padding: 14px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 16px; text-transform: uppercase;"
+                       required>
+                <button type="submit" class="btn-filter" style="padding: 14px 30px;">
+                    🔍 Rechercher
+                </button>
+            </form>
+        </div>
+
+        {% if expedition %}
+        <!-- Informations de l'expédition -->
+        <div style="background: white; padding: 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: var(--shadow-md);">
+            <h2 style="font-size: 24px; color: var(--text-dark); margin-bottom: 20px;">📦 Informations du colis</h2>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                <div>
+                    <div style="font-size: 13px; color: var(--text-light); margin-bottom: 5px;">Numéro d'expédition</div>
+                    <div style="font-size: 18px; font-weight: 700; color: var(--primary-color);">{{ expedition.num_expedition }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 13px; color: var(--text-light); margin-bottom: 5px;">Date d'expédition</div>
+                    <div style="font-size: 16px; font-weight: 600;">{{ expedition.date_expedition.strftime('%d/%m/%Y %H:%M') }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 13px; color: var(--text-light); margin-bottom: 5px;">Nature du colis</div>
+                    <div style="font-size: 16px; font-weight: 600;">{{ expedition.nature }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 13px; color: var(--text-light); margin-bottom: 5px;">Frais</div>
+                    <div style="font-size: 16px; font-weight: 600; color: var(--success-color);">{{ "{:,}".format(expedition.frais).replace(',', ' ') }} FCFA</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline de suivi -->
+        {% if statuts %}
+        <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: var(--shadow-md);">
+            <h2 style="font-size: 24px; color: var(--text-dark); margin-bottom: 30px;">📍 Historique de suivi</h2>
+            <div class="tracking-timeline">
+                {% for statut in statuts %}
+                <div class="timeline-item {% if loop.first %}active{% endif %}">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <div class="timeline-status">
+                                {% if statut.statut == 'Enregistré' %}📝
+                                {% elif statut.statut == 'En transit' %}🚚
+                                {% elif statut.statut == 'Arrivé' %}📍
+                                {% elif statut.statut == 'Livré' %}✅
+                                {% endif %}
+                                {{ statut.statut }}
+                            </div>
+                            <div class="timeline-date">{{ statut.date_heure.strftime('%d/%m/%Y %H:%M') }}</div>
+                        </div>
+                        {% if statut.localisation %}
+                        <div class="timeline-location">📍 {{ statut.localisation }}</div>
+                        {% endif %}
+                        {% if statut.commentaire %}
+                        <div class="timeline-comment">{{ statut.commentaire }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        {% if num_expedition %}
+        <div class="empty-state">
+            <div class="empty-icon">📦</div>
+            <h3>Expédition non trouvée</h3>
+            <p>Aucune expédition ne correspond au numéro <strong>{{ num_expedition }}</strong></p>
+            <p style="font-size: 14px; color: var(--text-light); margin-top: 10px;">Vérifiez le numéro et réessayez</p>
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+</section>
+
+<footer class="main-footer">
+    <div class="container">
+        <p>&copy; 2025 MBOA TRAVEL</p>
+    </div>
+</footer>
+
+</body>
+</html>

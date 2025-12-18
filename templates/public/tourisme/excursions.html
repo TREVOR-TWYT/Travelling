@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excursions Touristiques - MBOA TRAVEL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/public_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tourism.css') }}">
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="{{ url_for('public_index') }}">🏠 Accueil</a></li>
+                <li><a href="{{ url_for('public_trajets') }}">🛣️ Trajets</a></li>
+                <li><a href="{{ url_for('tourism.liste_sites') }}">🏖️ Sites Touristiques</a></li>
+                <li><a href="{{ url_for('tourism.liste_excursions') }}" class="active">🎒 Excursions</a></li>
+                <li><a href="{{ url_for('tourism.liste_vehicules_location') }}">🚗 Location</a></li>
+                <li><a href="{{ url_for('tourism.expedition_colis') }}">📦 Expédition</a></li>
+                
+                {% if session.get('client_id') %}
+                    <li><a href="{{ url_for('public_dashboard') }}">👤 Mon espace</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('public_login') }}" class="login-link">🔐 Connexion</a></li>
+                    <li><a href="{{ url_for('public_register') }}" class="register-link">📝 Inscription</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="tourism-hero">
+    <div class="hero-overlay"></div>
+    <div class="container">
+        <div class="tourism-hero-content">
+            <h1>🎒 Excursions Touristiques</h1>
+            <p>Découvrez les merveilles du Cameroun avec nos excursions guidées</p>
+        </div>
+    </div>
+</section>
+
+<!-- Filtres -->
+<section style="padding: 40px 0; background: var(--bg-light);">
+    <div class="container">
+        <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: var(--shadow-md); margin-bottom: 40px;">
+            <form method="GET" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: end;">
+                <div class="form-group">
+                    <label for="ville">🏙️ Ville/Région</label>
+                    <select id="ville" name="ville" style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px;">
+                        <option value="">Toutes les destinations</option>
+                        <option value="Yaoundé">Yaoundé</option>
+                        <option value="Douala">Douala</option>
+                        <option value="Kribi">Kribi</option>
+                        <option value="Bafoussam">Bafoussam</option>
+                        <option value="Maroua">Maroua</option>
+                        <option value="Limbe">Limbe</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="date_min">📅 Date minimum</label>
+                    <input type="date" id="date_min" name="date_min" style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px;">
+                </div>
+                
+                <div class="form-group">
+                    <label for="prix_max">💰 Prix maximum</label>
+                    <input type="number" id="prix_max" name="prix_max" placeholder="ex: 50000" style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px;">
+                </div>
+                
+                <button type="submit" class="btn-filter" style="height: 42px;">
+                    🔍 Filtrer
+                </button>
+            </form>
+        </div>
+
+        <!-- Liste des excursions -->
+        {% if excursions %}
+        <div class="excursions-grid">
+            {% for excursion in excursions %}
+            <div class="excursion-card">
+                <div class="excursion-image">
+                    {% if excursion.site.image_url %}
+                        <img src="{{ url_for('static', filename='image/' ~ excursion.site.image_url) }}" alt="{{ excursion.nom_excursion }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/400x250/667eea/ffffff?text=Excursion" alt="{{ excursion.nom_excursion }}">
+                    {% endif %}
+                    <div class="excursion-badge">
+                        {{ excursion.statut }}
+                    </div>
+                </div>
+                
+                <div class="excursion-content">
+                    <h3 class="excursion-title">{{ excursion.nom_excursion }}</h3>
+                    
+                    <div class="excursion-site">
+                        <span style="font-size: 20px;">📍</span>
+                        <strong>{{ excursion.site.nom_site }}</strong>
+                    </div>
+                    
+                    <div class="excursion-info">
+                        <div class="info-item">
+                            <span class="info-icon">🏙️</span>
+                            <span>{{ excursion.site.ville }}, {{ excursion.site.region }}</span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-icon">📅</span>
+                            <span>
+                                Du {{ excursion.date_depart.strftime('%d/%m/%Y') }} 
+                                au {{ excursion.date_retour.strftime('%d/%m/%Y') }}
+                            </span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-icon">🕐</span>
+                            <span>Départ à {{ excursion.heure_depart.strftime('%H:%M') }}</span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-icon">👥</span>
+                            <span>{{ excursion.nb_places_disponibles }} places disponibles</span>
+                        </div>
+                        
+                        {% if excursion.vehicule %}
+                        <div class="info-item">
+                            <span class="info-icon">🚐</span>
+                            <span>{{ excursion.vehicule.type }} - {{ excursion.vehicule.capacite }} places</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="excursion-description">
+                        {% if excursion.site.description %}
+                            <p>{{ excursion.site.description[:150] }}{% if excursion.site.description|length > 150 %}...{% endif %}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="excursion-footer">
+                        <div class="excursion-price">
+                            <div class="price-label">À partir de</div>
+                            <div class="price-amount">{{ "{:,}".format(excursion.tarif_par_personne).replace(',', ' ') }} FCFA</div>
+                            <div class="price-unit">par personne</div>
+                        </div>
+                        <a href="{{ url_for('tourism.detail_excursion', id_excursion=excursion.id_excursion) }}" class="btn-reserve">
+                            Réserver 🎫
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🎒</div>
+            <h3>Aucune excursion disponible</h3>
+            <p>Il n'y a pas d'excursions planifiées pour le moment.</p>
+            <p style="font-size: 14px; color: var(--text-light); margin-top: 10px;">
+                Revenez bientôt pour découvrir nos prochaines aventures !
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Section Avantages -->
+<section class="advantages" style="padding: 60px 0; background: white;">
+    <div class="container">
+        <h2 class="section-title">🌟 Pourquoi choisir nos excursions ?</h2>
+        <div class="advantages-grid">
+            <div class="advantage-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="advantage-icon">
+                    <div style="font-size: 64px;">👨‍🏫</div>
+                </div>
+                <h3 style="color: white;">Guides Expérimentés</h3>
+                <p style="color: rgba(255, 255, 255, 0.95);">
+                    Des guides professionnels qui connaissent parfaitement les sites touristiques
+                </p>
+            </div>
+            
+            <div class="advantage-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="advantage-icon">
+                    <div style="font-size: 64px;">🚐</div>
+                </div>
+                <h3 style="color: white;">Transport Confortable</h3>
+                <p style="color: rgba(255, 255, 255, 0.95);">
+                    Véhicules modernes et climatisés pour votre confort
+                </p>
+            </div>
+            
+            <div class="advantage-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <div class="advantage-icon">
+                    <div style="font-size: 64px;">🎯</div>
+                </div>
+                <h3 style="color: white;">Tout Compris</h3>
+                <p style="color: rgba(255, 255, 255, 0.95);">
+                    Transport, entrées et activités inclus dans nos forfaits
+                </p>
+            </div>
+            
+            <div class="advantage-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                <div class="advantage-icon">
+                    <div style="font-size: 64px;">💯</div>
+                </div>
+                <h3 style="color: white;">Satisfaction Garantie</h3>
+                <p style="color: rgba(255, 255, 255, 0.95);">
+                    Des milliers de clients satisfaits nous font confiance
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section style="padding: 80px 0; background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white; text-align: center;">
+    <div class="container">
+        <h2 style="font-size: 36px; margin-bottom: 20px; font-weight: 700;">🌍 Prêt pour l'aventure ?</h2>
+        <p style="font-size: 18px; margin-bottom: 30px; opacity: 0.95;">
+            Réservez dès maintenant votre prochaine excursion et vivez des moments inoubliables
+        </p>
+        {% if not session.get('client_id') %}
+        <a href="{{ url_for('public_register') }}" class="hero-btn">
+            Créer un compte
+            <span class="btn-arrow">→</span>
+        </a>
+        {% else %}
+        <a href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;" class="hero-btn">
+            Voir les excursions
+            <span class="btn-arrow">↑</span>
+        </a>
+        {% endif %}
+    </div>
+</section>
+
+<footer class="main-footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo" class="footer-logo">
+                <p style="color: #9ca3af; margin-top: 15px;">
+                    Votre partenaire de confiance pour voyager à travers le Cameroun
+                </p>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="{{ url_for('public_index') }}">Accueil</a></li>
+                    <li><a href="{{ url_for('public_trajets') }}">Trajets</a></li>
+                    <li><a href="{{ url_for('tourism.liste_sites') }}">Sites Touristiques</a></li>
+                    <li><a href="{{ url_for('tourism.liste_excursions') }}">Excursions</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="{{ url_for('tourism.liste_vehicules_location') }}">Location de véhicules</a></li>
+                    <li><a href="{{ url_for('tourism.expedition_colis') }}">Expédition de colis</a></li>
+                    <li><a href="#">Voyages organisés</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <div class="social-links">
+                    <a href="tel:+237690000000" class="social-link">📞 +237 690 00 00 00</a>
+                    <a href="mailto:contact@mboatravel.cm" class="social-link">📧 contact@mboatravel.cm</a>
+                    <a href="#" class="social-link">📍 Yaoundé, Cameroun</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 MBOA TRAVEL - Tous droits réservés | 
+                <a href="#">Conditions d'utilisation</a> | 
+                <a href="#">Politique de confidentialité</a>
+            </p>
+        </div>
+    </div>
+</footer>
+
+<script>
+// Animation au scroll
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.excursion-card');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = `all 0.5s ease ${index * 0.1}s`;
+        observer.observe(card);
+    });
+});
+
+// Gestion des filtres
+const form = document.querySelector('form');
+if (form) {
+    form.addEventListener('submit', function(e) {
+        const ville = document.getElementById('ville').value;
+        const dateMin = document.getElementById('date_min').value;
+        const prixMax = document.getElementById('prix_max').value;
+        
+        if (!ville && !dateMin && !prixMax) {
+            e.preventDefault();
+            alert('Veuillez sélectionner au moins un filtre');
+        }
+    });
+}
+</script>
+
+</body>
+</html>

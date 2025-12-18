@@ -1,220 +1,266 @@
-/* ==========================
-   RESET + BASE
-========================== */
+/* ============================================
+   VARIABLES & REFINEMENTS
+   ============================================ */
+:root {
+    --primary-purple: #6b4bff;
+    --deep-purple: #4b3b87;
+    --light-purple: #f3f0ff;
+    --accent-purple: #ede6ff;
+    --text-main: #2d2d3a;
+    --text-muted: #6e6c7a;
+    --white: #ffffff;
+    --danger: #ef4444;
+    --success: #10b981;
+    --shadow: 0 10px 25px rgba(90, 72, 150, 0.08);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f3f0ff; /* gris-violet très clair */
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--light-purple);
+    color: var(--text-main);
 }
 
-.welcome-section {
-    text-align: center;
-    margin-bottom: 50px; /* Plus d'espace sous le titre */
-}
-
-/* ==========================
+/* ============================================
    STRUCTURE GLOBALE
-========================== */
+   ============================================ */
 .layout {
     display: flex;
-    min-height: calc(100vh - 120px); /* espace pour header + footer */
+    min-height: calc(100vh - 80px); /* Ajusté pour le header */
+    gap: 0;
 }
 
-/* ==========================
+/* ============================================
    SIDEBAR (Menu à gauche)
-========================== */
+   ============================================ */
 .sidebar {
-    width: 250px;
-    background: white;
-    height: auto;
-    border-right: 2px solid #e3dbff;
-    padding: 25px 20px;
+    width: 280px;
+    background: var(--white);
+    border-right: 1px solid rgba(75, 59, 135, 0.1);
+    padding: 30px 15px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 80px);
 }
 
-/* Photo de profil arrondie */
+.profil-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
 .profil-pic {
-    width: 100px;
-    height: 100px;
-    background: #ede6ff;
-    margin: 0 auto 10px auto; /* centre horizontal + espace sous l'icône */
-    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    background: var(--accent-purple);
+    margin: 0 auto;
+    border-radius: 24px; /* Forme "Squircle" plus moderne */
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 50px; /* taille de l’icône / emoji */
+    font-size: 40px;
+    box-shadow: 0 8px 15px rgba(107, 75, 255, 0.15);
 }
 
-
-/* Titre "Espace client" */
 .profil-section h3 {
-    margin-top: 12px;
-    color: #4b3b87;
-    font-weight: 700;
-    font-size: 18px;
+    margin-top: 15px;
+    font-size: 1.1rem;
+    color: var(--deep-purple);
 }
 
-/* Liens du menu */
+/* Catégories de menu (Nouveau) */
+.menu-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #a0aec0;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin: 25px 0 10px 12px;
+}
+
 .menu-links a {
-    display: block;
-    padding: 12px;
-    margin-top: 10px;
-    border-radius: 8px;
-    font-size: 15px;
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 4px;
+    border-radius: 12px;
+    font-size: 14px;
     text-decoration: none;
-    color: #4b3b87;
+    color: var(--text-main);
     font-weight: 600;
-    transition: 0.25s;
+    transition: var(--transition);
 }
 
 .menu-links a:hover {
-    background: #f2eaff;
-    padding-left: 18px;
+    background: var(--accent-purple);
+    color: var(--primary-purple);
+    transform: translateX(5px);
 }
 
-/* Déconnexion */
+.menu-links a.active {
+    background: var(--primary-purple);
+    color: var(--white);
+}
+
 .logout {
-    color: #d13b3b !important;
+    margin-top: auto;
+    color: var(--danger) !important;
 }
 
 .logout:hover {
-    background: #ffe6e6;
+    background: #fff1f1 !important;
 }
 
-/* ==========================
+/* ============================================
    CONTENU À DROITE
-========================== */
+   ============================================ */
 .content {
     flex: 1;
-    padding: 30px;
+    padding: 40px;
+    max-width: 1200px;
 }
 
-/* Titres */
-.content h2 {
-    color: #4b3b87;
-    margin-bottom: 5px;
+.welcome-section {
+    margin-bottom: 40px;
 }
 
-/* Sous-titre */
-.content p {
-    color: #6e6c7a;
+.welcome-section h2 {
+    font-size: 2rem;
+    color: var(--deep-purple);
 }
 
-/* ==========================
-   STATISTIQUES (4 boîtes)
-========================== */
+/* ============================================
+   STATISTIQUES
+   ============================================ */
 .stats {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
-    margin: 25px 0;
-    flex-wrap: wrap;
+    margin-bottom: 40px;
 }
 
 .stat-box {
-    background: white;
-    padding: 20px;
-    flex: 1;
-    min-width: 180px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(90, 72, 150, 0.1);
-    text-align: center;
-    transition: 0.3s;
+    background: var(--white);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: var(--transition);
+}
+
+.stat-box h3 {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin: 0 0 10px 0;
+}
+
+.stat-box p {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--deep-purple);
+    margin: 0;
 }
 
 .stat-box:hover {
     transform: translateY(-5px);
+    border-color: var(--primary-purple);
 }
 
-/* ==========================
-   DESTINATIONS
-========================== */
+/* ============================================
+   CARTES DESTINATIONS & RÉSERVATIONS
+   ============================================ */
 .destinations {
-    display: flex;
-    gap: 20px;
-    margin-top: 15px;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
 }
 
 .destination-card {
-    background: white;
-    padding: 18px;
-    flex: 1;
-    min-width: 220px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(90, 72, 150, 0.1);
-    transition: 0.3s;
+    background: var(--white);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
 }
 
-.destination-card:hover {
-    transform: translateY(-5px);
+.destination-card h3 {
+    margin-top: 0;
+    color: var(--deep-purple);
 }
 
 .destination-card a {
-    text-decoration: none;
-    color: #6b4bff;
-    font-weight: bold;
-}
-
-/* ==========================
-   DERNIÈRE RÉSERVATION
-========================== */
-.reservation-box {
-    background: white;
-    padding: 25px;
-    border-left: 5px solid #7d5fff;
-    border-radius: 10px;
-    margin-top: 30px;
-    box-shadow: 0 4px 10px rgba(90, 72, 150, 0.1);
-}
-
-.reservation-box a {
-    color: #6b4bff;
-    font-weight: bold;
-    text-decoration: none;
-}
-
-/* ==========================
-   BOUTONS D’ACTIONS RAPIDES
-========================== */
-.quick-actions {
-    margin-top: 30px;
-}
-
-.quick-actions .btn {
     display: inline-block;
-    background: #6b4bff;
-    color: white;
-    padding: 12px 22px;
-    border-radius: 8px;
+    margin-top: 15px;
+    color: var(--primary-purple);
     text-decoration: none;
-    font-weight: 600;
-    margin-right: 15px;
-    transition: 0.3s;
+    font-size: 0.9rem;
 }
 
-.quick-actions .btn:hover {
-    background: #4b37cc;
+/* Dernière réservation */
+.reservation-box {
+    background: var(--white);
+    padding: 30px;
+    border-left: 6px solid var(--primary-purple);
+    border-radius: 20px;
+    margin: 30px 0;
+    box-shadow: var(--shadow);
+}
+
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: bold;
+    background: #eef2ff;
+    color: var(--primary-purple);
+}
+
+/* ============================================
+   BOUTONS & ACTIONS
+   ============================================ */
+.quick-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 14px 25px;
+    background: var(--primary-purple);
+    color: white;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(107, 75, 255, 0.2);
+}
+
+.btn:hover {
+    background: var(--deep-purple);
     transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(107, 75, 255, 0.3);
 }
 
-/* ==========================
+/* ============================================
    RESPONSIVE
-========================== */
-@media (max-width: 900px) {
-    .layout {
-        flex-direction: column;
-    }
+   ============================================ */
+@media (max-width: 1024px) {
+    .sidebar { width: 220px; }
+}
 
+@media (max-width: 850px) {
+    .layout { flex-direction: column; }
     .sidebar {
         width: 100%;
+        height: auto;
+        position: relative;
+        top: 0;
         border-right: none;
-        border-bottom: 2px solid #e3dbff;
-        margin-bottom: 20px;
+        border-bottom: 1px solid var(--accent-purple);
     }
-
-    .content {
-        margin-left: 0;
-    }
+    .content { padding: 20px; }
+    .stats { grid-template-columns: 1fr 1fr; }
 }

@@ -1,0 +1,120 @@
+{% extends 'layout.html' %}
+
+{% block title %}Gestion des Sites - MBOA TRAVEL{% endblock %}
+
+{% block breadcrumb %}Tourisme / Gestion des Sites{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+    <div class="header-text">
+        <h1>📍 Gestion des Sites Touristiques</h1>
+        <p>Gérez la visibilité et les tarifs de vos destinations.</p>
+    </div>
+    <a href="{{ url_for('tourism.admin_creer_site') }}" class="btn-add-new">
+        ➕ Ajouter un site
+    </a>
+</div>
+
+<div class="sites-grid">
+    {% for site in sites %}
+    <div class="site-card">
+        <div class="site-card-image">
+            {% if site.image_url %}
+                <img src="{{ url_for('static', filename='image/' ~ site.image_url) }}" alt="{{ site.nom_site }}">
+            {% else %}
+                <div class="image-placeholder">📷 Pas d'image</div>
+            {% endif %}
+            <span class="region-tag">{{ site.region }}</span>
+        </div>
+
+        <div class="site-card-body">
+            <h3>{{ site.nom_site }}</h3>
+            <p class="city-info">🏙️ {{ site.ville }}</p>
+            
+            <div class="price-info">
+                <span class="price-box">Adulte: <strong>{{ "{:,}".format(site.tarif_adulte) }} F</strong></span>
+            </div>
+
+            <div class="site-card-footer">
+                <a href="{{ url_for('tourism.admin_modifier_site', id_site=site.id_site) }}" class="btn-icon edit">✏️ Modifier</a>
+                
+                <form action="{{ url_for('tourism.admin_supprimer_site', id_site=site.id_site) }}" method="POST" onsubmit="return confirm('Supprimer ce site ?');">
+                    <button type="submit" class="btn-icon delete">🗑️</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>Aucun site trouvé. Commencez par en créer un !</p>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    .admin-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .btn-add-new {
+        background: #4f46e5;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .sites-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+    }
+
+    .site-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        transition: transform 0.3s ease;
+    }
+
+    .site-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+
+    .site-card-image { position: relative; height: 180px; background: #f1f5f9; }
+    .site-card-image img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .region-tag {
+        position: absolute; top: 12px; right: 12px;
+        background: rgba(0,0,0,0.6); color: white;
+        padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    }
+
+    .site-card-body { padding: 20px; }
+    .site-card-body h3 { font-size: 1.2rem; margin-bottom: 5px; color: #1e293b; }
+    .city-info { color: #64748b; font-size: 0.9rem; margin-bottom: 15px; }
+
+    .price-box {
+        background: #f0fdf4; color: #166534;
+        padding: 6px 12px; border-radius: 6px; font-size: 0.85rem;
+    }
+
+    .site-card-footer {
+        margin-top: 20px; padding-top: 15px;
+        border-top: 1px solid #f1f5f9;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .btn-icon { text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+    .edit { color: #4f46e5; }
+    .delete { color: #ef4444; background: none; border: none; cursor: pointer; }
+</style>
+{% endblock %}

@@ -1,133 +1,148 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard - MBOA TRAVEL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Espace - MBOA TRAVEL</title>
     <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/public_style.css"> 
 </head>
 <body>
 
   {% include 'public/header.html' %}
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div class="flash-container">
-      {% for category, message in messages %}
-        <div class="flash {{ category }}">{{ message }}</div>
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
-  
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-messages-container">
+        {% for category, message in messages %}
+          <div class="flash-alert flash-{{ category }}">
+            {{ message }}
+            <button class="close-flash" onclick="this.parentElement.remove()">×</button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
 
-<!-- ==========================
-          STRUCTURE GLOBALE
-          sidebar (gauche) + contenu (droite)
-    =========================== -->
-    <div class="layout">
+  <div class="layout">
 
-      <!-- ==========================
-            MENU À GAUCHE
-      =========================== -->
       <aside class="sidebar">
         <div class="profil-section">
           <div class="profile-pic">👤</div>
-          <h3>Espace client</h3>
+          <h3>{{ client.prenom }}</h3>
+          <span class="badge-client">Client Privilège</span>
         </div>
 
         <nav class="menu-links">
-          <a href="{{ url_for('public_reservation') }}">📝 Faire une réservation</a></li>
-          <a href="{{ url_for('public_trajets') }}">📍 Voir les trajets</a></li>
-          <a href="{{ url_for('mes_reservations') }}">📅 Mes réservations</a></li>
-          <a href="{{ url_for('logout') }}" class="logout">🚪 Se déconnecter</a></li>
-          </ul>
+          <p class="menu-label">🚌 TRANSPORT</p>
+          <a href="{{ url_for('public_reservation') }}">📝 Réserver un bus</a>
+          <a href="{{ url_for('mes_reservations') }}">📅 Mes tickets bus</a>
+          
+          <p class="menu-label">🗺️ TOURISME & LOISIRS</p>
+          <a href="{{ url_for('tourism.mes_excursions') }}">📸 Mes excursions</a>
+          <a href="{{ url_for('tourism.mes_locations') }}">🚗 Mes locations</a>
+          
+          <p class="menu-label">📦 LOGISTIQUE</p>
+          <a href="{{ url_for('tourism.expedition_colis') }}">📤 Envoyer un colis</a>
+          <a href="{{ url_for('tourism.mes_expeditions') }}">📦 Suivre mes envois</a>
+
+          <hr>
+          <a href="{{ url_for('logout') }}" class="logout">🚪 Se déconnecter</a>
         </nav>
       </aside>
 
-      <!-- ==========================
-            CONTENU À DROITE
-      =========================== -->
       <main class="content">
 
-          <!-- Message d'accueil -->
           <div class="welcome-section">
-            <h2>Bienvenue, {{ client.prenom }} {{ client.nom }} 👋</h2>
-            <p>Prêt(e) pour votre prochaine aventure ?</p>
+            <h2>Bonjour, {{ client.prenom }} 👋</h2>
+            <p>Heureux de vous revoir. Voici le résumé de vos activités chez MBOA TRAVEL.</p>
           </div>
 
-          <!-- ======== STATISTIQUES ========= -->
           <div class="stats">
-
               <div class="stat-box">
-                  <h3>✈️ Voyages effectués</h3>
-                  <p>3 voyages</p>
+                  <span class="stat-icon">🚌</span>
+                  <h3>Bus</h3>
+                  <p>3 Voyages</p>
               </div>
-
               <div class="stat-box">
-                  <h3>📅 Réservations en cours</h3>
-                  <p>1 réservation</p>
+                  <span class="stat-icon">📸</span>
+                  <h3>Excursions</h3>
+                  <p>1 Prévue</p>
               </div>
-
               <div class="stat-box">
-                  <h3>🌍 Destinations</h3>
-                  <p>22 disponibles</p>
+                  <span class="stat-icon">🚗</span>
+                  <h3>Location</h3>
+                  <p>0 en cours</p>
               </div>
-
               <div class="stat-box">
-                  <h3>🔔 Notifications</h3>
-                  <p>0 nouvelle</p>
+                  <span class="stat-icon">📦</span>
+                  <h3>Colis</h3>
+                  <p>2 Expédiés</p>
               </div>
-
           </div>
 
-          <!-- ======== DESTINATIONS RECOMMANDÉES ========= -->
-          <h2>Destinations recommandées 🌴</h2>
+          <div class="dashboard-grid">
+              
+              <div class="dashboard-card">
+                  <div class="card-header">
+                      <h3>🎫 Dernier Ticket Bus</h3>
+                      <a href="{{ url_for('mes_reservations') }}" class="link-small">Tout voir</a>
+                  </div>
+                  <div class="reservation-box">
+                      <p><strong>Trajet :</strong> Douala → Yaoundé</p>
+                      <p><strong>Date :</strong> 20 Déc. 2025</p>
+                      <span class="status-badge confirmed">Confirmé ✅</span>
+                  </div>
+              </div>
+
+              <div class="dashboard-card">
+                  <div class="card-header">
+                      <h3>📦 Dernier Colis</h3>
+                      <a href="{{ url_for('tourism.mes_expeditions') }}" class="link-small">Suivre</a>
+                  </div>
+                  <div class="reservation-box">
+                      <p><strong>Numéro :</strong> EXP-A7B2D9</p>
+                      <p><strong>Statut :</strong> En cours de transit 🚛</p>
+                      <p class="text-muted">Localisation : Bafoussam</p>
+                  </div>
+              </div>
+          </div>
+
+          <div class="section-header-inline">
+            <h2>Évadez-vous avec nous 🌴</h2>
+            <a href="{{ url_for('tourism.liste_sites') }}">Découvrir tous les sites →</a>
+          </div>
 
           <div class="destinations">
-
               <div class="destination-card">
-                  <h3>Bafoussam → Yaoundé 🇨🇲 </h3>
-                  <p>À partir de 10 000 FCFA</p>
-                  <a href="{{ url_for('public_trajets') }}">Voir plus →</a>
+                  <div class="dest-img" style="background-image: url('/static/image/kribi.jpg');"></div>
+                  <div class="dest-info">
+                      <h3>Plages de Kribi</h3>
+                      <p>Détente et fruits de mer au bord de l'océan.</p>
+                      <a href="{{ url_for('tourism.detail_site', id_site=1) }}" class="btn-text">Réserver une excursion →</a>
+                  </div>
               </div>
 
               <div class="destination-card">
-                  <h3>Douala → Yaoundé 🇨🇲</h3>
-                  <p>Trajets disponibles chaque jour</p>
-                  <a href="{{ url_for('public_trajets') }}">Voir plus →</a>
+                  <div class="dest-img" style="background-image: url('/static/image/waza.jpg');"></div>
+                  <div class="dest-info">
+                      <h3>Parc de Waza</h3>
+                      <p>Le safari photo inoubliable au Nord-Cameroun.</p>
+                      <a href="{{ url_for('tourism.detail_site', id_site=2) }}" class="btn-text">Voir les détails →</a>
+                  </div>
               </div>
-
-              <div class="destination-card">
-                  <h3>Kribi 🇨🇲</h3>
-                  <p>Réduction exceptionnelle -15%</p>
-                  <a href="{{ url_for('public_trajets') }}">Voir plus →</a>
-              </div>
-
           </div>
 
-          <!-- ======== DERNIÈRE RÉSERVATION ========= -->
-          <h2>Votre dernière réservation 📄</h2>
-
-          <div class="reservation-box">
-              <p><strong>Trajet :</strong> Douala → Yaoundé</p>
-              <p><strong>Date :</strong> 12 Décembre 2025</p>
-              <p><strong>Statut :</strong> Confirmé ✅</p>
-              <a href="{{ url_for('mes_reservations') }}?ville_depart=Douala&ville_arrivee=Yaoundé">Voir toutes les réservations →</a>
-          </div>
-
-          <!-- ======== BOUTONS D’ACTIONS RAPIDES ========= -->
-          <div class="quick-actions">
-              <a class="btn" href="{{ url_for('public_reservation') }}">📝 Nouvelle réservation</a>
-              <a class="btn" href="{{ url_for('public_trajets') }}">📍 Voir les trajets</a>
-              
+          <div class="quick-actions-bar">
+              <a class="btn action-btn" href="{{ url_for('public_reservation') }}">🚌 Réserver un bus</a>
+              <a class="btn action-btn" href="{{ url_for('tourism.liste_vehicules_location') }}">🚗 Louer une voiture</a>
+              <a class="btn action-btn" href="{{ url_for('tourism.expedition_colis') }}">📦 Envoyer un colis</a>
           </div>
 
       </main>
   </div>
 
-</div>
-<!--
-{% include 'public/footer.html' %}
--->
+  {% include 'public/footer.html' %}
+
 </body>
 </html>

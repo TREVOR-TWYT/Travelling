@@ -8,43 +8,49 @@
 </head>
 <body>
 
-<!-- Header -->
 <header class="main-header">
     <div class="header-container">
         <div class="logo">
-            <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
+            <a href="{{ url_for('public_index') }}">
+                <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL">
+            </a>
         </div>
         <nav class="main-nav"> 
             <ul>
                 <li><a href="{{ url_for('public_index') }}" class="active">🏠 Accueil</a></li>
-                <li><a href="{{ url_for('public_trajets') }}">🛣️ Nos trajets</a></li>
+                
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">✨ Services ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('public_trajets') }}">🚌 Nos trajets Bus</a></li>
+                        <li><a href="{{ url_for('tourism.liste_sites') }}">🗺️ Sites Touristiques</a></li>
+                        <li><a href="{{ url_for('tourism.liste_excursions') }}">📸 Excursions</a></li>
+                        <li><a href="{{ url_for('tourism.liste_vehicules_location') }}">🚗 Location de voitures</a></li>
+                        <li><a href="{{ url_for('tourism.expedition_colis') }}">📦 Expédition Colis</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="{{ url_for('tourism.suivre_expedition') }}">🔍 Suivre un colis</a></li>
                 <li><a href="{{ url_for('public_contact') }}">📞 Contact</a></li>
                 
                 {% if session.get('client_id') %}
-                    <!-- Si client connecté -->
                     <li><a href="{{ url_for('public_dashboard') }}" class="user-link">👤 Mon espace</a></li>
-                    <li><a href="{{ url_for('mes_reservations') }}">📋 Mes réservations</a></li>
                     <li><a href="{{ url_for('logout') }}" class="logout-link">🚪 Déconnexion</a></li>
                 {% else %}
-                    <!-- Si non connecté -->
                     <li><a href="{{ url_for('public_login') }}" class="login-link">🔑 Connexion</a></li>
-                    <li><a href="{{ url_for('handle_register') }}" class="register-link">📝 Inscription</a></li>
+                    <li><a href="{{ url_for('public_register') }}" class="register-link">📝 Inscription</a></li>
                 {% endif %}
                 
                 <li><a href="{{ url_for('admin_login') }}" class="admin-link">🔐 Admin</a></li>
             </ul>
         </nav>
         
-        <!-- Menu mobile hamburger -->
         <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-            <span></span>
-            <span></span>
-            <span></span>
+            <span></span><span></span><span></span>
         </button>
     </div>
 </header>
 
-<!-- Messages flash -->
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         <div class="flash-messages-container">
@@ -59,7 +65,6 @@
     {% endif %}
 {% endwith %}
 
-<!-- Hero Section -->
 <section class="hero">
     <div class="hero-overlay"></div>
     <div class="hero-content">
@@ -68,61 +73,72 @@
                 Voyagez confortablement<br>
                 avec <span class="highlight">MBOA TRAVEL</span>
             </h1>
-            <p class="hero-subtitle">Le meilleur service de transport interurbain au Cameroun</p>
-            <a href="{{ url_for('public_reservation') }}" class="btn hero-btn">
-                <span>Réserver maintenant</span>
-                <span class="btn-arrow">→</span>
-            </a>
+            <p class="hero-subtitle">Le leader du transport, du tourisme et de la logistique au Cameroun</p>
+            <div class="hero-btns" style="margin-top: 20px;">
+                <a href="{{ url_for('public_reservation') }}" class="btn hero-btn">Réserver un voyage</a>
+                <a href="{{ url_for('tourism.liste_sites') }}" class="btn btn-outline" style="color: white; border-color: white; margin-left: 10px;">Découvrir le Cameroun</a>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- Section recherche -->
-<!--section class="search-section">
+<section class="search-section">
     <div class="container">
         <div class="search-info">
             <h2>Rechercher un trajet</h2>
-            <p>Saisissez votre ville de départ et votre ville d'arrivée pour voir tous les trajets disponibles et leurs horaires.</p>
+            <p>Trouvez vos horaires et réservez votre place en quelques clics.</p>
         </div>
 
-        <!--Formulaire de recherche >
         <div class="search-form-container">
             <form method="GET" action="{{ url_for('public_reservation') }}" class="search-form">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="ville_depart">
-                            <span class="icon">📍</span>
-                            Ville de départ
-                        </label>
+                        <label for="ville_depart">📍 Ville de départ</label>
                         <input type="text" id="ville_depart" name="ville_depart" placeholder="Ex: Douala" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="ville_arrivee">
-                            <span class="icon">🎯</span>
-                            Ville d'arrivée
-                        </label>
+                        <label for="ville_arrivee">🎯 Ville d'arrivée</label>
                         <input type="text" id="ville_arrivee" name="ville_arrivee" placeholder="Ex: Yaoundé" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="date_depart">
-                            <span class="icon">📅</span>
-                            Date de départ
-                        </label>
+                        <label for="date_depart">📅 Date de départ</label>
                         <input type="date" id="date_depart" name="date_depart" required>
                     </div>
                 </div>
-                
-                <button type="submit" class="btn btn-search">
-                    <span>🔍 Rechercher</span>
-                </button>
+                <button type="submit" class="btn btn-search">🔍 Rechercher</button>
             </form>
         </div>
     </div>
-</section-->
+</section>
 
-<!-- Advantages -->
+<section class="services-extra" style="padding: 60px 0; background: #f9f9f9;">
+    <div class="container">
+        <h2 class="section-title">Nos autres services</h2>
+        <div class="advantages-grid">
+            <div class="advantage-card">
+                <div class="advantage-icon">🗺️</div>
+                <h3>Tourisme</h3>
+                <p>Visitez les plus beaux sites du pays avec nos excursions organisées.</p>
+                <a href="{{ url_for('tourism.liste_sites') }}" class="btn-text">Explorer →</a>
+            </div>
+            <div class="advantage-card">
+                <div class="advantage-icon">🚗</div>
+                <h3>Location</h3>
+                <p>Louez un véhicule avec ou sans chauffeur pour vos déplacements.</p>
+                <a href="{{ url_for('tourism.liste_vehicules_location') }}" class="btn-text">Voir les tarifs →</a>
+            </div>
+            <div class="advantage-card">
+                <div class="advantage-icon">📦</div>
+                <h3>Colis & Fret</h3>
+                <p>Expédiez vos colis en toute sécurité vers toutes les régions.</p>
+                <a href="{{ url_for('tourism.expedition_colis') }}" class="btn-text">Envoyer →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section class="advantages">
     <div class="container">
         <h2 class="section-title">Pourquoi choisir MBOA TRAVEL ?</h2>
@@ -154,7 +170,6 @@
     </div>
 </section>
 
-<!-- Section trajets populaires -->
 <section class="trips-section">
     <div class="container">
         <h2 class="section-title">Nos trajets populaires</h2>
@@ -167,8 +182,7 @@
                 <div class="trip-content">
                     <h4>Douala → Yaoundé</h4>
                     <p class="trip-info">
-                        <span>⏱️ Durée : 4h</span>
-                        <span>💰 Prix : 8 000 FCFA</span>
+                        <span>⏱️ 4h</span> | <span>💰 8 000 FCFA</span>
                     </p>
                     <a href="{{ url_for('public_reservation') }}?ville_depart=Douala&ville_arrivee=Yaoundé" class="btn btn-small">Réserver</a>
                 </div>
@@ -181,8 +195,7 @@
                 <div class="trip-content">
                     <h4>Bamenda → Bafoussam</h4>
                     <p class="trip-info">
-                        <span>⏱️ Durée : 6h</span>
-                        <span>💰 Prix : 10 000 FCFA</span>
+                        <span>⏱️ 6h</span> | <span>💰 10 000 FCFA</span>
                     </p>
                     <a href="{{ url_for('public_reservation') }}?ville_depart=Bamenda&ville_arrivee=Bafoussam" class="btn btn-small">Réserver</a>
                 </div>
@@ -195,112 +208,68 @@
                 <div class="trip-content">
                     <h4>Kribi → Douala</h4>
                     <p class="trip-info">
-                        <span>⏱️ Durée : 3h</span>
-                        <span>💰 Prix : 7 000 FCFA</span>
+                        <span>⏱️ 3h</span> | <span>💰 7 000 FCFA</span>
                     </p>
                     <a href="{{ url_for('public_reservation') }}?ville_depart=Kribi&ville_arrivee=Douala" class="btn btn-small">Réserver</a>
                 </div>
             </div>
         </div>
-        
-        <div class="text-center mt-30">
-            <a href="{{ url_for('public_trajets') }}" class="btn btn-outline">Voir tous les trajets</a>
-        </div>
     </div>
 </section>
 
-<!-- Testimonials -->
 <section class="testimonials-section">
     <div class="container">
         <h2 class="section-title">Avis de nos clients</h2>
         <div class="testimonials-grid">
             <div class="testimonial-card">
                 <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
-                <p class="testimonial-text">"Voyager avec MBOA TRAVEL est toujours un plaisir ! Les bus sont confortables et les chauffeurs très professionnels."</p>
-                <div class="testimonial-author">
-                    <strong>Fatou M.</strong>
-                    <span>Cliente fidèle</span>
-                </div>
+                <p class="testimonial-text">"Voyager avec MBOA TRAVEL est toujours un plaisir ! Les bus sont confortables et les chauffeurs professionnels."</p>
+                <div class="testimonial-author"><strong>Fatou M.</strong></div>
             </div>
-            
             <div class="testimonial-card">
                 <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
-                <p class="testimonial-text">"J'ai pu réserver mon trajet facilement et à bon prix. Je recommande vivement !"</p>
-                <div class="testimonial-author">
-                    <strong>Jean-Paul K.</strong>
-                    <span>Voyageur régulier</span>
-                </div>
-            </div>
-            
-            <div class="testimonial-card">
-                <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
-                <p class="testimonial-text">"Service impeccable, ponctualité au rendez-vous. MBOA TRAVEL est devenu mon choix numéro un !"</p>
-                <div class="testimonial-author">
-                    <strong>Marie A.</strong>
-                    <span>Cliente satisfaite</span>
-                </div>
+                <p class="testimonial-text">"J'ai envoyé un colis à l'Ouest, il est arrivé intact et à l'heure. Top service !"</p>
+                <div class="testimonial-author"><strong>Jean-Paul K.</strong></div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Footer -->
 <footer class="main-footer">
     <div class="container">
         <div class="footer-content">
             <div class="footer-section">
-                <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo MBOA TRAVEL" class="footer-logo">
-                <p>Le meilleur service de transport interurbain au Cameroun</p>
+                <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="Logo" class="footer-logo">
+                <p>Le meilleur service de transport interurbain au Cameroun.</p>
             </div>
-            
             <div class="footer-section">
-                <h4>Navigation</h4>
+                <h4>Services</h4>
                 <ul>
-                    <li><a href="{{ url_for('public_index') }}">Accueil</a></li>
-                    <li><a href="{{ url_for('public_trajets') }}">Nos trajets</a></li>
-                    <li><a href="{{ url_for('public_contact') }}">Contact</a></li>
-                    <li><a href="{{ url_for('admin_login') }}">Administration</a></li>
+                    <li><a href="{{ url_for('public_trajets') }}">Voyages Bus</a></li>
+                    <li><a href="{{ url_for('tourism.liste_sites') }}">Tourisme</a></li>
+                    <li><a href="{{ url_for('tourism.expedition_colis') }}">Colis</a></li>
                 </ul>
             </div>
-            
             <div class="footer-section">
                 <h4>Contact</h4>
                 <ul>
-                    <li>📧 <a href="mailto:contact@mboa-travel.cm">contact@mboa-travel.cm</a></li>
-                    <li>📞 <a href="tel:+237699999999">+237 6 99 99 99 99</a></li>
+                    <li>📞 +237 6 99 99 99 99</li>
+                    <li>📧 contact@mboa-travel.cm</li>
                     <li>📍 Yaoundé, Cameroun</li>
                 </ul>
             </div>
-            
-            <div class="footer-section">
-                <h4>Suivez-nous</h4>
-                <div class="social-links">
-                    <a href="#" class="social-link">Facebook</a>
-                    <a href="#" class="social-link">Twitter</a>
-                    <a href="#" class="social-link">Instagram</a>
-                </div>
-            </div>
         </div>
-        
         <div class="footer-bottom">
-            <p>&copy; 2025 MBOA TRAVEL. Tous droits réservés.</p>
-            <p>
-                <a href="{{ url_for('liens_rapides') }}">Liens rapides</a> | 
-                <a href="#">Mentions légales</a> | 
-                <a href="#">Confidentialité</a>
-            </p>
+            <p>&copy; 2025 MBOA TRAVEL. <a href="{{ url_for('liens_rapides') }}">Liens rapides</a></p>
         </div>
     </div>
 </footer>
 
 <script>
-    // Menu mobile toggle
     function toggleMobileMenu() {
-        const nav = document.querySelector('.main-nav');
-        nav.classList.toggle('active');
+        document.querySelector('.main-nav').classList.toggle('active');
     }
     
-    // Définir la date minimale à aujourd'hui
     document.addEventListener('DOMContentLoaded', function() {
         const dateInput = document.getElementById('date_depart');
         if (dateInput) {

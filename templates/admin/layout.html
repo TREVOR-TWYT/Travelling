@@ -3,58 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
     <title>{% block title %}Admin - MBOA TRAVEL{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <header>
-        <h1>🚌 MBOA TRAVEL - Administration</h1>
-        <nav>
-            <a href="{{ url_for('admin_statistiques') }}">📊 Statistiques</a>
-            <a href="{{ url_for('crud.list_agences') }}">🏢 Agences</a>
-            <a href="{{ url_for('crud.list_personnels') }}">👥 Personnels</a>
-            <a href="{{ url_for('crud.list_clients') }}">👤 Clients</a>
-            <a href="{{ url_for('crud.trajets_list') }}">🛣️ Trajets</a>
-            <a href="{{ url_for('crud.list_vehicules') }}">🚌 Véhicules</a>
-            <a href="{{ url_for('crud.list_voyages') }}">✈️ Voyages</a>
-            <a href="{{ url_for('crud.reservation') }}">📝 Réservations</a>
-            <a href="{{ url_for('public_index') }}" target="_blank">🌐 Site</a>
-            <a href="{{ url_for('admin_logout') }}" class="logout-btn">🚪 Déconnexion</a>
+<body class="admin-body">
+
+    <aside class="admin-sidebar">
+        <div class="sidebar-brand">
+            <h2>🚌 MBOA ADMIN</h2>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-group">
+                <p class="group-title">TABLEAU DE BORD</p>
+                <a href="{{ url_for('admin_statistiques') }}" class="nav-link">📊 Statistiques Globales</a>
+                <a href="{{ url_for('public_index') }}" target="_blank" class="nav-link">🌐 Voir le site</a>
+            </div>
+
+            <div class="nav-group">
+                <p class="group-title">🚌 TRANSPORT (BUS)</p>
+                <a href="{{ url_for('crud.list_agences') }}" class="nav-link">🏢 Agences</a>
+                <a href="{{ url_for('crud.trajets_list') }}" class="nav-link">🛣️ Trajets</a>
+                <a href="{{ url_for('crud.list_vehicules') }}" class="nav-link">🚌 Flotte Bus</a>
+                <a href="{{ url_for('crud.list_voyages') }}" class="nav-link">✈️ Voyages</a>
+                <a href="{{ url_for('crud.reservation') }}" class="nav-link">📝 Réservations Bus</a>
+            </div>
+
+            <div class="nav-group">
+                <p class="group-title">🗺️ TOURISME & LOISIRS</p>
+                <a href="{{ url_for('tourism.admin_sites') }}" class="nav-link">📍 Gestion des Sites</a>
+                <a href="{{ url_for('tourism.admin_excursions') }}" class="nav-link">📸 Excursions organisées</a>
+                <a href="{{ url_for('tourism.admin_creer_site') }}" class="nav-link">🎟️ Réservations Tourisme</a>
+            </div>
+
+            <div class="nav-group">
+                <p class="group-title">🚗 LOCATION & COLIS</p>
+                <a href="{{ url_for('tourism.liste_vehicules_location') }}" class="nav-link">🚗 Flotte Location</a>
+                <a href="{{ url_for('tourism.mes_locations') }}" class="nav-link">📄 Contrats Location</a>
+                <a href="{{ url_for('tourism.expedition_colis') }}" class="nav-link">📦 Gestion des Colis</a>
+            </div>
+
+            <div class="nav-group">
+                <p class="group-title">👥 UTILISATEURS</p>
+                <a href="{{ url_for('crud.list_clients') }}" class="nav-link">👤 Base Clients</a>
+                <a href="{{ url_for('crud.list_personnels') }}" class="nav-link">👥 Équipe Personnel</a>
+            </div>
         </nav>
-    </header>
 
-    <main>
-        <!-- Messages flash -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flash-messages">
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">
-                            {% if category == 'error' %}⚠️{% elif category == 'success' %}✅{% else %}ℹ️{% endif %}
-                            {{ message }}
-                        </div>
-                    {% endfor %}
+        <div class="sidebar-footer">
+            <a href="{{ url_for('admin_logout') }}" class="logout-btn">🚪 Déconnexion</a>
+        </div>
+    </aside>
+
+    <div class="admin-main-wrapper">
+        <header class="admin-topbar">
+            <div class="topbar-left">
+                <span class="breadcrumb">Admin / {% block breadcrumb %}Accueil{% endblock %}</span>
+            </div>
+            <div class="topbar-right">
+                <span class="admin-name">Session : <strong>Administrateur</strong></span>
+            </div>
+        </header>
+
+        <main class="admin-content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {% if category == 'error' %}⚠️{% elif category == 'success' %}✅{% else %}ℹ️{% endif %}
+                                {{ message }}
+                                <button onclick="this.parentElement.remove()" class="close-alert">×</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}
+            <div class="welcome-card">
+                <h1>Bienvenue dans le panneau de contrôle 👋</h1>
+                <p>Vous avez maintenant accès à la gestion du transport, du tourisme et de la logistique.</p>
+                
+                <div class="quick-stats-grid">
+                    <div class="q-stat">
+                        <span>Total Ventes</span>
+                        <strong>1 250 000 FCFA</strong>
+                    </div>
+                    <div class="q-stat">
+                        <span>Réservations Jour</span>
+                        <strong>42</strong>
+                    </div>
+                    <div class="q-stat">
+                        <span>Colis en attente</span>
+                        <strong>12</strong>
+                    </div>
                 </div>
-            {% endif %}
-        {% endwith %}
+            </div>
+            {% endblock %}
+        </main>
+    </div>
 
-        {% block content %}
-        <!-- Le contenu de chaque page ira ici -->
-        <div class="welcome-message">
-            <h2>Bienvenue dans l'espace d'administration</h2>
-            <p>Utilisez le menu ci-dessus pour naviguer dans les différentes sections.</p>
-        </div>
-        {% endblock %}
-    </main>
-
-    <footer>
-        <div class="footer-links">
-            <a href="{{ url_for('public_index') }}">🏠 Retour au site</a>
-            <a href="{{ url_for('liens_rapides') }}">🔗 Liens rapides</a>
-        </div>
-        <div class="footer-copyright">
-            <span>&copy; 2025 MBOA TRAVEL - Tous droits réservés</span>
-        </div>
-    </footer>
 </body>
 </html>
