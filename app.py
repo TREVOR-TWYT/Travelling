@@ -12,6 +12,8 @@ import os
 import random
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
+from init_db import init_database
+
 
 app = Flask(__name__)
 
@@ -22,7 +24,7 @@ app = Flask(__name__)
 # Utiliser DATABASE_URL si définie (Docker), sinon config locale
 database_url = os.environ.get(
     'DATABASE_URL',
-    "postgresql://trevor:TREFRIED1707@localhost/travelling"
+    "postgresql://postgres:azerty@localhost/Travelling"
 )
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
@@ -47,6 +49,23 @@ migrate = Migrate(app, db)
 # Register blueprint
 app.register_blueprint(crud)
 app.register_blueprint(tourism)
+
+
+
+
+# ============================================
+# INITIALISATION AUTOMATIQUE (SOLIDE)
+# ============================================
+with app.app_context():
+    # 1. Crée les tables si elles n'existent pas (essentiel pour Supabase)
+    db.create_all()
+    
+    # 2. Exécute le script d'initialisation
+    # Ton script contient déjà "if not Admin.query.first()", 
+    # donc il ne créera pas de doublons si tu relances l'app.
+    init_database()
+
+
 
 
 # ============================================
