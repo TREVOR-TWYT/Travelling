@@ -8,6 +8,7 @@ from flask_migrate import Migrate
 import datetime
 import uuid
 import os
+from init_db import init_database
 
 app = Flask(__name__)
 
@@ -559,4 +560,16 @@ def internal_server_error(e):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0")
+    with app.app_context():
+        # Cette ligne crée les tables si elles n'existent pas
+        db.create_all()
+        
+        # Cette ligne vérifie si l'admin existe, sinon elle remplit la BD
+        # (votre script init_database possède déjà les vérifications 'if not Admin.query.first()')
+        try:
+            init_database()
+        except Exception as e:
+            print(f"⚠️ Note: L'initialisation a déjà été faite ou a échoué : {e}")
+
+    # Lancement de l'application
+    app.run()
