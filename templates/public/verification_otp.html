@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vérification - MBOA TRAVEL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color:  #764ba2;
+            --bg-light: #f4f7f6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-light);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .otp-container {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        /* --- BELLE ENTÊTE --- */
+        .header-otp {
+            margin-bottom: 30px;
+        }
+
+        .header-otp img {
+            max-width: 120px;
+            margin-bottom: 15px;
+        }
+
+        .header-otp h2 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .header-otp p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        /* --- STYLE DU FORMULAIRE --- */
+        .otp-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 2rem;
+            text-align: center;
+            letter-spacing: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .otp-input:focus {
+            border-color: var(--accent-color);
+        }
+
+        .btn-verify {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        .btn-verify:hover {
+            background-color: #2980b9;
+        }
+
+        .flash-messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .flash {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+        }
+
+        .flash.error { background-color: #f8d7da; color: #721c24; }
+        .flash.info { background-color: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+
+<div class="otp-container">
+    <div class="header-otp">
+        <a href="/">
+            <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="MBOA TRAVEL">
+        </a>
+        <h2>Vérification de sécurité</h2>
+        <p>Entrez le code à 6 chiffres envoyé par email pour activer votre compte.</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('verify_email') }}">
+        <input type="text" 
+               name="otp" 
+               class="otp-input" 
+               placeholder="000000" 
+               pattern="\d{6}" 
+               maxlength="6" 
+               required 
+               autocomplete="one-time-code">
+        
+        <button type="submit" class="btn-verify">Confirmer mon inscription</button>
+    </form>
+    <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+        <p style="font-size: 0.8rem; color: #95a5a6; margin-bottom: 10px;">Vous n'avez rien reçu ?</p>
+        <button type="submit" name="action_resend" class="btn-resend" style="border:1px solid #3498db; background:none; color:#3498db; padding:8px; border-radius:5px; cursor:pointer; width:100%;">
+            Renvoyer un nouveau code ?<a href="{{ url_for('handle_register') }}" style="color: var(--accent-color); text-decoration: none;">Réessayez l'inscription</a>
+        </button>
+    </div>
+   
+</div>
+
+</body>
+</html>
