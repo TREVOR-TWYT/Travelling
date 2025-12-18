@@ -57,13 +57,12 @@ app.register_blueprint(tourism)
 # INITIALISATION AUTOMATIQUE (SOLIDE)
 # ============================================
 with app.app_context():
-    # 1. Crée les tables si elles n'existent pas (essentiel pour Supabase)
     db.create_all()
-    
-    # 2. Exécute le script d'initialisation
-    # Ton script contient déjà "if not Admin.query.first()", 
-    # donc il ne créera pas de doublons si tu relances l'app.
-    init_database()
+    try:
+        # On passe directement les objets app et db ici
+        init_database(app, db) 
+    except Exception as e:
+        print(f"⚠️ Note: {e}")
 
 
 
