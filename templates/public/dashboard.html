@@ -62,22 +62,22 @@
               <div class="stat-box">
                   <span class="stat-icon">🚌</span>
                   <h3>Bus</h3>
-                  <p>3 Voyages</p>
+                  <p>{{ stats.bus }} Voyage(s)</p>
               </div>
               <div class="stat-box">
                   <span class="stat-icon">📸</span>
                   <h3>Excursions</h3>
-                  <p>1 Prévue</p>
+                  <p>{{ stats.excursions }} Prévue(s)</p>
               </div>
               <div class="stat-box">
                   <span class="stat-icon">🚗</span>
                   <h3>Location</h3>
-                  <p>0 en cours</p>
+                  <p>{{ stats.locations }} en cours</p>
               </div>
               <div class="stat-box">
                   <span class="stat-icon">📦</span>
                   <h3>Colis</h3>
-                  <p>2 Expédiés</p>
+                  <p>{{ stats.colis }} Expédié(s)</p>
               </div>
           </div>
 
@@ -88,11 +88,31 @@
                       <h3>🎫 Dernier Ticket Bus</h3>
                       <a href="{{ url_for('mes_reservations') }}" class="link-small">Tout voir</a>
                   </div>
-                  <div class="reservation-box">
-                      <p><strong>Trajet :</strong> Douala → Yaoundé</p>
-                      <p><strong>Date :</strong> 20 Déc. 2025</p>
-                      <span class="status-badge confirmed">Confirmé ✅</span>
-                  </div>
+              <div class="reservation-box">
+                  {% if dernier_ticket %}
+                      {# On vérifie que le voyage et le trajet existent pour éviter un crash #}
+                      {% if dernier_ticket.voyage and dernier_ticket.voyage.trajet %}
+                          <p><strong>Trajet :</strong> 
+                              {{ dernier_ticket.voyage.trajet.ville_depart }} 
+                              → 
+                              {{ dernier_ticket.voyage.trajet.ville_arrivee }}
+                          </p>
+                      {% else %}
+                          <p><strong>Trajet :</strong> Infos indisponibles</p>
+                      {% endif %}
+
+                      <p><strong>Date :</strong> {{ dernier_ticket.date_reservation.strftime('%d %b. %Y') }}</p>
+                      
+                      {# Classe CSS dynamique basée sur le statut #}
+                      <span class="status-badge {% if dernier_ticket.statut == 'Confirmé' %}confirmed{% elif dernier_ticket.statut == 'En attente' %}pending{% else %}other{% endif %}">
+                          {{ dernier_ticket.statut }} 
+                          {% if dernier_ticket.statut == 'Confirmé' %}✅{% endif %}
+                      </span>
+                  {% else %}
+                      <p class="text-muted">Aucune réservation de bus trouvée.</p>
+                      <a href="{{ url_for('public_reservation') }}" class="btn-text" style="font-size: 0.9em;">Réserver mon premier voyage →</a>
+                  {% endif %}
+              </div>
               </div>
 
               <div class="dashboard-card">
@@ -101,9 +121,14 @@
                       <a href="{{ url_for('tourism.mes_expeditions') }}" class="link-small">Suivre</a>
                   </div>
                   <div class="reservation-box">
-                      <p><strong>Numéro :</strong> EXP-A7B2D9</p>
-                      <p><strong>Statut :</strong> En cours de transit 🚛</p>
-                      <p class="text-muted">Localisation : Bafoussam</p>
+                      {% if dernier_colis %}
+                        <p><strong>Numéro :</strong> {{ dernier_colis.id_expedition }}</p>
+                        <p><strong>Statut :</strong> {{ dernier_colis.statut }} 🚛</p>
+                        <p class="text-muted">Destination : {{ dernier_colis.ville_destination }}</p>
+                      {% else %}
+                        <p class="text-muted">Aucun colis envoyé pour le moment.</p>
+                        <a href="{{ url_for('tourism.expedition_colis') }}" class="btn-text" style="font-size: 0.9em;">Envoyer un colis maintenant →</a>
+                      {% endif %}
                   </div>
               </div>
           </div>

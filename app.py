@@ -24,7 +24,7 @@ app = Flask(__name__)
 # Utiliser DATABASE_URL si définie (Docker), sinon config locale
 database_url = os.environ.get(
     'DATABASE_URL',
-    "postgresql://postgres:azerty@localhost/Travelling"
+    "postgresql://trevor:TREFRIED1707@localhost/travelling"
 )
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
@@ -60,7 +60,7 @@ with app.app_context():
     db.create_all()
     try:
         # On passe directement les objets app et db ici
-        init_database(app, db) 
+        init_database() 
     except Exception as e:
         print(f"⚠️ Note: {e}")
 
@@ -489,19 +489,46 @@ L'équipe MBOA TRAVEL
 @app.route("/public/tableau_de_bord")
 @app.route("/public/index/tableau_de_bord")
 def public_dashboard():
+    from sqlalchemy import desc
+    
     if 'client_id' not in session:
         flash('Veuillez vous connecter pour accéder à votre tableau de bord', 'error')
         return redirect(url_for('public_login'))
     
-    client = Client.query.get(session['client_id'])
+    client_id = session['client_id']
+    # Utilisation de db.session.get pour éviter l'avertissement Legacy
+    client = db.session.get(Client, client_id)
     
     if not client:
         session.pop('client_id', None)
-        flash('Session expirée, veuillez vous reconnecter', 'error')
         return redirect(url_for('public_login'))
-    
-    return render_template("/public/dashboard.html", client=client)
 
+    # --- RÉCUPÉRATION DES DONNÉES (Noms basés sur ton models.py) ---
+    
+    stats = {
+        'bus': Reservation.query.filter_by(id_client=client_id).count(),
+        'excursions': ReservationExcursion.query.filter_by(id_client=client_id).count(),
+        'locations': LocationVehicule.query.filter_by(id_client=client_id).count(),
+        'colis': Expedition.query.filter_by(id_client_expediteur=client_id).count() # Corrigé ici
+    }
+
+    # Dernier Ticket de Bus
+    # Trié par date_reservation (le plus récent en premier)
+    dernier_ticket = Reservation.query.filter_by(id_client=client_id)\
+        .order_by(desc(Reservation.date_reservation)).first()
+
+    # Dernier Colis
+    # Trié par date_expedition (le plus récent en premier)
+    dernier_colis = Expedition.query.filter_by(id_client_expediteur=client_id)\
+        .order_by(desc(Expedition.date_expedition)).first()
+
+    return render_template(
+        "/public/dashboard.html", 
+        client=client, 
+        stats=stats,
+        dernier_ticket=dernier_ticket,
+        dernier_colis=dernier_colis
+    )
 
 @app.route("/public/trajets")
 @app.route("/trajets-publics")
@@ -561,122 +588,136 @@ def mes_reservations():
 @app.route("/admin/statistiques")
 @admin_required
 def admin_statistiques():
-    """Page des statistiques pour l'administrateur"""
-    from sqlalchemy import func
+    from sqlalchemy import func, desc
     from datetime import datetime, timedelta
     
-    # Statistiques générales
+    # --- 1. COMPTAGES DE BASE (Sûr) ---
     total_clients = Client.query.count()
-    total_voyages = Voyage.query.count()
-    total_reservations = Reservation.query.count()
     total_agences = Agence.query.count()
     total_vehicules = Vehicule.query.count()
     total_personnels = Personnel.query.count()
-    total_trajets = Trajet.query.count()
-    
-    # Revenus totaux
-    revenus_totaux = db.session.query(func.sum(Paiement.montant)).scalar() or 0
-    
-    # Statistiques du mois en cours
-    debut_mois = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-    reservations_mois = Reservation.query.filter(Reservation.date_reservation >= debut_mois).count()
-    
-    revenus_mois = db.session.query(func.sum(Paiement.montant)).join(Reservation).filter(
-        Reservation.date_reservation >= debut_mois
-    ).scalar() or 0
-    
-    # Dernières réservations (5 dernières)
-    dernieres_reservations = Reservation.query.order_by(
-        Reservation.date_reservation.desc()
-    ).limit(5).all()
-    
-    top_trajets = (
-        db.session.query(
-            Trajet.ville_depart,
-            Trajet.ville_arrivee,
-            func.count(Reservation.num_reservation).label('nb_reservations')
-        )
-        .select_from(Reservation)
-        .join(Voyage, Reservation.id_voyage == Voyage.id_voyage)
-        .join(Trajet, Voyage.id_trajet == Trajet.id_trajet)
-        .group_by(
-            Trajet.id_trajet,
-            Trajet.ville_depart,
-            Trajet.ville_arrivee
-        )
-        .order_by(func.count(Reservation.num_reservation).desc())
-        .limit(5)
-        .all()
-    )
 
+    # --- 2. CALCUL DES REVENUS (Sécurisé par try/except) ---
+    def get_revenue(model_class):
+        try:
+            # On tente de joindre via la relation automatique de SQLAlchemy
+            return db.session.query(func.sum(Paiement.montant)).join(model_class).scalar() or 0
+        except Exception:
+            db.session.rollback()
+            return 0
+
+    revenus_transport = get_revenue(Reservation)
+    revenus_tourisme = get_revenue(ReservationExcursion)
+    revenus_locations = get_revenue(LocationVehicule)
+    revenus_expeditions = get_revenue(Expedition)
     
-    # Répartition par mode de paiement
-    paiements_par_mode = db.session.query(
-        Paiement.mode,
-        func.count(Paiement.id_paiement).label('nombre'),
-        func.sum(Paiement.montant).label('montant_total')
-    ).group_by(Paiement.mode).all()
+    revenus_totaux = revenus_transport + revenus_tourisme + revenus_locations + revenus_expeditions
+
+    # --- 3. LOGISTIQUE ET VOLUMES ---
+    total_excursions = Excursion.query.count()
+    total_reservations = Reservation.query.count()
+    total_expeditions = Expedition.query.count()
     
-    # Véhicules par statut
-    vehicules_par_statut = db.session.query(
-        Vehicule.statut,
-        func.count(Vehicule.immatriculation).label('nombre')
-    ).group_by(Vehicule.statut).all()
+    # Gestion du statut colis (vérifie si 'statut' existe)
+    try:
+        colis_en_transit = Expedition.query.filter(Expedition.statut.in_(['En cours', 'Expédié'])).count()
+    except:
+        colis_en_transit = 0
+
+    # Top Sites (Requête simplifiée pour éviter les erreurs de jointures complexes)
+    try:
+        top_sites = db.session.query(
+            SiteTouristique.nom_site,
+            func.count(ReservationExcursion.id).label('nb_reservations')
+        ).join(Excursion).join(ReservationExcursion)\
+         .group_by(SiteTouristique.nom_site).order_by(desc('nb_reservations')).limit(5).all()
+    except:
+        top_sites = []
+
+    # Flotte
+    loc_disponibles = Vehicule.query.filter_by(statut='Disponible').count()
+    loc_loues = Vehicule.query.filter_by(statut='Loué').count()
+    loc_maintenance = Vehicule.query.filter_by(statut='En maintenance').count()
+
+# --- 4. DERNIÈRES ACTIVITÉS (Version Auto-Détectrice) ---
+    from sqlalchemy import inspect
+
+    def get_recent(model_class, limit=3):
+        try:
+            # Cette ligne trouve automatiquement le nom de la clé primaire (id, num_res, etc.)
+            pk_name = inspect(model_class).primary_key[0].name
+            return model_class.query.order_by(desc(getattr(model_class, pk_name))).limit(limit).all()
+        except Exception as e:
+            print(f"Erreur lors de la récupération de {model_class}: {e}")
+            return []
+
+    res_recentes = get_recent(Reservation)
+    exc_recentes = get_recent(ReservationExcursion)
+    loc_recentes = get_recent(LocationVehicule)
+    exp_recentes = get_recent(Expedition)
+
+    dernières_activites = []
     
-    # Réservations par jour (7 derniers jours)
+    # 1. Ajout Transport
+    for r in res_recentes:
+        dernières_activites.append({
+            'date': getattr(r, 'date_reservation', datetime.now()),
+            'service_type': '🚌 Transport',
+            'nom_client': r.client.nom if (hasattr(r, 'client') and r.client) else "Client",
+            'info_objet': f"Voyage #{getattr(r, inspect(Reservation).primary_key[0].name, '')}",
+            'montant': r.paiement.montant if (hasattr(r, 'paiement') and r.paiement) else 0,
+            'statut': getattr(r, 'statut', 'Confirmé')
+        })
+
+    # 2. Ajout Tourisme
+    for e in exc_recentes:
+        dernières_activites.append({
+            'date': getattr(e, 'date_reservation', datetime.now()),
+            'service_type': '🏖️ Tourisme',
+            'nom_client': e.client.nom if (hasattr(e, 'client') and e.client) else "Client",
+            'info_objet': e.excursion.nom_excursion if hasattr(e, 'excursion') else "Excursion",
+            'montant': e.paiement.montant if (hasattr(e, 'paiement') and e.paiement) else 0,
+            'statut': 'Confirmé'
+        })
+
+    # 3. Ajout Expéditions
+    for ex in exp_recentes:
+        dernières_activites.append({
+            'date': getattr(ex, 'date_expedition', datetime.now()),
+            'service_type': '📦 Expédition',
+            'nom_client': ex.client.nom if (hasattr(ex, 'client') and ex.client) else "Expéditeur",
+            'info_objet': f"Colis vers {getattr(ex, 'ville_destination', 'Destination')}",
+            'montant': ex.paiement.montant if (hasattr(ex, 'paiement') and ex.paiement) else 0,
+            'statut': getattr(ex, 'statut', 'Envoi')
+        })
+
+    # Tri final par date
+    dernières_activites = sorted(dernières_activites, key=lambda x: x['date'], reverse=True)[:10]
+
+    # --- 5. GRAPHES ---
     sept_jours = datetime.now() - timedelta(days=7)
-    reservations_par_jour_raw = db.session.query(
-        func.date(Reservation.date_reservation).label('date'),
-        func.count(Reservation.num_reservation).label('nombre')
-    ).filter(
-        Reservation.date_reservation >= sept_jours
-    ).group_by(
-        func.date(Reservation.date_reservation)
-    ).order_by(
-        func.date(Reservation.date_reservation)
-    ).all()
+    try:
+        # On utilise une colonne de date générique
+        res_par_jour = db.session.query(
+            func.date(Reservation.date_reservation).label('date'),
+            func.count(Reservation.id).label('nombre')
+        ).filter(Reservation.date_reservation >= sept_jours).group_by(func.date(Reservation.date_reservation)).all()
+        reservations_par_jour = [{"date": r.date.strftime("%Y-%m-%d"), "nombre": r.nombre} for r in res_par_jour]
+    except:
+        reservations_par_jour = []
 
-    reservations_par_jour = [
-        {
-            "date": r.date.strftime("%Y-%m-%d"),
-            "nombre": r.nombre
-        }
-        for r in reservations_par_jour_raw
-    ]
-    ()
-    
-    # Taux d'occupation moyen
-    voyages_avec_places = db.session.query(
-        func.avg(Voyage.places_reservees).label('places_moyennes')
-    ).scalar() or 0
-    
-    capacite_moyenne = db.session.query(
-        func.avg(Vehicule.capacite)
-    ).join(Voyage).scalar() or 1
-    
-    taux_occupation = (voyages_avec_places / capacite_moyenne * 100) if capacite_moyenne > 0 else 0
-    
     return render_template(
         "admin/statistiques.html",
-        total_clients=total_clients,
-        total_voyages=total_voyages,
-        total_reservations=total_reservations,
-        total_agences=total_agences,
-        total_vehicules=total_vehicules,
-        total_personnels=total_personnels,
-        total_trajets=total_trajets,
-        revenus_totaux=revenus_totaux,
-        reservations_mois=reservations_mois,
-        revenus_mois=revenus_mois,
-        dernieres_reservations=dernieres_reservations,
-        top_trajets=top_trajets,
-        paiements_par_mode=paiements_par_mode,
-        vehicules_par_statut=vehicules_par_statut,
-        reservations_par_jour=reservations_par_jour,
-        taux_occupation=taux_occupation
+        total_clients=total_clients, total_agences=total_agences,
+        total_vehicules=total_vehicules, total_personnels=total_personnels,
+        revenus_totaux=revenus_totaux, revenus_transport=revenus_transport,
+        revenus_tourisme=revenus_tourisme, revenus_locations=revenus_locations,
+        revenus_expeditions=revenus_expeditions, total_excursions=total_excursions,
+        total_reservations=total_reservations, top_sites=top_sites,
+        loc_disponibles=loc_disponibles, loc_loues=loc_loues,
+        loc_maintenance=loc_maintenance, colis_en_transit=colis_en_transit,
+        dernières_activites=dernières_activites, reservations_par_jour=reservations_par_jour
     )
-
-
 
 # ============================================
 # PAGE LIENS RAPIDES (POUR DÉVELOPPEMENT)
