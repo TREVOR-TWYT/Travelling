@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, redirect, url_for, flash, session
 from models import *
 from functools import wraps
-import datetime
+from datetime import datetime
 import uuid
 
 tourism = Blueprint("tourism", __name__)
@@ -220,76 +220,68 @@ def liste_vehicules_location():
 @tourism.route("/location/reserver/<string:immatriculation>", methods=["GET", "POST"])
 @login_required
 def louer_vehicule(immatriculation):
-    """Louer un véhicule"""
     vehicule = Vehicule.query.get_or_404(immatriculation)
     client = Client.query.get(session['client_id'])
     
-    # Vérifier disponibilité
-    location_en_cours = LocationVehicule.query.filter_by(
-        immatriculation=immatriculation,
-        statut="En cours"
-    ).first()
-    
-    if location_en_cours:
-        flash("Ce véhicule n'est pas disponible actuellement", "error")
-        return redirect(url_for('tourism.liste_vehicules_location'))
-    
     if request.method == "POST":
         try:
-            date_debut = request.form.get("date_debut")
-            date_fin = request.form.get("date_fin")
-            heure_debut = request.form.get("heure_debut", "08:00")
-            tarif_journalier = int(request.form.get("tarif_journalier"))
-            caution = int(request.form.get("caution"))
-            mode_paiement = request.form.get("mode_paiement")
+            # Récupération des dates depuis le formulaire
+            date_debut_str = request.form.get("date_debut")
+            date_fin_str = request.form.get("date_fin")
+            heure_debut_str = request.form.get("heure_debut", "08:00")
             
-            # Calculer le nombre de jours
-            debut = datetime.datetime.strptime(date_debut, "%Y-%m-%d")
-            fin = datetime.datetime.strptime(date_fin, "%Y-%m-%d")
+            # --- CORRECTION ICI ---
+            # On utilise datetime.strptime car 'datetime' est déjà la classe
+            debut = datetime.strptime(date_debut_str, "%Y-%m-%d")
+            fin = datetime.strptime(date_fin_str, "%Y-%m-%d")
+            heure_objet = datetime.strptime(heure_debut_str, "%H:%M").time()
+            
             nb_jours = (fin - debut).days + 1
-            
-            if nb_jours < 1:
-                flash("La période de location doit être d'au moins 1 jour", "error")
-                return redirect(request.url)
-            
-            montant_total = (tarif_journalier * nb_jours) + caution
-            
-            # Créer le paiement
+            # -----------------------
+
+            tarif = int(request.form.get("tarif_journalier"))
+            caution = int(request.form.get("caution"))
+            montant_total = (tarif * nb_jours) + caution
+
+            # Création du paiement
             paiement = Paiement(
                 montant=montant_total,
-                date_paiement=datetime.datetime.utcnow(),
-                mode=mode_paiement,
+                date_paiement=datetime.now(), # Utilisation directe
+                mode=request.form.get("mode_paiement"),
                 reference_transaction=f"LOC-{uuid.uuid4().hex[:10].upper()}"
             )
             db.session.add(paiement)
             db.session.flush()
             
-            # Créer la location
+            # Création de la location
             location = LocationVehicule(
                 num_location=f"LOC-{uuid.uuid4().hex[:8].upper()}",
                 date_debut=debut,
                 date_fin=fin,
-                heure_debut=datetime.datetime.strptime(heure_debut, "%H:%M").time(),
+                heure_debut=heure_objet,
                 immatriculation=immatriculation,
                 id_client=client.id_client,
-                tarif_journalier=tarif_journalier,
+                tarif_journalier=tarif,
                 caution=caution,
                 montant_total=montant_total,
                 statut="En cours",
                 id_paiement=paiement.id_paiement
             )
             db.session.add(location)
+
+            # Mise à jour du véhicule
+            vehicule.statut = "Loué"
+            
             db.session.commit()
-            
-            flash("🎉 Location confirmée!", "success")
+            flash("🎉 Location confirmée !", "success")
             return redirect(url_for('tourism.mes_locations'))
-            
+
         except Exception as e:
             db.session.rollback()
-            print(f"Erreur: {e}")
-            flash("Erreur lors de la location", "error")
-            return redirect(request.url)
-    
+            # C'est ce print qui a généré ton log d'erreur
+            print(f"Erreur détaillée : {e}") 
+            flash("Une erreur interne est survenue lors de la réservation.", "error")
+            
     return render_template("public/location/louer_vehicule.html", vehicule=vehicule, client=client)
 
 
@@ -302,6 +294,47 @@ def mes_locations():
     
     return render_template("public/location/mes_locations.html", locations=locations, client=client)
 
+@tourism.route("/location/annuler/<string:num_location>")
+@login_required
+def annuler_location(num_location):
+    # CORRECTION : On cherche par la colonne num_location, pas par l'ID primaire
+    location = LocationVehicule.query.filter_by(num_location=num_location).first_or_404()
+    
+    if location.id_client != session['client_id']:
+        flash("Action non autorisée.", "error")
+        return redirect(url_for('tourism.mes_locations'))
+
+    if location.statut == "En cours":
+        vehicule = Vehicule.query.get(location.immatriculation)
+        if vehicule:
+            vehicule.statut = "En service"
+        
+        location.statut = "Annulée"
+        db.session.commit()
+        flash(f"La location {num_location} a été annulée.", "success")
+    
+    return redirect(url_for('tourism.mes_locations'))
+
+@tourism.route("/location/rendre/<string:num_location>")
+@login_required
+def rendre_location(num_location):
+    # CORRECTION : On utilise filter_by ici aussi
+    location = LocationVehicule.query.filter_by(num_location=num_location).first_or_404()
+    
+    if location.id_client != session['client_id']:
+        flash("Action non autorisée.", "error")
+        return redirect(url_for('tourism.mes_locations'))
+
+    if location.statut == "En cours":
+        vehicule = Vehicule.query.get(location.immatriculation)
+        if vehicule:
+            vehicule.statut = "En service"
+        
+        location.statut = "Terminée"
+        db.session.commit()
+        flash(f"Véhicule {location.immatriculation} rendu avec succès.", "success")
+    
+    return redirect(url_for('tourism.mes_locations'))
 
 # ============================================
 # ROUTES PUBLIQUES - EXPÉDITION COLIS
@@ -399,6 +432,22 @@ def suivre_expedition():
             flash("Numéro d'expédition non trouvé", "error")
     
     return render_template("public/expedition/suivre.html", expedition=expedition, statuts=statuts, num_expedition=num_expedition)
+
+
+@tourism.route("/admin/expedition/modifier/<string:num_expedition>", methods=["GET", "POST"])
+@admin_required
+def admin_modifier_expedition(num_expedition):
+    expedition = Expedition.query.get_or_404(num_expedition)
+    
+    if request.method == "POST":
+        expedition.nature = request.form.get("nature")
+        expedition.frais = request.form.get("frais")
+        # Tu peux ajouter d'autres champs ici
+        db.session.commit()
+        flash("Détails de l'expédition mis à jour", "success")
+        return redirect(url_for("tourism.admin_expeditions"))
+    
+    return render_template("admin/expedition/modifier_expedition.html", expedition=expedition)
 
 
 @tourism.route("/mes-expeditions")

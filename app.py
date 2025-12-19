@@ -621,7 +621,7 @@ def admin_statistiques():
     
     # Gestion du statut colis (vérifie si 'statut' existe)
     try:
-        colis_en_transit = Expedition.query.filter(Expedition.statut.in_(['En cours', 'Expédié'])).count()
+        colis_en_transit = Expedition.query.filter(Expedition.statut.in_(['En cours', 'Expédié',"Enregistré"])).count()
     except:
         colis_en_transit = 0
 
@@ -636,7 +636,7 @@ def admin_statistiques():
         top_sites = []
 
     # Flotte
-    loc_disponibles = Vehicule.query.filter_by(statut='Disponible').count()
+    loc_disponibles = Vehicule.query.filter_by(statut='En service').count()
     loc_loues = Vehicule.query.filter_by(statut='Loué').count()
     loc_maintenance = Vehicule.query.filter_by(statut='En maintenance').count()
 

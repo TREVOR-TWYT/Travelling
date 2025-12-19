@@ -71,7 +71,9 @@
                 </div>
                 
                 <div class="card-footer">
-                    <a href="#" class="btn-print">📄 Suivi détaillé</a>
+                    <a href="{{ url_for('tourism.suivre_expedition', num_expedition=expedition.num_expedition) }}" class="btn-print">
+                        🔍 Suivi détaillé
+                    </a>
                     <a href="{{ url_for('public_contact') }}" class="btn-contact">📞 Support</a>
                 </div>
             </div>

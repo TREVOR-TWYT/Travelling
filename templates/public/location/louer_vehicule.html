@@ -116,7 +116,7 @@
                     <h3 class="form-section-title">💳 Mode de paiement</h3>
                     <div class="payment-options" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
                         <label style="cursor: pointer;">
-                            <input type="radio" name="mode_paiement" value="Cash" required style="display: none;">
+                            <input type="radio" name="mode_paiement" value="Cash" required style="position: absolute; opacity: 0; pointer-events: none;">
                             <div style="padding: 20px; border: 2px solid #e5e7eb; border-radius: 10px; text-align: center; transition: var(--transition);" class="payment-option">
                                 <div style="font-size: 32px; margin-bottom: 8px;">💵</div>
                                 <div>Espèces</div>
@@ -179,7 +179,6 @@
 </footer>
 
 <script>
-    // Définir la date minimale à aujourd'hui
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('date_debut').setAttribute('min', today);
     document.getElementById('date_fin').setAttribute('min', today);
@@ -190,17 +189,17 @@
         
         if (dateDebut && dateFin) {
             const debut = new Date(dateDebut);
-            const fin = new Date
-            const debut = new Date(dateDebut);
             const fin = new Date(dateFin);
-            const diffTime = Math.abs(fin - debut);
+            
+            // Calcul de la différence en jours
+            const diffTime = fin - debut;
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
             
             if (diffDays > 0) {
                 document.getElementById('duree_display').value = diffDays + ' jour(s)';
                 calculateTotal();
             } else {
-                document.getElementById('duree_display').value = '0 jour(s)';
+                document.getElementById('duree_display').value = 'Erreur (dates)';
             }
         }
     }
@@ -208,38 +207,27 @@
     function calculateTotal() {
         const dateDebut = document.getElementById('date_debut').value;
         const dateFin = document.getElementById('date_fin').value;
-        const tarif_journalier = parseInt(document.getElementById('tarif_journalier').value) || 0;
+        const tarif = parseInt(document.getElementById('tarif_journalier').value) || 0;
         const caution = parseInt(document.getElementById('caution').value) || 0;
         
         let nb_jours = 0;
         if (dateDebut && dateFin) {
             const debut = new Date(dateDebut);
             const fin = new Date(dateFin);
-            const diffTime = Math.abs(fin - debut);
-            nb_jours = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            nb_jours = Math.ceil((fin - debut) / (1000 * 60 * 60 * 24)) + 1;
         }
         
-        const sous_total = tarif_journalier * nb_jours;
-        const total = sous_total + caution;
-        
-        document.getElementById('display_tarif').textContent = tarif_journalier.toLocaleString('fr-FR').replace(/,/g, ' ') + ' FCFA';
-        document.getElementById('display_jours').textContent = nb_jours;
-        document.getElementById('display_location').textContent = sous_total.toLocaleString('fr-FR').replace(/,/g, ' ') + ' FCFA';
-        document.getElementById('display_caution').textContent = caution.toLocaleString('fr-FR').replace(/,/g, ' ') + ' FCFA';
-        document.getElementById('montant_total').textContent = total.toLocaleString('fr-FR').replace(/,/g, ' ') + ' FCFA';
+        if (nb_jours > 0) {
+            const sous_total = tarif * nb_jours;
+            const total = sous_total + caution;
+            
+            document.getElementById('display_tarif').textContent = tarif.toLocaleString() + ' FCFA';
+            document.getElementById('display_jours').textContent = nb_jours;
+            document.getElementById('display_location').textContent = sous_total.toLocaleString() + ' FCFA';
+            document.getElementById('display_caution').textContent = caution.toLocaleString() + ' FCFA';
+            document.getElementById('montant_total').textContent = total.toLocaleString() + ' FCFA';
+        }
     }
-
-    // Gestion de la sélection du mode de paiement
-    document.querySelectorAll('input[name="mode_paiement"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            document.querySelectorAll('.payment-option').forEach(opt => {
-                opt.style.borderColor = '#e5e7eb';
-                opt.style.background = 'white';
-            });
-            this.nextElementSibling.style.borderColor = 'var(--primary-color)';
-            this.nextElementSibling.style.background = 'rgba(102, 126, 234, 0.05)';
-        });
-    });
 </script>
 
 </body>
