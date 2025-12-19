@@ -1,0 +1,32 @@
+{% extends "admin/layout.html" %}
+{% block content %}
+<div class="admin-card">
+    <h2>Liste des Expéditions</h2>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>N° Suivi</th>
+                <th>Client</th>
+                <th>Nature</th>
+                <th>Dernier Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for exp in expeditions %}
+            <tr>
+                <td><strong>{{ exp.num_expedition }}</strong></td>
+                <td>{{ exp.client.nom }}</td>
+                <td>{{ exp.nature }}</td>
+                <td>
+                    <span class="badge">{{ exp.dernier_statut.statut if exp.dernier_statut else 'Enregistré' }}</span>
+                </td>
+                <td>
+                    <a href="{{ url_for('tourism.admin_modifier_expedition', num_expedition=exp.num_expedition) }}" class="btn-sm btn-edit">✏️ Modifier</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
