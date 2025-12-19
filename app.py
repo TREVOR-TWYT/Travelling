@@ -34,7 +34,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'trefried1707')
 # Configuration de Flask-Mail (Exemple Gmail)
 app.config['MAIL_DEFAULT_SENDER'] = 'mboatravel@gmail.com'
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
+app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'mboatravel@gmail.com'
 app.config['MAIL_PASSWORD'] = 'epmz jjzq ujea odmy' # Le code de 16 caractères
