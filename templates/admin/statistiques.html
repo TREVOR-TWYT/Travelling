@@ -153,57 +153,90 @@
 </div>
 
 <script>
-    const reservationsData = {{ reservations_par_jour | tojson }};
+document.addEventListener('DOMContentLoaded', function() {
+    const reservationsData = {{ reservations_par_jour | tojson | safe }};
+
+    // Vérification console pour débugger
+    console.log("Données reçues :", reservationsData);
 
     if (reservationsData && reservationsData.length > 0) {
         const canvas = document.getElementById('reservationsChart');
         const ctx = canvas.getContext('2d');
-        
-        // Ajustement taille
-        canvas.width = canvas.parentElement.offsetWidth;
-        canvas.height = 300;
+        const container = canvas.parentElement;
 
-        const padding = 40;
-        const chartWidth = canvas.width - padding * 2;
-        const chartHeight = canvas.height - padding * 2;
-        
-        const dates = reservationsData.map(d => {
-            const date = new Date(d.date);
-            return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
-        });
-        const values = reservationsData.map(d => d.nombre);
-        const maxValue = Math.max(...values, 5);
+        // On force la taille du canvas à celle du conteneur
+        function resizeCanvas() {
+            canvas.width = container.clientWidth;
+            canvas.height = 300;
+            drawChart();
+        }
 
-        // Dessin de la courbe
-        ctx.beginPath();
-        ctx.strokeStyle = '#3b82f6';
-        ctx.lineWidth = 4;
-        ctx.lineJoin = 'round';
-
-        values.forEach((v, i) => {
-            const x = padding + (i * (chartWidth / (dates.length - 1 || 1)));
-            const y = canvas.height - padding - (v / maxValue * chartHeight);
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-        });
-        ctx.stroke();
-
-        // Points et Labels
-        values.forEach((v, i) => {
-            const x = padding + (i * (chartWidth / (dates.length - 1 || 1)));
-            const y = canvas.height - padding - (v / maxValue * chartHeight);
+        function drawChart() {
+            const padding = 40;
+            const chartWidth = canvas.width - padding * 2;
+            const chartHeight = canvas.height - padding * 2;
             
-            ctx.fillStyle = '#3b82f6';
+            const dates = reservationsData.map(d => {
+                const date = new Date(d.date);
+                return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
+            });
+            const values = reservationsData.map(d => d.nombre);
+            const maxValue = Math.max(...values, 5);
+
+            // Nettoyage
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Dessin de la courbe
             ctx.beginPath();
-            ctx.arc(x, y, 6, 0, Math.PI * 2);
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 4;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+
+            values.forEach((v, i) => {
+                const x = padding + (i * (chartWidth / (dates.length - 1 || 1)));
+                const y = canvas.height - padding - (v / maxValue * chartHeight);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            // Ajout d'un dégradé sous la courbe (optionnel mais joli)
+            ctx.lineTo(padding + chartWidth, canvas.height - padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, 'rgba(59, 130, 246, 0.2)');
+            gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+            ctx.fillStyle = gradient;
             ctx.fill();
 
-            ctx.fillStyle = '#1e293b';
-            ctx.font = 'bold 12px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText(v, x, y - 15);
-            ctx.fillText(dates[i], x, canvas.height - 15);
-        });
+            // Points et Labels
+            values.forEach((v, i) => {
+                const x = padding + (i * (chartWidth / (dates.length - 1 || 1)));
+                const y = canvas.height - padding - (v / maxValue * chartHeight);
+                
+                ctx.fillStyle = '#3b82f6';
+                ctx.beginPath();
+                ctx.arc(x, y, 6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.fillStyle = '#1e293b';
+                ctx.font = 'bold 12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(v, x, y - 15);
+                ctx.fillText(dates[i], x, canvas.height - 15);
+            });
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+    } else {
+        console.warn("Aucune donnée de réservation pour le graphique.");
     }
+});
 </script>
+
 {% endblock %}

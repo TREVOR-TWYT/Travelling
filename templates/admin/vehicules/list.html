@@ -118,6 +118,18 @@
         border: 1px solid #fee2e2;
     }
 
+    .status-em {
+        background-color: #e7f52b;
+        color: #a06f05; 
+        border: 1px solid #fee2e2;
+    }
+
+    .status-el {
+        background-color: #10b4dd;
+        color: #031942; 
+        border: 1px solid #fee2e2;
+    }
+
     /* Boutons d'action */
     .action-links {
         display: flex;
@@ -187,8 +199,12 @@
                     <td>
                         {% if v.statut == "En service" %}
                             <span class="status-badge status-ok">✅ En service</span>
-                        {% else %}
+                        {% elif v.statut == "Hors service" %}
                             <span class="status-badge status-hs">🛑 Hors service</span>
+                        {% elif v.statut == "Loué" %}
+                            <span class="status-badge status-el">En location</span>
+                        {% else %}
+                            <span class="status-badge status-em">⚠️ En maintenance</span>
                         {% endif %}
                     </td>
                     

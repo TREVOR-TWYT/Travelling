@@ -633,7 +633,7 @@ def admin_statistiques():
     revenus_locations = get_revenue(LocationVehicule)
     revenus_expeditions = get_revenue(Expedition)
     
-    revenus_totaux = revenus_transport + revenus_tourisme + revenus_locations + revenus_itions
+    revenus_totaux = revenus_transport + revenus_tourisme + revenus_locations + revenus_expeditions
 
     # --- 3. LOGISTIQUE ET VOLUMES ---
     total_excursions = Excursion.query.count()
@@ -642,9 +642,12 @@ def admin_statistiques():
     
     # Gestion du statut colis (vérifie si 'statut' existe)
     try:
-        colis_en_transit = Expedition.query.filter(Expedition.statut.in_(['En cours', 'Expédié',"Enregistré"])).count()
-    except:
+        colis_en_transit = StatutColis.query.filter(StatutColis.statut.in_(['En cours', 'Expédié', 'Enregistré'])).count()
+        print(f"DEBUG: Colis trouvés = {colis_en_transit}")
+    except Exception as e:
+        print(f"ERREUR SQLALCHEMY : {e}")
         colis_en_transit = 0
+
 
     # Top Sites (Requête simplifiée pour éviter les erreurs de jointures complexes)
     try:
@@ -659,9 +662,9 @@ def admin_statistiques():
     # Flotte
     loc_disponibles = Vehicule.query.filter_by(statut='En service').count()
     loc_loues = Vehicule.query.filter_by(statut='Loué').count()
-    loc_maintenance = Vehicule.query.filter_by(statut='En maintenance').count()
+    loc_maintenance = Vehicule.query.filter_by(statut='Maintenance').count()
 
-# --- 4. DERNIÈRES ACTIVITÉS (Version Auto-Détectrice) ---
+    # --- 4. DERNIÈRES ACTIVITÉS (Version Auto-Détectrice) ---
     from sqlalchemy import inspect
 
     def get_recent(model_class, limit=3):
@@ -717,16 +720,31 @@ def admin_statistiques():
     dernières_activites = sorted(dernières_activites, key=lambda x: x['date'], reverse=True)[:10]
 
     # --- 5. GRAPHES ---
-    sept_jours = datetime.now() - timedelta(days=7)
+    aujourdhui = datetime.now()
+    sept_jours_vrai = [ (aujourdhui - timedelta(days=i)).strftime("%Y-%m-%d") for i in range(6, -1, -1) ]
+    
+    reservations_par_jour = []
     try:
-        # On utilise une colonne de date générique
+        # On récupère les données
         res_par_jour = db.session.query(
             func.date(Reservation.date_reservation).label('date'),
             func.count(Reservation.id).label('nombre')
-        ).filter(Reservation.date_reservation >= sept_jours).group_by(func.date(Reservation.date_reservation)).all()
-        reservations_par_jour = [{"date": r.date.strftime("%Y-%m-%d"), "nombre": r.nombre} for r in res_par_jour]
-    except:
-        reservations_par_jour = []
+        ).filter(Reservation.date_reservation >= (aujourdhui - timedelta(days=7)))\
+         .group_by(func.date(Reservation.date_reservation)).all()
+        
+        # On transforme en dictionnaire pour un accès facile : {"2025-12-19": 5}
+        stats_dict = {r.date.strftime("%Y-%m-%d"): r.nombre for r in res_par_jour}
+        
+        # On remplit pour CHAQUE jour (même si c'est 0) pour que le graphique soit beau
+        for d in sept_jours_vrai:
+            reservations_par_jour.append({
+                "date": d,
+                "nombre": stats_dict.get(d, 0) # Met 0 si aucune réservation ce jour-là
+            })
+    except Exception as e:
+        print(f"Erreur graphique : {e}")
+        # En cas d'erreur, on envoie des données bidon à 0 pour ne pas casser le JS
+        reservations_par_jour = [{"date": d, "nombre": 0} for d in sept_jours_vrai]
 
     return render_template(
         "admin/statistiques.html",

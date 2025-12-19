@@ -1,32 +1,159 @@
 {% extends "admin/layout.html" %}
+
 {% block content %}
-<div class="admin-card">
-    <h2>Liste des Expéditions</h2>
-    <table class="admin-table">
-        <thead>
-            <tr>
-                <th>N° Suivi</th>
-                <th>Client</th>
-                <th>Nature</th>
-                <th>Dernier Statut</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for exp in expeditions %}
-            <tr>
-                <td><strong>{{ exp.num_expedition }}</strong></td>
-                <td>{{ exp.client.nom }}</td>
-                <td>{{ exp.nature }}</td>
-                <td>
-                    <span class="badge">{{ exp.dernier_statut.statut if exp.dernier_statut else 'Enregistré' }}</span>
-                </td>
-                <td>
-                    <a href="{{ url_for('tourism.admin_modifier_expedition', num_expedition=exp.num_expedition) }}" class="btn-sm btn-edit">✏️ Modifier</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<style>
+    /* Design de la carte principale */
+    .admin-container {
+        padding: 20px;
+        background-color: #f8fafc;
+    }
+
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .header-section h2 {
+        font-size: 1.5rem;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    /* Style du tableau */
+    .table-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    .admin-table th {
+        background-color: #f1f5f9;
+        color: #64748b;
+        font-weight: 600;
+        padding: 16px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+
+    .admin-table td {
+        padding: 16px;
+        border-bottom: 1px solid #e2e8f0;
+        color: #334155;
+        vertical-align: middle;
+    }
+
+    .admin-table tr:hover {
+        background-color: #f8fafc;
+    }
+
+    /* Badges de Statut Dynamiques */
+    .badge {
+        padding: 6px 12px;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .status-enregistre { background-color: #e2e8f0; color: #475569; }
+    .status-en-cours { background-color: #dbeafe; color: #1e40af; }
+    .status-expedie { background-color: #fef3c7; color: #92400e; }
+    .status-livre { background-color: #dcfce7; color: #166534; }
+
+    /* Boutons d'action */
+    .btn-edit {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background-color: #fff;
+        color: #4f46e5;
+        border: 1px solid #e2e8f0;
+        padding: 8px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+    }
+
+    .btn-edit:hover {
+        background-color: #4f46e5;
+        color: white;
+        border-color: #4f46e5;
+    }
+
+    .tracking-id {
+        font-family: 'Courier New', Courier, monospace;
+        color: #4f46e5;
+        font-weight: bold;
+    }
+</style>
+
+<div class="admin-container">
+    <div class="header-section">
+        <div>
+            <h2>📦 Gestion des Expéditions</h2>
+            <p style="color: #64748b; margin-top: 5px;">Suivez et mettez à jour l'état des colis clients</p>
+        </div>
+        <a href="#" class="btn-edit" style="background: #4f46e5; color: white;">+ Nouvelle Expédition</a>
+    </div>
+
+    <div class="table-card">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>N° Suivi</th>
+                    <th>Client</th>
+                    <th>Nature du colis</th>
+                    <th>Dernier Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exp in expeditions %}
+                {% set statut_brut = exp.dernier_statut.statut if exp.dernier_statut else 'Enregistré' %}
+                <tr>
+                    <td><span class="tracking-id">{{ exp.num_expedition }}</span></td>
+                    <td>
+                        <div style="font-weight: 600;">{{ exp.client.nom }}</div>
+                        <small style="color: #64748b;">{{ exp.client.telephone if exp.client.telephone else '' }}</small>
+                    </td>
+                    <td>{{ exp.nature }}</td>
+                    <td>
+                        {# Logique de classe CSS basée sur le texte du statut #}
+                        {% set status_class = 'status-enregistre' %}
+                        {% if statut_brut == 'En cours' %}{% set status_class = 'status-en-cours' %}
+                        {% elif statut_brut == 'Expédié' %}{% set status_class = 'status-expedie' %}
+                        {% elif statut_brut == 'Livré' %}{% set status_class = 'status-livre' %}
+                        {% endif %}
+                        
+                        <span class="badge {{ status_class }}">
+                            ● {{ statut_brut }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('tourism.admin_modifier_expedition', num_expedition=exp.num_expedition) }}" class="btn-edit">
+                            ✏️ Gérer
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px; color: #94a3b8;">
+                        Aucune expédition trouvée.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}

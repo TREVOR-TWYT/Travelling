@@ -146,7 +146,7 @@ def init_database():
             db.session.add(Colis(num_expedition=exp.num_expedition, nature=exp.nature, quantite=1))
             db.session.add(StatutColis(num_expedition=exp.num_expedition, statut='Expédié', date_heure=datetime.now(), localisation="Agence de Départ"))
         db.session.commit()
-# --- 10. LOCATIONS DE VÉHICULES ---
+            # --- 10. LOCATIONS DE VÉHICULES ---
         print("🚗 Création des contrats de location SUV...")
         for i in range(len(suv_list)):
             # On récupère le client et le véhicule pour cette itération

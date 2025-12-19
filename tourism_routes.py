@@ -84,7 +84,7 @@ def reserver_excursion(id_excursion):
             # Créer le paiement
             paiement = Paiement(
                 montant=montant_total,
-                date_paiement=datetime.datetime.utcnow(),
+                date_paiement=datetime.utcnow(),
                 mode=mode_paiement,
                 reference_transaction=f"TOUR-{uuid.uuid4().hex[:10].upper()}"
             )
@@ -94,7 +94,7 @@ def reserver_excursion(id_excursion):
             # Créer la réservation
             reservation = ReservationExcursion(
                 num_reservation=f"EXC-{uuid.uuid4().hex[:8].upper()}",
-                date_reservation=datetime.datetime.utcnow(),
+                date_reservation=datetime.utcnow(),
                 id_client=client.id_client,
                 id_excursion=id_excursion,
                 nb_adultes=nb_adultes,
@@ -144,11 +144,11 @@ def admin_modifier_excursion(id_excursion):
         try:
             # On met à jour les champs présents dans le HTML
             excursion.nom_excursion = request.form["nom_excursion"]
-            excursion.date_depart = datetime.datetime.strptime(request.form["date_depart"], "%Y-%m-%d")
+            excursion.date_depart = datetime.strptime(request.form["date_depart"], "%Y-%m-%d")
             
             # Gestion de l'heure (sécurité si le format change selon le navigateur)
             heure_str = request.form["heure_depart"][:5] 
-            excursion.heure_depart = datetime.datetime.strptime(heure_str, "%H:%M").time()
+            excursion.heure_depart = datetime.strptime(heure_str, "%H:%M").time()
             
             excursion.id_site = request.form["id_site"]
             excursion.nb_places_disponibles = int(request.form["nb_places_disponibles"])
@@ -157,7 +157,7 @@ def admin_modifier_excursion(id_excursion):
             
             # SI tu as besoin de la date_retour, vérifie qu'elle est dans le form
             if "date_retour" in request.form and request.form["date_retour"]:
-                excursion.date_retour = datetime.datetime.strptime(request.form["date_retour"], "%Y-%m-%d")
+                excursion.date_retour = datetime.strptime(request.form["date_retour"], "%Y-%m-%d")
 
             db.session.commit()
             print(">>> MODIFICATION RÉUSSIE ! <<<") # Pour vérifier dans ton terminal
@@ -563,9 +563,9 @@ def admin_creer_excursion():
     if request.method == "POST":
         excursion = Excursion(
             nom_excursion=request.form["nom_excursion"],
-            date_depart=datetime.datetime.strptime(request.form["date_depart"], "%Y-%m-%d"),
-            date_retour=datetime.datetime.strptime(request.form["date_retour"], "%Y-%m-%d"),
-            heure_depart=datetime.datetime.strptime(request.form["heure_depart"], "%H:%M").time(),
+            date_depart=datetime.strptime(request.form["date_depart"], "%Y-%m-%d"),
+            date_retour=datetime.strptime(request.form["date_retour"], "%Y-%m-%d"),
+            heure_depart=datetime.strptime(request.form["heure_depart"], "%H:%M").time(),
             id_site=request.form["id_site"],
             id_agence=request.form.get("id_agence"),
             immatriculation=request.form.get("immatriculation"),
@@ -622,7 +622,7 @@ def admin_update_statut(num_expedition):
         statut = StatutColis(
             num_expedition=num_expedition,
             statut=request.form["statut"],
-            date_heure=datetime.datetime.utcnow(),
+            date_heure=datetime.utcnow(),
             localisation=request.form.get("localisation"),
             commentaire=request.form.get("commentaire")
         )
