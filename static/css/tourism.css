@@ -645,3 +645,46 @@
         padding: 25px;
     }
 }
+
+/* Style de la Timeline */
+.tracking-timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.tracking-timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e5e7eb;
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 30px;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -30px;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border: 3px solid var(--primary-color);
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.timeline-item.active .timeline-dot {
+    background: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(76, 44, 115, 0.2);
+}
+
+.timeline-content {
+    background: #f9fafb;
+    padding: 15px;
+    border-radius: 8px;
+}

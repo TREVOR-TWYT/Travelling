@@ -3,184 +3,177 @@ from models import *
 from werkzeug.security import generate_password_hash
 from datetime import datetime, date, time, timedelta
 import random
+import uuid
 
 def init_database():
-    """Initialiser la base de données avec des données de test enrichies"""
+    """Initialisation totale : Agences, Trajets, Flotte, Personnel, Sites, Clients, Réservations, Logistique et Locations"""
     with app.app_context():
-        print("🔄 Initialisation de la base de données...")
-        
-        # 1. Créer toutes les tables
+        print("🔄 Nettoyage et création des tables...")
+        db.drop_all()
         db.create_all()
-        print("✅ Tables créées")
-        
-        # --- DONNÉES DE BASE ---
-        
-        # Admin
-        if not Admin.query.first():
-            admin = Admin(
-                nom="admin",
-                email = "admin@gmail.com",
-                password_hash=generate_password_hash("1234")
-            )
-            db.session.add(admin)
-            print("✅ Compte admin créé (login: admin / password: 1234)")
-        
-        # Agences
-        if Agence.query.count() == 0:
-            agences_data = [
-                Agence(nom_agence="Agence Yaoundé Centre", adresse="Centre-ville, Yaoundé"),
-                Agence(nom_agence="Agence Douala Akwa", adresse="Akwa, Douala"),
-                Agence(nom_agence="Agence Bamenda Commercial", adresse="Commercial Avenue, Bamenda"),
-            ]
-            for agence in agences_data:
-                db.session.add(agence)
-            print("✅ Agences créées")
-        
-        # Trajets
-        if Trajet.query.count() == 0:
-            trajets_data = [
-                Trajet(ville_depart="Douala", ville_arrivee="Yaoundé", tarif_standard=8000, tarif_vip=12000),
-                Trajet(ville_depart="Yaoundé", ville_arrivee="Bamenda", tarif_standard=10000, tarif_vip=15000),
-                Trajet(ville_depart="Douala", ville_arrivee="Bafoussam", tarif_standard=7000, tarif_vip=10000),
-                Trajet(ville_depart="Yaoundé", ville_arrivee="Douala", tarif_standard=8000, tarif_vip=12000),
-                Trajet(ville_depart="Bamenda", ville_arrivee="Bafoussam", tarif_standard=6000, tarif_vip=9000),
-                Trajet(ville_depart="Kribi", ville_arrivee="Douala", tarif_standard=7000, tarif_vip=10000),
-            ]
-            for trajet in trajets_data:
-                db.session.add(trajet)
-            print("✅ Trajets créés")
-        
-        # Véhicules
-        if Vehicule.query.count() == 0:
-            vehicules_data = [
-                Vehicule(immatriculation="LT-0001-YA", type="Bus Standard", capacite=40, statut="En service"),
-                Vehicule(immatriculation="LT-0002-YA", type="Bus VIP", capacite=30, statut="En service"),
-                Vehicule(immatriculation="LT-0003-DLA", type="Bus Standard", capacite=40, statut="En service"),
-                Vehicule(immatriculation="LT-0004-DLA", type="Bus VIP", capacite=30, statut="En maintenance"),
-                Vehicule(immatriculation="CE-5555-DLA", type="Mini VIP", capacite=15, statut="En service"),
-                Vehicule(immatriculation="CE-6666-YA", type="Mini Standard", capacite=20, statut="En service"),
-            ]
-            for vehicule in vehicules_data:
-                db.session.add(vehicule)
-            print("✅ Véhicules créés")
-        
-        db.session.commit() # Commit initial pour que les FK soient valides
 
-        # --- DONNÉES ENRICHIES ---
+        # --- 1. ADMINISTRATEUR ---
+        admin = Admin(
+            nom="Administrateur", 
+            email="admin@gmail.com", 
+            password_hash=generate_password_hash("1234")
+        )
+        db.session.add(admin)
 
-        # 2. Clients (10)
-        if Client.query.count() == 0:
-            clients_data = [
-                {"nom": "Tchoukoua", "prenom": "Alain", "tel": "677112233", "email": "alain.t@test.com", "cni": "111111111", "mdp": "pass1"},
-                {"nom": "Nguene", "prenom": "Brenda", "tel": "699887766", "email": "brenda.n@test.com", "cni": "222222222", "mdp": "pass2"},
-                {"nom": "Fotsing", "prenom": "Charles", "tel": "655443322", "email": "charles.f@test.com", "cni": "333333333", "mdp": "pass3"},
-                {"nom": "Mbarga", "prenom": "Diane", "tel": "670102030", "email": "diane.m@test.com", "cni": "444444444", "mdp": "pass4"},
-                {"nom": "Ekani", "prenom": "Eric", "tel": "688990011", "email": "eric.e@test.com", "cni": "555555555", "mdp": "pass5"},
-                {"nom": "Ndjama", "prenom": "Fanny", "tel": "671234567", "email": "fanny.n@test.com", "cni": "666666666", "mdp": "pass6"},
-                {"nom": "Tanga", "prenom": "Guy", "tel": "690123012", "email": "guy.t@test.com", "cni": "777777777", "mdp": "pass7"},
-                {"nom": "Nana", "prenom": "Hélène", "tel": "650505050", "email": "helene.n@test.com", "cni": "888888888", "mdp": "pass8"},
-                {"nom": "Kemajou", "prenom": "Igor", "tel": "678901234", "email": "igor.k@test.com", "cni": "999999999", "mdp": "pass9"},
-                {"nom": "Njoh", "prenom": "Julie", "tel": "698765432", "email": "julie.n@test.com", "cni": "000000000", "mdp": "pass10"},
-            ]
-            for client_data in clients_data:
-                client = Client(
-                    nom=client_data["nom"],
-                    prenom=client_data["prenom"],
-                    telephone=client_data["tel"],
-                    email=client_data["email"],
-                    cni=client_data["cni"],
-                    password_hash=generate_password_hash(client_data["mdp"]) # Utilisez hash
-                )
-                db.session.add(client)
-            print("✅ 10 Clients créés")
-
-        # 3. Voyages (12)
-        if Voyage.query.count() == 0:
-            trajets = Trajet.query.all()
-            vehicules = Vehicule.query.filter_by(statut="En service").all()
-            agences = Agence.query.all()
-            
-            voyages_list = []
-            base_date = date.today() + timedelta(days=random.randint(1, 5))
-            heures = [time(6, 30), time(8, 0), time(12, 0), time(16, 0)]
-            
-            for i in range(12):
-                trajet = random.choice(trajets)
-                vehicule = random.choice(vehicules)
-                agence = random.choice(agences)
-                heure_depart = random.choice(heures)
-                
-                # Assure un mélange Standard/VIP
-                standing = "VIP" if vehicule.type.endswith("VIP") else "Standard"
-
-                voyage = Voyage(
-                    date_depart=base_date + timedelta(days=i // 4), # 4 voyages par jour
-                    heure_depart=heure_depart,
-                    id_trajet=trajet.id_trajet,
-                    immatriculation=vehicule.immatriculation,
-                    id_agence=agence.id_agence,
-                    standing=standing,
-                    places_reservees=0 # Sera mis à jour par les réservations
-                )
-                voyages_list.append(voyage)
-                db.session.add(voyage)
-
-            print("✅ 12 Voyages créés")
-            db.session.commit() # Commit pour avoir les IDs de voyage
-
-        # 4. Réservations (Multiples)
-        if Reservation.query.count() == 0:
-            clients = Client.query.all()
-            voyages_actifs = Voyage.query.all()
-            
-            for i in range(25): # Créer 25 réservations de test
-                client = random.choice(clients)
-                voyage = random.choice(voyages_actifs)
-                
-                montant = voyage.trajet.tarif_vip if voyage.standing == "VIP" else voyage.trajet.tarif_standard
-                mode_paiement = random.choice(['Mobile Money', 'Carte Bancaire', 'Espèces'])
-                
-                # Créer le paiement
-                paiement = Paiement(
-                    montant=montant,
-                    date_paiement=datetime.now() - timedelta(minutes=random.randint(1, 100)),
-                    mode=mode_paiement,
-                    reference_transaction=f"TRANS-{random.randint(1000000, 9999999)}"
-                )
-                db.session.add(paiement)
-                db.session.flush() # Assure que l'ID de paiement est généré
-                
-                # Créer la réservation
-                reservation = Reservation(
-                    num_reservation=f"RES-{random.randint(10000, 99999)}",
-                    date_reservation=datetime.now() - timedelta(minutes=random.randint(10, 150)),
-                    statut=random.choice(['Confirmée', 'En attente', 'Annulée']),
-                    id_client=client.id_client,
-                    id_voyage=voyage.id_voyage,
-                    id_paiement=paiement.id_paiement
-                )
-                db.session.add(reservation)
-                
-                # Mise à jour des places réservées (simple, sans gestion de la capacité maximale ici)
-                if reservation.statut == 'Confirmée':
-                    voyage.places_reservees += 1
-                    db.session.add(voyage)
-            
-            print("✅ 25 Réservations et Paiements créés")
-            
-        # --- COMMIT FINAL ---
+        # --- 2. AGENCES ---
+        print("🏢 Création des agences...")
+        agences = [
+            Agence(nom_agence="Agence Yaoundé Centre", adresse="Centre-ville, Yaoundé"),
+            Agence(nom_agence="Agence Douala Akwa", adresse="Akwa, Douala"),
+            Agence(nom_agence="Agence Bamenda Commercial", adresse="Commercial Avenue, Bamenda"),
+            Agence(nom_agence="Agence Kribi Plage", adresse="Débarcadère, Kribi"),
+            Agence(nom_agence="Agence Bafoussam", adresse="Marché Central, Bafoussam")
+        ]
+        db.session.add_all(agences)
         db.session.commit()
+
+        # --- 3. TRAJETS ---
+        print("🛣️ Création des trajets...")
+        trajets = [
+            Trajet(ville_depart="Douala", ville_arrivee="Yaoundé", tarif_standard=8000, tarif_vip=12000),
+            Trajet(ville_depart="Yaoundé", ville_arrivee="Bamenda", tarif_standard=10000, tarif_vip=15000),
+            Trajet(ville_depart="Douala", ville_arrivee="Bafoussam", tarif_standard=7000, tarif_vip=10000),
+            Trajet(ville_depart="Kribi", ville_arrivee="Douala", tarif_standard=7000, tarif_vip=10000)
+        ]
+        db.session.add_all(trajets)
+        db.session.commit()
+
+        # --- 4. VÉHICULES (Bus + SUV pour location) ---
+        print("🚍 Création de la flotte...")
+        bus_list = []
+        for i in range(10):
+            v = Vehicule(immatriculation=f"LT-{100+i}-MT", type=random.choice(["Bus VIP", "Bus Standard"]), capacite=random.choice([30, 70]), statut="En service")
+            bus_list.append(v)
+            db.session.add(v)
         
-        print("=" * 50)
-        print("🎉 Base de données initialisée avec succès!")
-        print("=" * 50)
-        print("📋 Identifiants admin pour test:")
-        print("   Username: admin")
-        print("   Password: 1234")
-        print("=" * 50)
-        print("🌐 Accès application: http://localhost:5000")
-        print("🔐 Accès admin: http://localhost:5000/admin-login")
-        print("=" * 50)
+        suv_list = []
+        for i, nom in enumerate(["Toyota Prado", "Toyota Hilux", "Suzuki Swift", "Mitsubishi Pajero", "Range Rover"]):
+            v = Vehicule(immatriculation=f"CE-{500+i}-LOC", type=nom, capacite=5, statut="En service")
+            suv_list.append(v)
+            db.session.add(v)
+        db.session.commit()
+
+        # --- 5. PERSONNEL (Utilisation de 'role' selon ton model) ---
+        print("👨‍💼 Création du personnel...")
+        for i in range(15):
+            p = Personnel(
+                nom=random.choice(["Etoundi", "Kamga", "Moussa", "Nguene"]),
+                prenom=random.choice(["Samuel", "Fanny", "Eric", "Brenda"]),
+                role=random.choice(["Chauffeur", "Hôtesse", "Guichetier", "Agent"]),
+                id_agence=random.choice(agences).id_agence
+            )
+            db.session.add(p)
+
+        # --- 6. SITES TOURISTIQUES ---
+        print("📸 Création des sites...")
+        sites_data = [
+                    SiteTouristique(nom_site="Chutes de la Lobé", ville="Kribi", region="Sud", description="Les chutes se jetant dans l'océan.", tarif_adulte=2000, tarif_enfant=1000, image_url="Chute de la lobé.jpeg"),
+                    SiteTouristique(nom_site="Parc de Waza", ville="Waza", region="Extrême-Nord", description="Safari et lions en plein Sahel.", tarif_adulte=5000, tarif_enfant=2500, image_url="waza.jpeg"),
+                    SiteTouristique(nom_site="Mont Cameroun", ville="Buea", region="Sud-Ouest", description="Le char des dieux.", tarif_adulte=3000, tarif_enfant=1500, image_url="mont_fako.jpeg"),
+                    SiteTouristique(nom_site="Réserve du Dja", ville="Lomié", region="Est", description="Biodiversité forêt équatoriale.", tarif_adulte=4000, tarif_enfant=2000, image_url="dja.jpg"),
+                    SiteTouristique(nom_site="Palais de Foumban", ville="Foumban", region="Ouest", description="Siège du Sultanat Bamoun.", tarif_adulte=1500, tarif_enfant=750, image_url="foumban.jpg"),
+                    SiteTouristique(nom_site="Falaise de Dschang", ville="Dschang", region="Ouest", description="Site montagneux de la ville de Dschang.", tarif_adulte=1500, tarif_enfant=750, image_url="falaise_dschang.jpg")
+                ]
+        db.session.add_all(sites_data)
+        db.session.commit()
+
+        # --- 7. CLIENTS (Tes 10 clients officiels) ---
+        print("👥 Création de tes 10 clients...")
+        clients_data = [
+            ("Tchoukoua", "Alain", "677112233", "alain.t@test.com", "pass1"),
+            ("Nguene", "Brenda", "699887766", "brenda.n@test.com", "pass2"),
+            ("Fotsing", "Charles", "655443322", "charles.f@test.com", "pass3"),
+            ("Mbarga", "Diane", "670102030", "diane.m@test.com", "pass4"),
+            ("Ekani", "Eric", "688990011", "eric.e@test.com", "pass5"),
+            ("Ndjama", "Fanny", "671234567", "fanny.n@test.com", "pass6"),
+            ("Tanga", "Guy", "690123012", "guy.t@test.com", "pass7"),
+            ("Nana", "Hélène", "650505050", "helene.n@test.com", "pass8"),
+            ("Kemajou", "Igor", "678901234", "igor.k@test.com", "pass9"),
+            ("Njoh", "Julie", "698765432", "julie.n@test.com", "pass10")
+        ]
+        created_clients = []
+        for nom, pre, tel, em, mdp in clients_data:
+            c = Client(nom=nom, prenom=pre, telephone=tel, email=em, password_hash=generate_password_hash(mdp))
+            created_clients.append(c)
+            db.session.add(c)
+        db.session.commit()
+
+        # --- 8. VOYAGES ET RÉSERVATIONS ---
+        print("🎫 Création des voyages et des tickets...")
+        for i in range(10):
+            v = Voyage(
+                date_depart=date.today() + timedelta(days=i),
+                heure_depart=time(random.choice([6, 8, 12, 21]), 0),
+                id_trajet=random.choice(trajets).id_trajet,
+                immatriculation=random.choice(bus_list).immatriculation,
+                id_agence=random.choice(agences).id_agence,
+                standing=random.choice(["VIP", "Standard"]),
+                places_reservees=0
+            )
+            db.session.add(v)
+            db.session.flush() # Pour avoir l'id_voyage tout de suite
+
+            # Créer 2 réservations par voyage
+            for _ in range(2):
+                c = random.choice(created_clients)
+                pay = Paiement(montant=8000, date_paiement=datetime.now(), mode="Mobile Money", reference_transaction=f"TXN-{uuid.uuid4().hex[:8].upper()}")
+                db.session.add(pay)
+                db.session.flush()
+                res = Reservation(num_reservation=f"RES-{uuid.uuid4().hex[:6].upper()}", date_reservation=datetime.now(), statut="Confirmée", id_client=c.id_client, id_voyage=v.id_voyage, id_paiement=pay.id_paiement)
+                v.places_reservees += 1
+                db.session.add(res)
+
+        # --- 9. EXPÉDITIONS ET COLIS (Logistique) ---
+        print("📦 Création des expéditions de colis...")
+        for i in range(10):
+            c = random.choice(created_clients)
+            exp = Expedition(
+                num_expedition=f"EXP-MBOA-{2000+i}",
+                date_expedition=datetime.now(),
+                frais=random.randint(2000, 5000),
+                nature=random.choice(["Vivres", "Documents", "Électronique"]),
+                id_client_expediteur=c.id_client
+            )
+            db.session.add(exp)
+            db.session.flush()
+            
+            # Détails du colis et suivi
+            db.session.add(Colis(num_expedition=exp.num_expedition, nature=exp.nature, quantite=1))
+            db.session.add(StatutColis(num_expedition=exp.num_expedition, statut='Expédié', date_heure=datetime.now(), localisation="Agence de Départ"))
+        db.session.commit()
+# --- 10. LOCATIONS DE VÉHICULES ---
+        print("🚗 Création des contrats de location SUV...")
+        for i in range(len(suv_list)):
+            # On récupère le client et le véhicule pour cette itération
+            c = created_clients[i]
+            vehicule_a_louer = suv_list[i]
+            
+            loc = LocationVehicule(
+                num_location=f"LOC-{uuid.uuid4().hex[:6].upper()}",
+                date_debut=date.today(),
+                date_fin=date.today() + timedelta(days=2),
+                heure_debut=time(8, 0),
+                immatriculation=vehicule_a_louer.immatriculation,
+                id_client=c.id_client,
+                tarif_journalier=35000,
+                caution=100000,
+                montant_total=70000,
+                statut="En cours"
+            )
+            db.session.add(loc)
+            
+            # 🔥 SYNCHRONISATION : On marque le véhicule comme loué dans la base
+            vehicule_a_louer.statut = "Loué"
+
+        db.session.commit()
+
+        db.session.commit()
+        print("\n" + "="*60 + "\n✅ TOUTES LES DONNÉES ONT ÉTÉ RESTAURÉES AVEC SUCCÈS !\n" + "="*60)
 
 if __name__ == "__main__":
     init_database()
