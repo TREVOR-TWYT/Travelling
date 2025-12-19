@@ -12,7 +12,7 @@ import os
 import random
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
-from init_db import init_database
+#from init_db import init_database
 
 
 app = Flask(__name__)
@@ -24,8 +24,8 @@ app = Flask(__name__)
 # Utiliser DATABASE_URL si définie (Docker), sinon config locale
 database_url = os.environ.get(
     'DATABASE_URL',
-    "postgresql://alex:Bf1im16y@localhost/travelling"
-    #"postgresql://trevor:TREFRIED1707@localhost/travelling"
+    #"postgresql://alex:Bf1im16y@localhost/travelling"
+    "postgresql://trevor:TREFRIED1707@localhost/travelling"
 )
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url

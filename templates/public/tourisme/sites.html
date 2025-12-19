@@ -71,15 +71,21 @@
         <div class="items-grid">
             {% for site in sites %}
             <div class="item-card">
-                <div class="item-image">
+                <div class="item-image" style="height: 200px; overflow: hidden; background: #eee;">
                     {% if site.image_url %}
-                        <img src="{{ site.image_url }}" alt="{{ site.nom_site }}">
+                        <img src="{{ url_for('static', filename='image/' + site.image_url) }}" 
+                            alt="{{ site.nom_site }}"
+                            style="width: 100%; height: 100%; object-fit: cover;"
+                            onerror="this.onerror=null;this.src='https://via.placeholder.com/400x250?text=Image+Introuvable';">
                     {% else %}
-                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 80px;">
-                            🏖️
-                        </div>
+                        <img src="https://via.placeholder.com/400x250/667eea/ffffff?text={{ site.nom_site|urlencode }}" 
+                            alt="Image par défaut"
+                            style="width: 100%; height: 100%; object-fit: cover;">
                     {% endif %}
-                    <div class="item-badge">{{ site.region }}</div>
+                    
+                    {% if site.excursions|length > 0 %}
+                    <div class="item-badge">{{ site.excursions|length }} excursion(s)</div>
+                    {% endif %}
                 </div>
                 <div class="item-content">
                     <h3 class="item-title">{{ site.nom_site }}</h3>

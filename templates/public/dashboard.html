@@ -35,7 +35,7 @@
 
         <nav class="menu-links">
           <p class="menu-label">🚌 TRANSPORT</p>
-          <a href="{{ url_for('public_reservation') }}">📝 Réserver un bus</a>
+          <a href="{{ url_for('public_reservation') }}">📝 Réserver pour un voyage</a>
           <a href="{{ url_for('mes_reservations') }}">📅 Mes tickets bus</a>
           
           <p class="menu-label">🗺️ TOURISME & LOISIRS</p>
@@ -115,22 +115,31 @@
               </div>
               </div>
 
-              <div class="dashboard-card">
-                  <div class="card-header">
-                      <h3>📦 Dernier Colis</h3>
-                      <a href="{{ url_for('tourism.mes_expeditions') }}" class="link-small">Suivre</a>
-                  </div>
-                  <div class="reservation-box">
-                      {% if dernier_colis %}
-                        <p><strong>Numéro :</strong> {{ dernier_colis.id_expedition }}</p>
-                        <p><strong>Statut :</strong> {{ dernier_colis.statut }} 🚛</p>
-                        <p class="text-muted">Destination : {{ dernier_colis.ville_destination }}</p>
-                      {% else %}
-                        <p class="text-muted">Aucun colis envoyé pour le moment.</p>
-                        <a href="{{ url_for('tourism.expedition_colis') }}" class="btn-text" style="font-size: 0.9em;">Envoyer un colis maintenant →</a>
-                      {% endif %}
-                  </div>
+          <div class="dashboard-card">
+              <div class="card-header">
+                  <h3>📦 Dernier Colis</h3>
+                  <a href="{{ url_for('tourism.mes_expeditions') }}" class="link-small">Suivre</a>
               </div>
+              <div class="reservation-box">
+                  {% if dernier_colis %}
+                      <p><strong>Numéro :</strong> {{ dernier_colis.num_expedition }}</p>
+                      
+                      <p><strong>Nature :</strong> {{ dernier_colis.nature or 'Non spécifiée' }}</p>
+
+                      {% if dernier_colis.voyage and dernier_colis.voyage.trajet %}
+                          <p class="text-muted">Destination : {{ dernier_colis.voyage.trajet.ville_arrivee }}</p>
+                      {% endif %}
+
+                      <p class="text-muted">Envoyé le : {{ dernier_colis.date_expedition.strftime('%d %b. %Y') }}</p>
+                      
+                      {# Comme le statut est dans une autre table, on met un badge par défaut ou on vérifie s'il existe #}
+                      <span class="status-badge confirmed">Enregistré 🚛</span>
+                  {% else %}
+                      <p class="text-muted">Aucun colis envoyé pour le moment.</p>
+                      <a href="{{ url_for('tourism.expedition_colis') }}" class="btn-text" style="font-size: 0.9em;">Envoyer un colis maintenant →</a>
+                  {% endif %}
+              </div>
+          </div>
           </div>
 
           <div class="section-header-inline">
@@ -159,7 +168,7 @@
           </div>
 
           <div class="quick-actions-bar">
-              <a class="btn action-btn" href="{{ url_for('public_reservation') }}">🚌 Réserver un bus</a>
+              <a class="btn action-btn" href="{{ url_for('public_reservation') }}">🚌 Réserver pour un voyage</a>
               <a class="btn action-btn" href="{{ url_for('tourism.liste_vehicules_location') }}">🚗 Louer une voiture</a>
               <a class="btn action-btn" href="{{ url_for('tourism.expedition_colis') }}">📦 Envoyer un colis</a>
           </div>
