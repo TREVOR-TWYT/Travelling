@@ -6,7 +6,7 @@ from models import *
 from crud_routes import crud
 from tourism_routes import tourism
 from flask_migrate import Migrate
-import datetime
+from datetime import datetime, timedelta
 import uuid
 import os
 import random
@@ -590,7 +590,7 @@ def mes_reservations():
 @admin_required
 def admin_statistiques():
     from sqlalchemy import func, desc
-    from datetime import datetime, timedelta
+    
     
     # --- 1. COMPTAGES DE BASE (Sûr) ---
     total_clients = Client.query.count()
@@ -612,7 +612,7 @@ def admin_statistiques():
     revenus_locations = get_revenue(LocationVehicule)
     revenus_expeditions = get_revenue(Expedition)
     
-    revenus_totaux = revenus_transport + revenus_tourisme + revenus_locations + revenus_expeditions
+    revenus_totaux = revenus_transport + revenus_tourisme + revenus_locations + revenus_itions
 
     # --- 3. LOGISTIQUE ET VOLUMES ---
     total_excursions = Excursion.query.count()

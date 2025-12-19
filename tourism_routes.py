@@ -347,92 +347,92 @@ def expedition_colis():
     return render_template("public/expedition/expedition.html", trajets=trajets)
 
 
+from flask import session # <--- Assure-toi que session est importé ici
+# Pas besoin d'importer current_user
+
 @tourism.route("/expedition/nouveau", methods=["POST"])
-@login_required
+@login_required  # Ton décorateur perso
 def creer_expedition():
-    """Créer une nouvelle expédition"""
     try:
-        client = Client.query.get(session['client_id'])
-        
+        # Récupération des données
         ville_depart = request.form.get("ville_depart")
         ville_arrivee = request.form.get("ville_arrivee")
         nom_destinataire = request.form.get("nom_destinataire")
-        telephone_destinataire = request.form.get("telephone_destinataire")
+        tel_destinataire = request.form.get("telephone_destinataire")
         nature = request.form.get("nature")
-        poids = float(request.form.get("poids", 0))
-        frais = int(request.form.get("frais"))
-        mode_paiement = request.form.get("mode_paiement")
+        frais = int(request.form.get("frais", 0))
         
-        # Créer le paiement
-        paiement = Paiement(
-            montant=frais,
-            date_paiement=datetime.datetime.utcnow(),
-            mode=mode_paiement,
-            reference_transaction=f"EXP-{uuid.uuid4().hex[:10].upper()}"
-        )
-        db.session.add(paiement)
-        db.session.flush()
-        
-        # Créer l'expédition
+        # 1. Création de l'expédition
         num_expedition = f"EXP-{uuid.uuid4().hex[:10].upper()}"
+        
         expedition = Expedition(
             num_expedition=num_expedition,
-            date_expedition=datetime.datetime.utcnow(),
+            date_expedition=datetime.utcnow(), 
             frais=frais,
             nature=nature,
-            id_client_expediteur=client.id_client
+            # C'EST ICI LE CHANGEMENT : On utilise session['client_id']
+            id_client_expediteur=session['client_id'], 
+            id_voyage=None
         )
         db.session.add(expedition)
         db.session.flush()
         
-        # Créer le colis
+        # 2. Création du Colis
         colis = Colis(
             num_expedition=num_expedition,
             nature=nature,
-            quantite=1
+            quantite=1 
         )
         db.session.add(colis)
         
-        # Créer le premier statut
+        # 3. Création du statut (avec les infos destinataire en commentaire)
+        info_destinataire = f"Destinataire: {nom_destinataire} ({tel_destinataire}) - De {ville_depart} à {ville_arrivee}"
+        
         statut = StatutColis(
             num_expedition=num_expedition,
             statut="Enregistré",
-            date_heure=datetime.datetime.utcnow(),
+            date_heure=datetime.utcnow(),
             localisation=ville_depart,
-            commentaire=f"Colis enregistré pour {ville_arrivee}. Destinataire: {nom_destinataire} ({telephone_destinataire})"
+            commentaire=info_destinataire
         )
         db.session.add(statut)
         
         db.session.commit()
         
-        flash(f"🎉 Expédition créée! Numéro de suivi: {num_expedition}", "success")
+        flash(f"🎉 Expédition créée ! Suivi: {num_expedition}", "success")
         return redirect(url_for('tourism.mes_expeditions'))
-        
+
     except Exception as e:
         db.session.rollback()
-        print(f"Erreur: {e}")
-        flash("Erreur lors de la création de l'expédition", "error")
+        print(f"ERREUR SQL: {e}")
+        flash(f"Erreur: {e}", "error")
         return redirect(url_for('tourism.expedition_colis'))
 
 
 @tourism.route("/expedition/suivre")
 def suivre_expedition():
     """Suivi d'expédition public"""
-    num_expedition = request.args.get('num_expedition', '')
+    raw_num = request.args.get('num_expedition', '')
+    
     expedition = None
     statuts = []
     
-    if num_expedition:
-        expedition = Expedition.query.filter_by(num_expedition=num_expedition).first()
+    # NETTOYAGE : Enlève les espaces et force les majuscules
+    num_search = raw_num.strip().upper() if raw_num else ""
+    
+    if num_search: 
+        # On cherche avec le numéro nettoyé
+        expedition = Expedition.query.filter_by(num_expedition=num_search).first()
+        
         if expedition:
-            statuts = StatutColis.query.filter_by(num_expedition=num_expedition).order_by(
+            statuts = StatutColis.query.filter_by(num_expedition=num_search).order_by(
                 StatutColis.date_heure.desc()
             ).all()
         else:
-            flash("Numéro d'expédition non trouvé", "error")
+            flash(f"Le numéro {num_search} est introuvable.", "error")
+            print(f"DEBUG: {num_search} n'est pas dans la base de données.")
     
-    return render_template("public/expedition/suivre.html", expedition=expedition, statuts=statuts, num_expedition=num_expedition)
-
+    return render_template("public/expedition/suivre.html", expedition=expedition, statuts=statuts, num_expedition=num_search)
 
 @tourism.route("/admin/expedition/modifier/<string:num_expedition>", methods=["GET", "POST"])
 @admin_required

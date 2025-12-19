@@ -167,9 +167,17 @@ class Expedition(db.Model):
     date_expedition = db.Column(db.TIMESTAMP, nullable=False)
     frais = db.Column(db.Integer, nullable=False)
     nature = db.Column(db.String(100))
+    
+    # --- AJOUTE CES LIGNES ---
+    ville_depart = db.Column(db.String(50))
+    ville_arrivee = db.Column(db.String(50))
+    nom_destinataire = db.Column(db.String(100))
+    telephone_destinataire = db.Column(db.String(20))
+    poids = db.Column(db.Float) # Utile pour le calcul des coûts
+    # -------------------------
 
     id_client_expediteur = db.Column(db.Integer, db.ForeignKey("client.id_client"))
-    id_voyage = db.Column(db.Integer, db.ForeignKey("voyage.id_voyage"))
+    id_voyage = db.Column(db.Integer, db.ForeignKey("voyage.id_voyage"), nullable=True) # Mettre nullable=True si pas de voyage au départ
 
     client = db.relationship("Client", back_populates="expeditions")
     voyage = db.relationship("Voyage", back_populates="expeditions")
