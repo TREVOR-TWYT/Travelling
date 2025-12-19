@@ -1,11 +1,45 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head >
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Admin - MBOA TRAVEL{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Ajout de styles spécifiques ici pour le bouton, 
+           tu pourras les déplacer dans admin.css plus tard */
+        
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* Espace entre le texte session et le bouton */
+        }
+
+        .btn-logout {
+            background-color: #fff1f0; /* Fond rouge très clair */
+            color: #e74c3c; /* Texte rouge */
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid #ffccc7;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-logout:hover {
+            background-color: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(231, 76, 60, 0.3);
+        }
+    </style>
 
 </head>
 <body class="admin-body">
@@ -51,8 +85,6 @@
                 <a href="{{ url_for('crud.list_personnels') }}" class="nav-link">👥 Équipe Personnel</a>
             </div>
         </nav>
-
-        
     </aside>
 
     <div class="admin-main-wrapper">
@@ -60,10 +92,15 @@
             <div class="topbar-left">
                 <span class="breadcrumb">Admin / {% block breadcrumb %}Accueil{% endblock %}</span>
             </div>
+            
             <div class="topbar-right">
                 <span class="admin-name">Session : <strong>Administrateur</strong></span>
+                
+                <a href="{{ url_for('admin_logout') }}" class="btn-logout">
+                    🚪 Déconnexion
+                </a>
             </div>
-        </header>
+            </header>
 
         <main class="admin-content">
             {% with messages = get_flashed_messages(with_categories=true) %}

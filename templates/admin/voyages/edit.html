@@ -1,85 +1,266 @@
 {% extends "admin/layout.html" %}
 
 {% block content %}
-<div class="form-container">
-    <h2>Modifier le voyage #{{ voyage.id_voyage }}</h2>
 
-    <form action="" method="POST" class="styled-form">
-        <h3>Informations de base du voyage</h3>
-        <div class="form-row">
+<style>
+    /* Structure de base (identique aux autres pages) */
+    .content-wrapper {
+        padding: 40px 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        justify-content: center;
+    }
+
+    .form-card {
+        background: white;
+        width: 100%;
+        max-width: 650px;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    /* En-tête */
+    .form-header {
+        text-align: center;
+        margin-bottom: 30px;
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 20px;
+    }
+
+    .form-header h2 {
+        margin: 0;
+        color: #333;
+        font-size: 1.6rem;
+    }
+
+    /* Badge ID Voyage */
+    .id-badge {
+        display: inline-block;
+        background-color: #1a1a2e;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        vertical-align: middle;
+        margin-left: 10px;
+    }
+
+    /* Titres de section */
+    .section-title {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        color: #1a1a2e;
+        letter-spacing: 1px;
+        font-weight: 700;
+        margin: 25px 0 15px 0;
+        display: flex;
+        align-items: center;
+    }
+    
+    .section-title::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #eee;
+        margin-left: 15px;
+    }
+
+    /* Grille */
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-group { margin-bottom: 15px; }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    /* Inputs et Selects */
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        background-color: #fafafa;
+        height: 48px;
+    }
+
+    .form-control:focus {
+        border-color: #1a1a2e;
+        background-color: #fff;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(26, 26, 46, 0.1);
+    }
+
+    /* Readonly styling */
+    .form-control[readonly] {
+        background-color: #e9ecef;
+        color: #6c757d;
+        border-color: #ced4da;
+        cursor: not-allowed;
+    }
+
+    /* Select Arrow */
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+        background-repeat: no-repeat;
+        background-position: right 15px top 50%;
+        background-size: 10px auto;
+        cursor: pointer;
+    }
+
+    /* Bouton Action */
+    .btn-submit {
+        width: 100%;
+        padding: 15px;
+        background-color: #1a1a2e;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.2s, background-color 0.3s;
+        margin-top: 25px;
+    }
+
+    .btn-submit:hover {
+        background-color: #3b3b5c;
+        transform: translateY(-2px);
+    }
+
+    /* Footer */
+    .form-footer { text-align: center; margin-top: 20px; }
+    .back-link { color: #666; text-decoration: none; font-size: 0.9rem; }
+    .back-link:hover { color: #1a1a2e; text-decoration: underline; }
+
+    @media (max-width: 600px) {
+        .form-row { grid-template-columns: 1fr; gap: 0; }
+    }
+</style>
+
+<div class="content-wrapper">
+    <div class="form-card">
+        
+        <div class="form-header">
+            <h2>Modifier Voyage <span class="id-badge">#{{ voyage.id_voyage }}</span></h2>
+        </div>
+
+        <form action="" method="POST">
             
-            <div class="form-group half-width">
-                <label for="id_trajet">📍 Trajet :</label>
-                <select id="id_trajet" name="id_trajet" required>
-                    {% for t in trajets %}
-                        <option value="{{ t.id_trajet }}" {% if t.id_trajet == voyage.id_trajet %}selected{% endif %}>
-                            {{ t.ville_depart }} → {{ t.ville_arrivee }}
+            <div class="section-title">📍 Logistique & Transport</div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_trajet">Itinéraire</label>
+                    <select id="id_trajet" name="id_trajet" class="form-control" required>
+                        {% for t in trajets %}
+                            <option value="{{ t.id_trajet }}" {% if t.id_trajet == voyage.id_trajet %}selected{% endif %}>
+                                {{ t.ville_depart }} ➝ {{ t.ville_arrivee }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="immatriculation">Véhicule assigné</label>
+                    <select id="immatriculation" name="immatriculation" class="form-control" required>
+                        {% for veh in vehicules %}
+                            <option value="{{ veh.immatriculation }}" {% if veh.immatriculation == voyage.immatriculation %}selected{% endif %}>
+                                {{ veh.immatriculation }} ({{ veh.type }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-title">📅 Date et Heure</div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="date_depart">Date de départ</label>
+                    <input type="date" 
+                           id="date_depart" 
+                           name="date_depart" 
+                           class="form-control" 
+                           value="{{ voyage.date_depart }}" 
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="heure_depart">Heure de départ</label>
+                    <input type="time" 
+                           id="heure_depart" 
+                           name="heure_depart" 
+                           class="form-control" 
+                           value="{{ voyage.heure_depart }}" 
+                           required>
+                </div>
+            </div>
+
+            <div class="section-title">⚙️ Configuration</div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="standing">Standing</label>
+                    <select id="standing" name="standing" class="form-control" required>
+                        <option value="Standard" {% if voyage.standing == 'Standard' %}selected{% endif %}>👤 Standard</option>
+                        <option value="VIP" {% if voyage.standing == 'VIP' %}selected{% endif %}>💎 VIP</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="places_reservees">Places réservées</label>
+                    <input type="number" 
+                           id="places_reservees" 
+                           name="places_reservees" 
+                           class="form-control" 
+                           value="{{ voyage.places_reservees }}" 
+                           min="0" 
+                           readonly
+                           title="Modifier les réservations via le menu Réservations">
+                </div>
+            </div>
+            
+            <div class="section-title">🏢 Gestion</div>
+
+            <div class="form-group">
+                <label for="id_agence">Agence responsable</label>
+                <select id="id_agence" name="id_agence" class="form-control">
+                    <option value="">-- Aucune agence assignée --</option>
+                    {% for a in agences %}
+                        <option value="{{ a.id_agence }}" {% if a.id_agence == voyage.id_agence %}selected{% endif %}>
+                            {{ a.nom_agence }}
                         </option>
                     {% endfor %}
                 </select>
             </div>
 
-            <div class="form-group half-width">
-                <label for="immatriculation">🚌 Véhicule :</label>
-                <select id="immatriculation" name="immatriculation" required>
-                    {% for veh in vehicules %}
-                        <option value="{{ veh.immatriculation }}" {% if veh.immatriculation == voyage.immatriculation %}selected{% endif %}>
-                            {{ veh.immatriculation }} ({{ veh.type }})
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
+            <button type="submit" class="btn-submit">
+                💾 Enregistrer les modifications
+            </button>
 
+        </form>
+
+        <div class="form-footer">
+            <a href="{{ url_for('crud.list_voyages') }}" class="back-link">
+                Annuler et Retour à la liste
+            </a>
         </div>
 
-        <h3>Horaires et Agence</h3>
-        <div class="form-row">
-            
-            <div class="form-group half-width">
-                <label for="date_depart">📅 Date de départ :</label>
-                <input type="date" id="date_depart" name="date_depart" value="{{ voyage.date_depart }}" required>
-            </div>
-
-            <div class="form-group half-width">
-                <label for="heure_depart">⏱️ Heure de départ :</label>
-                <input type="time" id="heure_depart" name="heure_depart" value="{{ voyage.heure_depart }}" required>
-            </div>
-        
-        </div>
-
-        <div class="form-row">
-
-            <div class="form-group half-width">
-                <label for="standing">⭐ Standing :</label>
-                <select id="standing" name="standing" required>
-                    <option value="Standard" {% if voyage.standing == 'Standard' %}selected{% endif %}>Standard</option>
-                    <option value="VIP" {% if voyage.standing == 'VIP' %}selected{% endif %}>VIP</option>
-                </select>
-            </div>
-
-            <div class="form-group half-width">
-                <label for="places_reservees">🧑‍🤝‍🧑 Places réservées :</label>
-                <input type="number" id="places_reservees" name="places_reservees" value="{{ voyage.places_reservees }}" min="0" readonly> 
-            </div>
-            
-        </div>
-        
-        <div class="form-group full-width">
-            <label for="id_agence">🏢 Agence (Assignation) :</label>
-            <select id="id_agence" name="id_agence">
-                <option value="">Aucune</option> {% for a in agences %}
-                    <option value="{{ a.id_agence }}" {% if a.id_agence == voyage.id_agence %}selected{% endif %}>
-                        {{ a.nom_agence }}
-                    </option>
-                {% endfor %}
-            </select>
-        </div>
-
-
-        <div class="form-actions">
-            <button type="submit" class="btn-primary">💾 Enregistrer les modifications</button>
-            <a href="{{ url_for('crud.list_voyages') }}" class="btn-secondary">Retour à la liste</a>
-        </div>
-    </form>
+    </div>
 </div>
+
 {% endblock %}

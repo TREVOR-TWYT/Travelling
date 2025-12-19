@@ -1,55 +1,213 @@
 {% extends "admin/layout.html" %}
 
 {% block content %}
-<div class="form-container">
-    <h2>Ajouter un nouveau personnel</h2>
 
-    <form action="" method="POST" class="styled-form">
-        <h3>Informations personnelles</h3>
-        <div class="form-row">
-            
-            <div class="form-group half-width">
-                <label for="nom">👤 Nom :</label>
-                <input type="text" id="nom" name="nom" required placeholder="Nom de famille">
-            </div>
+<style>
+    /* Structure globale */
+    .content-wrapper {
+        padding: 40px 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        justify-content: center;
+        background-color: #f4f6f9;
+    }
 
-            <div class="form-group half-width">
-                <label for="prenom">Prénom :</label>
-                <input type="text" id="prenom" name="prenom" placeholder="Prénom(s)">
-            </div>
+    .form-card {
+        background: white;
+        width: 100%;
+        max-width: 650px;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border-top: 5px solid #1a1a2e;
+    }
 
+    /* En-tête */
+    .form-header {
+        text-align: center;
+        margin-bottom: 35px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .form-header h2 {
+        margin: 0;
+        color: #1a1a2e;
+        font-size: 1.6rem;
+    }
+
+    .form-header p {
+        margin: 8px 0 0;
+        color: #666;
+        font-size: 0.95rem;
+    }
+
+    /* Titres de sections */
+    .section-title {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        color: #1a1a2e;
+        letter-spacing: 1px;
+        font-weight: 700;
+        margin: 30px 0 20px 0;
+        display: flex;
+        align-items: center;
+    }
+    
+    .section-title::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #eee;
+        margin-left: 15px;
+    }
+
+    /* Grille */
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 15px;
+    }
+
+    .form-group { margin-bottom: 15px; }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    /* Inputs et Selects */
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        background-color: #fafafa;
+        height: 48px;
+    }
+
+    .form-control:focus {
+        border-color: #1a1a2e;
+        background-color: #fff;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(26, 26, 46, 0.1);
+    }
+
+    /* Select Arrow Customization */
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+        background-repeat: no-repeat;
+        background-position: right 15px top 50%;
+        background-size: 10px auto;
+        cursor: pointer;
+    }
+
+    /* Bouton Submit */
+    .btn-submit {
+        width: 100%;
+        padding: 15px;
+        background-color: #1a1a2e;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.2s, background-color 0.3s;
+        margin-top: 25px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-submit:hover {
+        background-color: #3b3b5c;
+        transform: translateY(-2px);
+    }
+
+    /* Footer */
+    .form-footer { text-align: center; margin-top: 20px; }
+    .back-link { color: #666; text-decoration: none; font-size: 0.9rem; }
+    .back-link:hover { color: #1a1a2e; text-decoration: underline; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+        .form-row { grid-template-columns: 1fr; gap: 0; }
+    }
+</style>
+
+<div class="content-wrapper">
+    <div class="form-card">
+        
+        <div class="form-header">
+            <h2>Nouveau Personnel</h2>
+            <p>Ajoutez un membre à l'équipe et définissez son rôle.</p>
         </div>
 
-        <h3>Rôle et affectation</h3>
-        <div class="form-row">
+        <form action="" method="POST">
             
-            <div class="form-group half-width">
-                <label for="role">🛠️ Rôle :</label>
-                <select id="role" name="role" required>
-                    <option value="Chauffeur">Chauffeur</option>
-                    <option value="Agent">Agent de billetterie</option>
-                    <option value="Manager">Manager d'agence</option>
-                    <option value="Controleur">Contrôleur de bord</option>
-                    <option value="Livreur">Livreur</option>
-                </select>
+            <div class="section-title">👤 Identité & Civil</div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nom">Nom de famille</label>
+                    <input type="text" id="nom" name="nom" class="form-control" required placeholder="Ex: MBA">
+                </div>
+
+                <div class="form-group">
+                    <label for="prenom">Prénom(s)</label>
+                    <input type="text" id="prenom" name="prenom" class="form-control" placeholder="Ex: Serge">
+                </div>
             </div>
 
-            <div class="form-group half-width">
-                <label for="id_agence">🏢 Agence :</label>
-                <select id="id_agence" name="id_agence">
-                    <option value="">— Aucune —</option>
-                    {% for a in agences %}
-                        <option value="{{ a.id_agence }}">{{ a.nom_agence }}</option>
-                    {% endfor %}
-                </select>
+            <div class="section-title">💼 Affectation & Poste</div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="role">Rôle / Fonction</label>
+                    <select id="role" name="role" class="form-control" required>
+                        <option value="" disabled selected>Choisir un rôle...</option>
+                        <option value="Chauffeur">🚍 Chauffeur</option>
+                        <option value="Agent">🎫 Agent de billetterie</option>
+                        <option value="Manager">👔 Manager d'agence</option>
+                        <option value="Controleur">👮‍♂️ Contrôleur de bord</option>
+                        <option value="Livreur">📦 Livreur</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_agence">Agence de rattachement</label>
+                    <select id="id_agence" name="id_agence" class="form-control">
+                        <option value="">— Aucune (Siège / Mobile) —</option>
+                        {% for a in agences %}
+                            <option value="{{ a.id_agence }}">📍 {{ a.nom_agence }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
-            
+
+            <button type="submit" class="btn-submit">
+                ➕ Créer le profil employé
+            </button>
+
+        </form>
+
+        <div class="form-footer">
+            <a href="{{ url_for('crud.list_personnels') }}" class="back-link">
+                Annuler et Retour à la liste
+            </a>
         </div>
 
-        <div class="form-actions">
-            <button type="submit" class="btn-primary">➕ Créer le personnel</button>
-            <a href="{{ url_for('crud.list_personnels') }}" class="btn-secondary">Retour à la liste</a>
-        </div>
-    </form>
+    </div>
 </div>
+
 {% endblock %}

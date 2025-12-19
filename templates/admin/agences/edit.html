@@ -1,37 +1,158 @@
 {% extends "admin/layout.html" %}
+
 {% block content %}
 
-<div class="form-container compact-form">
-    <h2>Modifier l'agence #{{ agence.id_agence }}</h2>
+<style>
+    /* Conteneur global pour l'espacement */
+    .content-wrapper {
+        padding: 40px 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        justify-content: center; /* Centre le formulaire horizontalement */
+    }
 
-    <form method="POST" class="agence-edit-form">
+    /* La "Carte" du formulaire */
+    .form-card {
+        background: white;
+        width: 100%;
+        max-width: 500px; /* Limite la largeur pour l'esthétique */
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05); /* Ombre douce et moderne */
+    }
+
+    /* En-tête du formulaire */
+    .form-header {
+        text-align: center;
+        margin-bottom: 30px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 20px;
+    }
+
+    .form-header h2 {
+        margin: 0;
+        color: #333;
+        font-size: 1.5rem;
+    }
+
+    .form-header span {
+        font-size: 0.9rem;
+        color: #777;
+        display: block;
+        margin-top: 5px;
+    }
+
+    /* Groupes de champs */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    /* Champs de saisie stylisés */
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
+        box-sizing: border-box; /* Empêche le padding de casser la largeur */
+    }
+
+    .form-control:focus {
+        border-color: #1a1a2e; /* Couleur de ton thème */
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(26, 26, 46, 0.1);
+    }
+
+    /* Bouton de soumission */
+    .btn-submit {
+        width: 100%;
+        padding: 14px;
+        background-color: #1a1a2e; /* Même bleu foncé que le bouton Créer */
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 10px;
+    }
+
+    .btn-submit:hover {
+        background-color: #3b3b5c;
+    }
+
+    /* Lien retour */
+    .form-footer {
+        text-align: center;
+        margin-top: 25px;
+    }
+
+    .back-link {
+        color: #666;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.2s;
+    }
+
+    .back-link:hover {
+        color: #1a1a2e;
+        text-decoration: underline;
+    }
+</style>
+
+<div class="content-wrapper">
+    <div class="form-card">
         
-        <div class="form-group full-width">
-            <label for="nom_agence">Nom de l'agence :</label>
-            <input type="text" 
-                   id="nom_agence" 
-                   name="nom_agence" 
-                   value="{{ agence.nom_agence }}" 
-                   required 
-                   placeholder="Nom de l'agence">
+        <div class="form-header">
+            <h2>Modifier l'agence</h2>
+            <span>ID #{{ agence.id_agence }}</span>
         </div>
 
-        <div class="form-group full-width">
-            <label for="adresse">Adresse :</label>
-            <input type="text" 
-                   id="adresse" 
-                   name="adresse" 
-                   value="{{ agence.adresse or '' }}" 
-                   placeholder="Adresse de l'agence (Optionnel)">
-        </div>
-        
-        <div class="form-submit">
-            <button type="submit" class="btn-primary">Enregistrer les modifications</button>
-        </div>
-    </form>
+        <form method="POST">
+            
+            <div class="form-group">
+                <label for="nom_agence">Nom de l'agence</label>
+                <input type="text" 
+                       id="nom_agence" 
+                       name="nom_agence" 
+                       class="form-control"
+                       value="{{ agence.nom_agence }}" 
+                       required 
+                       placeholder="Ex: Agence Centrale">
+            </div>
 
-    <div class="back-link">
-        <a href="{{ url_for('crud.list_agences') }}">← Retour à la liste des agences</a>
+            <div class="form-group">
+                <label for="adresse">Adresse complète</label>
+                <input type="text" 
+                       id="adresse" 
+                       name="adresse" 
+                       class="form-control"
+                       value="{{ agence.adresse or '' }}" 
+                       placeholder="Ex: Quartier Bastos, Yaoundé">
+            </div>
+            
+            <button type="submit" class="btn-submit">
+                Enregistrer les modifications
+            </button>
+        </form>
+
+        <div class="form-footer">
+            <a href="{{ url_for('crud.list_agences') }}" class="back-link">
+                ← Retour à la liste des agences
+            </a>
+        </div>
+
     </div>
 </div>
+
 {% endblock %}

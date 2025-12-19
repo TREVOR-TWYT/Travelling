@@ -1,43 +1,211 @@
 {% extends "admin/layout.html" %}
 
 {% block content %}
-<div class="form-container">
-    <h2>Créer un Trajet</h2>
 
-    <form method="post" class="styled-form">
-        <h3>Villes de départ et d'arrivée</h3>
-        <div class="form-row">
-            
-            <div class="form-group half-width">
-                <label for="ville_depart">📍 Ville de départ :</label>
-                <input type="text" id="ville_depart" name="ville_depart" required placeholder="Ex: Douala">
-            </div>
+<style>
+    /* Structure de la page */
+    .content-wrapper {
+        padding: 40px 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        justify-content: center;
+    }
 
-            <div class="form-group half-width">
-                <label for="ville_arrivee">🏁 Ville d'arrivée :</label>
-                <input type="text" id="ville_arrivee" name="ville_arrivee" required placeholder="Ex: Yaoundé">
-            </div>
+    /* La Carte du formulaire */
+    .form-card {
+        background: white;
+        width: 100%;
+        max-width: 600px; /* Un peu plus large pour accomoder les 2 colonnes */
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
 
+    /* En-tête */
+    .form-header {
+        text-align: center;
+        margin-bottom: 30px;
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 20px;
+    }
+
+    .form-header h2 {
+        margin: 0;
+        color: #333;
+        font-size: 1.6rem;
+    }
+
+    .form-header p {
+        margin: 8px 0 0;
+        color: #888;
+        font-size: 0.95rem;
+    }
+
+    /* Séparateurs de section (Itinéraire / Tarifs) */
+    .section-title {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        color: #1a1a2e; /* Couleur thème */
+        letter-spacing: 1px;
+        font-weight: 700;
+        margin: 25px 0 15px 0;
+        display: flex;
+        align-items: center;
+    }
+    
+    .section-title::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #eee;
+        margin-left: 15px;
+    }
+
+    /* Grille pour mettre les champs côte à côte */
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Deux colonnes égales */
+        gap: 20px;
+    }
+
+    /* Champs de saisie */
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px; /* Coins un peu plus arrondis */
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        background-color: #fafafa; /* Fond très légèrement gris */
+    }
+
+    .form-control:focus {
+        border-color: #1a1a2e;
+        background-color: #fff;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(26, 26, 46, 0.1);
+    }
+
+    /* Petit indicateur de devise dans l'input */
+    .input-wrapper {
+        position: relative;
+    }
+    .currency-suffix {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #999;
+        font-size: 0.85rem;
+        pointer-events: none;
+    }
+
+    /* Bouton principal */
+    .btn-submit {
+        width: 100%;
+        padding: 15px;
+        background-color: #1a1a2e;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.2s, background-color 0.3s;
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-submit:hover {
+        background-color: #3b3b5c;
+        transform: translateY(-2px); /* Petit effet de levier */
+    }
+
+    /* Lien retour */
+    .form-footer {
+        text-align: center;
+        margin-top: 20px;
+    }
+    .back-link { color: #666; text-decoration: none; font-size: 0.9rem; }
+    .back-link:hover { color: #1a1a2e; text-decoration: underline; }
+
+    /* Responsive : Sur mobile, on passe en 1 colonne */
+    @media (max-width: 600px) {
+        .form-row { grid-template-columns: 1fr; gap: 0; }
+    }
+</style>
+
+<div class="content-wrapper">
+    <div class="form-card">
+        
+        <div class="form-header">
+            <h2>Nouveau Trajet</h2>
+            <p>Configurez l'itinéraire et la grille tarifaire.</p>
         </div>
 
-        <h3>Tarification (FCFA)</h3>
-        <div class="form-row">
+        <form method="post">
             
-            <div class="form-group half-width">
-                <label for="tarif_standard">💲 Tarif standard :</label>
-                <input type="number" id="tarif_standard" name="tarif_standard" required min="1000" placeholder="Ex: 6000">
+            <div class="section-title">📍 Itinéraire</div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="ville_depart">Ville de départ</label>
+                    <input type="text" id="ville_depart" name="ville_depart" class="form-control" required placeholder="Ex: Douala">
+                </div>
+
+                <div class="form-group">
+                    <label for="ville_arrivee">Ville d'arrivée</label>
+                    <input type="text" id="ville_arrivee" name="ville_arrivee" class="form-control" required placeholder="Ex: Yaoundé">
+                </div>
             </div>
 
-            <div class="form-group half-width">
-                <label for="tarif_vip">💎 Tarif VIP :</label>
-                <input type="number" id="tarif_vip" name="tarif_vip" required min="1000" placeholder="Ex: 10000">
+            <div class="section-title">💰 Tarification</div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tarif_standard">Tarif Standard</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="tarif_standard" name="tarif_standard" class="form-control" required min="1000" placeholder="0">
+                        <span class="currency-suffix">FCFA</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="tarif_vip">Tarif VIP</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="tarif_vip" name="tarif_vip" class="form-control" required min="1000" placeholder="0">
+                        <span class="currency-suffix">FCFA</span>
+                    </div>
+                </div>
             </div>
 
-        </div>
+            <button type="submit" class="btn-submit">
+                <span>➕</span> Enregistrer le Trajet
+            </button>
 
-        <div class="form-actions">
-            <button type="submit" class="btn-primary">➕ Enregistrer le Trajet</button>
+        </form>
+
+        <div class="form-footer">
+            <a href="{{ url_for('crud.trajets_list') }}" class="back-link">Annuler</a>
             </div>
-    </form>
+
+    </div>
 </div>
+
 {% endblock %}

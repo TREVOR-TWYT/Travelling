@@ -1,42 +1,241 @@
 {% extends "admin/layout.html" %}
 {% block content %}
-<h2>Liste des voyages</h2>
 
-<a href="{{ url_for('crud.create_voyage') }}">Créer un nouveau voyage</a>
+<style>
+    /* Structure globale */
+    .content-wrapper {
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-<table border="1" cellpadding="5" cellspacing="0">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Trajet</th>
-            <th>Date</th>
-            <th>Heure</th>
-            <th>Véhicule</th>
-            <th>Agence</th>
-            <th>Standing</th>
-            <th>Places réservées</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for v in voyages %}
-        <tr>
-            <td>{{ v.id_voyage }}</td>
-            <td>{{ v.trajet.ville_depart }} → {{ v.trajet.ville_arrivee }}</td>
-            <td>{{ v.date_depart }}</td>
-            <td>{{ v.heure_depart }}</td>
-            <td>{{ v.vehicule.immatriculation }}</td>
-            <td>{{ v.agence.nom_agence if v.agence else 'N/A' }}</td>
-            <td>{{ v.standing }}</td>
-            <td>{{ v.places_reservees }}</td>
-            <td>
-                <a href="{{ url_for('crud.edit_voyage', id_voyage=v.id_voyage) }}">Modifier</a> |
-                <form action="{{ url_for('crud.delete_voyage', id_voyage=v.id_voyage) }}" method="POST" style="display:inline;">
-                    <button type="submit" onclick="return confirm('Voulez-vous vraiment supprimer ce voyage ?')">Supprimer</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    /* En-tête : Titre + Bouton */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .page-header h2 {
+        margin: 0;
+        color: #333;
+        font-size: 1.6rem;
+    }
+
+    .btn-create {
+        background-color: #1a1a2e; /* Bleu nuit */
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+        transition: background 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .btn-create:hover { background-color: #3b3b5c; transform: translateY(-1px); }
+
+    /* Conteneur Tableau */
+    .table-container {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        overflow-x: auto; /* Scroll horizontal si l'écran est petit */
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        min-width: 900px; /* Force une largeur min pour garder la lisibilité */
+    }
+
+    thead { background-color: #f8f9fa; }
+
+    th {
+        padding: 16px;
+        color: #666;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #eee;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 14px 16px;
+        color: #333;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+        font-size: 0.95rem;
+    }
+
+    tbody tr:hover { background-color: #fcfcfc; }
+
+    /* --- STYLES SPÉCIFIQUES --- */
+
+    /* ID Voyage */
+    .id-cell { color: #999; font-size: 0.85rem; font-family: monospace; }
+
+    /* Trajet */
+    .route-text { font-weight: 600; color: #1a1a2e; }
+    .route-arrow { color: #ccc; margin: 0 5px; font-size: 0.8rem; }
+
+    /* Date & Heure */
+    .datetime-info { display: flex; flex-direction: column; gap: 2px; }
+    .date-part { font-weight: 500; color: #333; }
+    .time-part { font-size: 0.85rem; color: #666; }
+    .icon { margin-right: 4px; opacity: 0.7; }
+
+    /* Véhicule (Plaque) */
+    .plate-badge {
+        font-family: 'Courier New', Courier, monospace;
+        background-color: #f0f2f5;
+        color: #333;
+        padding: 3px 6px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        border: 1px solid #e1e4e8;
+    }
+
+    /* Badges Standing */
+    .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+    .badge-vip {
+        background-color: #fff8e1;
+        color: #f57f17;
+        border: 1px solid #ffecb3;
+    }
+    .badge-std {
+        background-color: #e3f2fd;
+        color: #1565c0;
+    }
+
+    /* Places */
+    .seats-count { font-weight: bold; color: #333; }
+
+    /* Actions */
+    .action-group { display: flex; gap: 8px; }
+    
+    .btn-icon {
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.2s;
+        font-size: 1rem;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-edit { background-color: #eaf6ff; color: #2980b9; }
+    .btn-edit:hover { background-color: #2980b9; color: white; }
+
+    .btn-delete { background-color: #fff1f0; color: #e74c3c; }
+    .btn-delete:hover { background-color: #e74c3c; color: white; }
+
+    /* Agence N/A */
+    .text-muted { color: #aaa; font-style: italic; font-size: 0.85rem; }
+
+</style>
+
+<div class="content-wrapper">
+    
+    <div class="page-header">
+        <h2>Planning des Voyages (Gestion des voyages)</h2>
+        <a href="{{ url_for('crud.create_voyage') }}" class="btn-create">
+            <span>🚀</span> Créer un Voyage
+        </a>
+    </div>
+
+    <div class="table-container">
+        <table cellspacing="0">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">ID</th>
+                    <th>Itinéraire</th>
+                    <th>Date & Heure</th>
+                    <th>Véhicule</th>
+                    <th>Standing</th>
+                    <th>Agence</th>
+                    <th style="text-align: center;">Réservations</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for v in voyages %}
+                <tr>
+                    <td class="id-cell">#{{ v.id_voyage }}</td>
+                    
+                    <td>
+                        <span class="route-text">
+                            {{ v.trajet.ville_depart }} <span class="route-arrow">➝</span> {{ v.trajet.ville_arrivee }}
+                        </span>
+                    </td>
+                    
+                    <td>
+                        <div class="datetime-info">
+                            <span class="date-part"><span class="icon">📅</span>{{ v.date_depart }}</span>
+                            <span class="time-part"><span class="icon">⏱️</span>{{ v.heure_depart }}</span>
+                        </div>
+                    </td>
+                    
+                    <td>
+                        <span class="plate-badge">{{ v.vehicule.immatriculation }}</span>
+                    </td>
+                    
+                    <td>
+                        {% if v.standing == 'VIP' %}
+                            <span class="badge badge-vip">💎 VIP</span>
+                        {% else %}
+                            <span class="badge badge-std">👤 Standard</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if v.agence %}
+                            {{ v.agence.nom_agence }}
+                        {% else %}
+                            <span class="text-muted">Non assignée</span>
+                        {% endif %}
+                    </td>
+                    
+                    <td style="text-align: center;">
+                        <span class="seats-count">{{ v.places_reservees }}</span>
+                        <small style="color: #999;"> places</small>
+                    </td>
+                    
+                    <td>
+                        <div class="action-group">
+                            <a href="{{ url_for('crud.edit_voyage', id_voyage=v.id_voyage) }}" class="btn-icon btn-edit" title="Modifier">
+                                ✎
+                            </a>
+                            
+                            <form action="{{ url_for('crud.delete_voyage', id_voyage=v.id_voyage) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn-icon btn-delete" title="Supprimer" onclick="return confirm('Voulez-vous vraiment annuler ce voyage ? \nCette action est irréversible.')">
+                                    🗑️
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
 {% endblock %}

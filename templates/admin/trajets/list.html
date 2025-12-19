@@ -1,32 +1,169 @@
 {% extends "admin/layout.html" %}
 {% block content %}
 
-<h2>Liste des Trajets</h2>
+<style>
+    .content-wrapper {
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-<a href="/trajets/create">➕ Créer un nouveau trajet</a>
+    /* En-tête : Titre et Bouton alignés */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
 
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Départ</th>
-        <th>Arrivée</th>
-        <th>Tarif Standard</th>
-        <th>Tarif VIP</th>
-        <th>Action</th>
-    </tr>
+    .page-header h2 {
+        margin: 0;
+        color: #333;
+        font-size: 1.6rem;
+    }
 
-    {% for t in trajets %}
-    <tr>
-        <td>{{ t.id_trajet }}</td>
-        <td>{{ t.ville_depart }}</td>
-        <td>{{ t.ville_arrivee }}</td>
-        <td>{{ t.tarif_standard }} FCFA</td>
-        <td>{{ t.tarif_vip }} FCFA</td>
-        <td>
-            <a href="/trajets/{{ t.id_trajet }}/edit">Modifier</a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+    .btn-create {
+        background-color: #1a1a2e;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+        transition: background 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .btn-create:hover { background-color: #3b3b5c; }
+
+    /* Conteneur du tableau (Carte blanche) */
+    .table-container {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    thead { background-color: #f8f9fa; }
+
+    th {
+        padding: 16px;
+        color: #666;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #eee;
+    }
+
+    td {
+        padding: 16px;
+        color: #333;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+    }
+
+    tbody tr:hover { background-color: #fcfcfc; }
+
+    /* Style pour les villes (gras) */
+    .city-name {
+        font-weight: 600;
+        color: #1a1a2e;
+    }
+
+    /* Badges de prix */
+    .price-tag {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .price-standard {
+        background-color: #e3f2fd;
+        color: #1565c0;
+    }
+
+    .price-vip {
+        background-color: #fff8e1;
+        color: #f57f17;
+        border: 1px solid #ffecb3;
+    }
+
+    /* Bouton d'action */
+    .btn-action {
+        color: #555;
+        text-decoration: none;
+        font-size: 0.9rem;
+        padding: 6px 12px;
+        background-color: #f0f0f0;
+        border-radius: 4px;
+        transition: all 0.2s;
+    }
+
+    .btn-action:hover {
+        background-color: #1a1a2e;
+        color: white;
+    }
+
+</style>
+
+<div class="content-wrapper">
+    
+    <div class="page-header">
+        <h2>Liste des Trajets</h2>
+        <a href="/trajets/create" class="btn-create">
+            <span>➕</span> Nouveau Trajet
+        </a>
+    </div>
+
+    <div class="table-container">
+        <table cellspacing="0">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">ID</th>
+                    <th>Ville de Départ</th>
+                    <th style="width: 30px;"></th> <th>Ville d'Arrivée</th>
+                    <th>Tarif Standard</th>
+                    <th>Tarif VIP</th>
+                    <th style="text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in trajets %}
+                <tr>
+                    <td style="color: #999;">#{{ t.id_trajet }}</td>
+                    
+                    <td><span class="city-name">{{ t.ville_depart }}</span></td>
+                    
+                    <td style="color: #ccc;">➝</td>
+                    
+                    <td><span class="city-name">{{ t.ville_arrivee }}</span></td>
+                    
+                    <td>
+                        <span class="price-tag price-standard">{{ t.tarif_standard }} FCFA</span>
+                    </td>
+                    <td>
+                        <span class="price-tag price-vip">💎 {{ t.tarif_vip }} FCFA</span>
+                    </td>
+                    
+                    <td style="text-align: right;">
+                        <a href="/trajets/{{ t.id_trajet }}/edit" class="btn-action">
+                            Modifier ✎
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
 
 {% endblock %}

@@ -1,36 +1,231 @@
 {% extends "admin/layout.html" %}
+
 {% block content %}
-<h2>Liste des personnels</h2>
 
-<a href="{{ url_for('crud.create_personnel') }}">Ajouter un personnel</a>
+<style>
+    /* Structure globale */
+    .content-wrapper {
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-<table border="1" cellpadding="5" cellspacing="0">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nom</th>
-            <th>Prénom</th>
-            <th>Rôle</th>
-            <th>Agence</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for p in personnels %}
-        <tr>
-            <td>{{ p.id_personnel }}</td>
-            <td>{{ p.nom }}</td>
-            <td>{{ p.prenom }}</td>
-            <td>{{ p.role }}</td>
-            <td>{{ p.agence.nom_agence if p.agence else '—' }}</td>
-            <td>
-                <a href="{{ url_for('crud.edit_personnel', id_personnel=p.id_personnel) }}">Modifier</a> |
-                <form action="{{ url_for('crud.delete_personnel', id_personnel=p.id_personnel) }}" method="POST" style="display:inline;">
-                    <button type="submit" onclick="return confirm('Voulez-vous vraiment supprimer ce personnel ?')">Supprimer</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    /* En-tête : Titre + Bouton */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .page-header h2 {
+        margin: 0;
+        color: #333;
+        font-size: 1.6rem;
+    }
+
+    /* Bouton Ajouter */
+    .btn-create {
+        background-color: #1a1a2e;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+        transition: background 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .btn-create:hover { background-color: #3b3b5c; transform: translateY(-1px); }
+
+    /* Conteneur Tableau */
+    .table-container {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        min-width: 800px;
+    }
+
+    thead { background-color: #f8f9fa; }
+
+    th {
+        padding: 16px;
+        color: #666;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #eee;
+    }
+
+    td {
+        padding: 14px 16px;
+        color: #333;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+        font-size: 0.95rem;
+    }
+
+    tbody tr:hover { background-color: #fcfcfc; }
+
+    /* --- Styles Spécifiques Personnel --- */
+
+    /* Avatar (Initiale) */
+    .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .avatar {
+        width: 32px;
+        height: 32px;
+        background-color: #e0e0e0;
+        color: #555;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+    }
+    .user-name { font-weight: 600; color: #2c3e50; }
+
+    /* Badges de Rôles */
+    .role-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    /* Couleurs selon le rôle (Logique CSS) */
+    .role-chauffeur { background-color: #fff3cd; color: #856404; } /* Jaune */
+    .role-manager { background-color: #e8daff; color: #6f42c1; } /* Violet */
+    .role-agent { background-color: #d4edda; color: #155724; } /* Vert */
+    .role-controleur { background-color: #f8d7da; color: #721c24; } /* Rouge */
+    .role-default { background-color: #e2e3e5; color: #383d41; } /* Gris */
+
+    /* Agence */
+    .agency-tag {
+        color: #555;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .no-agency { color: #aaa; font-style: italic; }
+
+    /* Actions */
+    .action-group { display: flex; gap: 8px; }
+    
+    .btn-icon {
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.2s;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    .btn-edit { background-color: #eaf6ff; color: #2980b9; }
+    .btn-edit:hover { background-color: #2980b9; color: white; }
+
+    .btn-delete { background-color: #fff1f0; color: #e74c3c; }
+    .btn-delete:hover { background-color: #e74c3c; color: white; }
+
+</style>
+
+<div class="content-wrapper">
+    
+    <div class="page-header">
+        <h2>Équipe & Personnel</h2>
+        <a href="{{ url_for('crud.create_personnel') }}" class="btn-create">
+            <span>➕</span> Ajouter un membre
+        </a>
+    </div>
+
+    <div class="table-container">
+        <table cellspacing="0">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">ID</th>
+                    <th>Employé</th>
+                    <th>Rôle / Fonction</th>
+                    <th>Agence assignée</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in personnels %}
+                <tr>
+                    <td style="color: #999; font-family: monospace;">#{{ p.id_personnel }}</td>
+                    
+                    <td>
+                        <div class="user-profile">
+                            <div class="avatar">
+                                {{ p.nom[0] if p.nom else '?' }}
+                            </div>
+                            <span class="user-name">{{ p.nom }} {{ p.prenom }}</span>
+                        </div>
+                    </td>
+                    
+                    <td>
+                        {% set role_class = 'role-default' %}
+                        {% if p.role == 'Chauffeur' %}{% set role_class = 'role-chauffeur' %}
+                        {% elif p.role == 'Manager' %}{% set role_class = 'role-manager' %}
+                        {% elif p.role == 'Agent' %}{% set role_class = 'role-agent' %}
+                        {% elif p.role == 'Controleur' %}{% set role_class = 'role-controleur' %}
+                        {% endif %}
+
+                        <span class="role-badge {{ role_class }}">
+                            {{ p.role }}
+                        </span>
+                    </td>
+                    
+                    <td>
+                        {% if p.agence %}
+                            <div class="agency-tag">
+                                📍 {{ p.agence.nom_agence }}
+                            </div>
+                        {% else %}
+                            <span class="no-agency">-- Non assigné --</span>
+                        {% endif %}
+                    </td>
+                    
+                    <td>
+                        <div class="action-group">
+                            <a href="{{ url_for('crud.edit_personnel', id_personnel=p.id_personnel) }}" class="btn-icon btn-edit" title="Modifier">
+                                ✎
+                            </a>
+                            
+                            <form action="{{ url_for('crud.delete_personnel', id_personnel=p.id_personnel) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn-icon btn-delete" title="Supprimer" onclick="return confirm('Voulez-vous vraiment supprimer ce membre du personnel ?')">
+                                    🗑️
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
 {% endblock %}

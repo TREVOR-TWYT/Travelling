@@ -1,34 +1,216 @@
 {% extends "admin/layout.html" %}
 {% block content %}
-<h2>Liste des véhicules</h2>
 
-<a href="{{ url_for('crud.create_vehicule') }}">Ajouter un véhicule</a>
+<style>
+    /* Structure globale */
+    .content-wrapper {
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-<table border="1" cellpadding="5" cellspacing="0">
-    <thead>
-        <tr>
-            <th>Immatriculation</th>
-            <th>Type</th>
-            <th>Capacité</th>
-            <th>Statut</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for v in vehicules %}
-        <tr>
-            <td>{{ v.immatriculation }}</td>
-            <td>{{ v.type }}</td>
-            <td>{{ v.capacite }}</td>
-            <td>{{ v.statut }}</td>
-            <td>
-                <a href="{{ url_for('crud.edit_vehicule', immatriculation=v.immatriculation) }}">Modifier</a> |
-                <form action="{{ url_for('crud.delete_vehicule', immatriculation=v.immatriculation) }}" method="POST" style="display:inline;">
-                    <button type="submit" onclick="return confirm('Supprimer ce véhicule ?')">Supprimer</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    /* En-tête : Titre + Bouton */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .page-header h2 {
+        margin: 0;
+        color: #333;
+        font-size: 1.6rem;
+    }
+
+    .btn-create {
+        background-color: #1a1a2e; /* Bleu nuit */
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+        transition: background 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .btn-create:hover { background-color: #3b3b5c; }
+
+    /* Conteneur Tableau */
+    .table-container {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    thead { background-color: #f8f9fa; }
+
+    th {
+        padding: 16px;
+        color: #666;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #eee;
+    }
+
+    td {
+        padding: 16px;
+        color: #333;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+    }
+
+    tbody tr:hover { background-color: #fcfcfc; }
+
+    /* --- STYLES SPÉCIFIQUES VÉHICULES --- */
+
+    /* Style Plaque d'immatriculation */
+    .plate-number {
+        font-family: 'Courier New', Courier, monospace; /* Police style machine à écrire */
+        font-weight: bold;
+        background-color: #ffcc00; /* Jaune taxi/plaque */
+        color: #000;
+        padding: 4px 8px;
+        border-radius: 4px;
+        border: 1px solid #e6b800;
+        font-size: 0.95rem;
+        letter-spacing: 1px;
+    }
+
+    /* Badge de capacité */
+    .cap-badge {
+        color: #555;
+        font-weight: 600;
+        background-color: #f0f2f5;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+    }
+
+    /* Badges de Statut (Couleurs dynamiques) */
+    .status-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .status-ok {
+        background-color: #e6fffa;
+        color: #047857; /* Vert foncé */
+        border: 1px solid #d1fae5;
+    }
+
+    .status-hs {
+        background-color: #fef2f2;
+        color: #b91c1c; /* Rouge foncé */
+        border: 1px solid #fee2e2;
+    }
+
+    /* Boutons d'action */
+    .action-links {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-edit {
+        background-color: #eaf6ff;
+        color: #2980b9;
+        padding: 6px 10px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: background 0.2s;
+    }
+    .btn-edit:hover { background-color: #d4e9f7; }
+
+    .btn-delete {
+        background-color: #fff1f0;
+        color: #e74c3c;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: background 0.2s;
+    }
+    .btn-delete:hover { background-color: #ffe0de; }
+
+</style>
+
+<div class="content-wrapper">
+    
+    <div class="page-header">
+        <h2>Parc Automobile (Liste des vehicules )</h2>
+        <a href="{{ url_for('crud.create_vehicule') }}" class="btn-create">
+            <span>🚌</span> Ajouter un véhicule
+        </a>
+    </div>
+
+    <div class="table-container">
+        <table cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Immatriculation</th>
+                    <th>Type de véhicule</th>
+                    <th>Capacité</th>
+                    <th>État / Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for v in vehicules %}
+                <tr>
+                    <td>
+                        <span class="plate-number">{{ v.immatriculation }}</span>
+                    </td>
+                    
+                    <td><strong>{{ v.type }}</strong></td>
+                    
+                    <td>
+                        <span class="cap-badge">👥 {{ v.capacite }} places</span>
+                    </td>
+                    
+                    <td>
+                        {% if v.statut == "En service" %}
+                            <span class="status-badge status-ok">✅ En service</span>
+                        {% else %}
+                            <span class="status-badge status-hs">🛑 Hors service</span>
+                        {% endif %}
+                    </td>
+                    
+                    <td>
+                        <div class="action-links">
+                            <a href="{{ url_for('crud.edit_vehicule', immatriculation=v.immatriculation) }}" class="btn-edit">
+                                Modifier
+                            </a>
+                            
+                            <form action="{{ url_for('crud.delete_vehicule', immatriculation=v.immatriculation) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir retirer le véhicule {{ v.immatriculation }} de la flotte ?')">
+                                    Supprimer
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
 {% endblock %}

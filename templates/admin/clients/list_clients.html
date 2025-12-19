@@ -1,32 +1,198 @@
 {% extends "admin/layout.html" %}
 
 {% block content %}
-<h2>Liste des clients</h2>
 
-<a href="{{ url_for('crud.new_client_form') }}">
-    <button>+ Nouveau client</button>
-</a>
+<style>
+    /* Structure globale */
+    .content-wrapper {
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-<table border="1" cellpadding="6" style="margin-top:20px; width:100%; background:white;">
-    <tr style="background:#003366; color:white;">
-        <th>ID</th>
-        <th>Nom</th>
-        <th>Prénom</th>
-        <th>Téléphone</th>
-        <th>Email</th>
-        <th>CNI</th>
-    </tr>
+    /* En-tête : Titre + Bouton */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
 
-    {% for c in clients %}
-    <tr>
-        <td>{{ c.id_client }}</td>
-        <td>{{ c.nom }}</td>
-        <td>{{ c.prenom }}</td>
-        <td>{{ c.telephone }}</td>
-        <td>{{ c.email }}</td>
-        <td>{{ c.cni }}</td>
-    </tr>
-    {% endfor %}
-</table>
+    .page-header h2 {
+        margin: 0;
+        color: #333;
+        font-size: 1.6rem;
+    }
+
+    /* Bouton Nouveau Client */
+    .btn-create {
+        background-color: #1a1a2e; /* Bleu Nuit */
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+        transition: background 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .btn-create:hover { background-color: #3b3b5c; transform: translateY(-1px); }
+
+    /* Conteneur Tableau */
+    .table-container {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        min-width: 800px;
+    }
+
+    thead { background-color: #f8f9fa; }
+
+    th {
+        padding: 16px;
+        color: #666;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #eee;
+    }
+
+    td {
+        padding: 14px 16px;
+        color: #333;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+        font-size: 0.95rem;
+    }
+
+    tbody tr:hover { background-color: #fcfcfc; }
+
+    /* --- STYLES SPÉCIFIQUES --- */
+
+    /* ID discret */
+    .id-cell { color: #aaa; font-family: monospace; font-size: 0.85rem; }
+
+    /* Avatar + Nom */
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .avatar-circle {
+        width: 35px;
+        height: 35px;
+        background-color: #e3f2fd; /* Bleu très clair */
+        color: #1565c0; /* Bleu foncé */
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1rem;
+        text-transform: uppercase;
+    }
+
+    .name-text { font-weight: 600; color: #2c3e50; }
+
+    /* Liens contacts */
+    .contact-link {
+        color: #555;
+        text-decoration: none;
+        transition: color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .contact-link:hover { color: #1a1a2e; text-decoration: underline; }
+
+    /* Badge CNI */
+    .cni-badge {
+        background-color: #f3f3f3;
+        color: #555;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 0.85rem;
+        border: 1px solid #ddd;
+    }
+
+    .empty-text { color: #ccc; font-style: italic; font-size: 0.85rem; }
+
+</style>
+
+<div class="content-wrapper">
+    
+    <div class="page-header">
+        <h2>Fichier Clients</h2>
+        <a href="{{ url_for('crud.new_client_form') }}" class="btn-create">
+            <span>👤</span> Nouveau Client
+        </a>
+    </div>
+
+    <div class="table-container">
+        <table cellspacing="0">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">ID</th>
+                    <th>Nom & Prénom</th>
+                    <th>Contact Téléphonique</th>
+                    <th>Email</th>
+                    <th>N° CNI</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in clients %}
+                <tr>
+                    <td class="id-cell">#{{ c.id_client }}</td>
+                    
+                    <td>
+                        <div class="user-info">
+                            <div class="avatar-circle">
+                                {{ c.nom[0] if c.nom else '?' }}
+                            </div>
+                            <span class="name-text">{{ c.nom }} {{ c.prenom }}</span>
+                        </div>
+                    </td>
+                    
+                    <td>
+                        <a href="tel:{{ c.telephone }}" class="contact-link">
+                            📞 {{ c.telephone }}
+                        </a>
+                    </td>
+                    
+                    <td>
+                        {% if c.email %}
+                            <a href="mailto:{{ c.email }}" class="contact-link">
+                                ✉️ {{ c.email }}
+                            </a>
+                        {% else %}
+                            <span class="empty-text">Non renseigné</span>
+                        {% endif %}
+                    </td>
+                    
+                    <td>
+                        {% if c.cni %}
+                            <span class="cni-badge">{{ c.cni }}</span>
+                        {% else %}
+                            <span class="empty-text">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
 
 {% endblock %}

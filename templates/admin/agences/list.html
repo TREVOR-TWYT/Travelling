@@ -1,32 +1,155 @@
 {% extends "admin/layout.html" %}
+
 {% block content %}
-<h2>Liste des agences</h2>
 
-<a href="{{ url_for('crud.create_agence') }}">Créer une nouvelle agence</a>
+<style>
+    /* Conteneur principal pour aérer */
+    .content-wrapper {
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-<table border="1" cellpadding="5" cellspacing="0">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nom</th>
-            <th>Adresse</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for a in agences %}
-        <tr>
-            <td>{{ a.id_agence }}</td>
-            <td>{{ a.nom_agence }}</td>
-            <td>{{ a.adresse }}</td>
-            <td>
-                <a href="{{ url_for('crud.edit_agence', id_agence=a.id_agence) }}">Modifier</a> |
-                <form action="{{ url_for('crud.delete_agence', id_agence=a.id_agence) }}" method="POST" style="display:inline;">
-                    <button type="submit" onclick="return confirm('Voulez-vous vraiment supprimer cette agence ?')">Supprimer</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    /* En-tête : Titre + Bouton Créer alignés */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .page-header h2 {
+        color: #333;
+        margin: 0;
+        font-size: 1.5rem;
+    }
+
+    /* Bouton principal (Créer) */
+    .btn-create {
+        background-color: #1a1a2e; /* Couleur de ta sidebar */
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background 0.3s;
+    }
+    .btn-create:hover {
+        background-color: #3b3b5c;
+    }
+
+    /* Style du tableau (Look "Carte") */
+    .table-container {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Ombre douce */
+        overflow: hidden; /* Pour arrondir les coins du tableau */
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    thead {
+        background-color: #f4f4f4;
+    }
+
+    th {
+        padding: 15px;
+        color: #555;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #ddd;
+    }
+
+    td {
+        padding: 15px;
+        color: #333;
+        border-bottom: 1px solid #eee;
+    }
+
+    /* Effet au survol d'une ligne */
+    tbody tr:hover {
+        background-color: #f9fbfc;
+    }
+
+    /* Boutons d'actions */
+    .action-links {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-edit {
+        color: #2980b9;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 5px 10px;
+        background: #eaf6ff;
+        border-radius: 4px;
+        font-size: 0.9rem;
+    }
+
+    .btn-delete {
+        background: none;
+        border: none;
+        color: #e74c3c;
+        cursor: pointer;
+        font-weight: 600;
+        padding: 5px 10px;
+        background: #fceceb;
+        border-radius: 4px;
+        font-size: 0.9rem;
+    }
+
+    .btn-edit:hover { background: #d4e9f7; }
+    .btn-delete:hover { background: #fadbd8; }
+
+</style>
+
+<div class="content-wrapper">
+    <div class="page-header">
+        <h2>Liste des agences</h2>
+        <a href="{{ url_for('crud.create_agence') }}" class="btn-create">
+            + Nouvelle Agence
+        </a>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th width="10%">ID</th>
+                    <th width="30%">Nom</th>
+                    <th width="35%">Adresse</th>
+                    <th width="25%">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in agences %}
+                <tr>
+                    <td>#{{ a.id_agence }}</td>
+                    <td><strong>{{ a.nom_agence }}</strong></td>
+                    <td>{{ a.adresse }}</td>
+                    <td>
+                        <div class="action-links">
+                            <a href="{{ url_for('crud.edit_agence', id_agence=a.id_agence) }}" class="btn-edit">
+                                Modifier
+                            </a>
+                            
+                            <form action="{{ url_for('crud.delete_agence', id_agence=a.id_agence) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn-delete" onclick="return confirm('Voulez-vous vraiment supprimer cette agence ?')">
+                                    Supprimer
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
 {% endblock %}

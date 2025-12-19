@@ -1,47 +1,213 @@
 {% extends "admin/layout.html" %}
 
 {% block content %}
-<div class="form-container">
-    <h2>Ajouter un véhicule</h2>
 
-    <form action="" method="POST" class="styled-form">
-        <h3>Identification du véhicule</h3>
-        <div class="form-row">
-            
-            <div class="form-group half-width">
-                <label for="immatriculation">🔢 Immatriculation :</label>
-                <input type="text" id="immatriculation" name="immatriculation" required placeholder="Ex: CE-123-BC">
-            </div>
+<style>
+    /* Structure de base */
+    .content-wrapper {
+        padding: 40px 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        justify-content: center;
+    }
 
-            <div class="form-group half-width">
-                <label for="type">🚌 Type :</label>
-                <input type="text" id="type" name="type" required placeholder="Ex: Bus Standard, Mini-bus VIP">
-            </div>
+    .form-card {
+        background: white;
+        width: 100%;
+        max-width: 600px;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
 
+    /* En-tête */
+    .form-header {
+        text-align: center;
+        margin-bottom: 30px;
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 20px;
+    }
+
+    .form-header h2 {
+        margin: 0;
+        color: #333;
+        font-size: 1.6rem;
+    }
+
+    .form-header p {
+        margin: 8px 0 0;
+        color: #888;
+        font-size: 0.95rem;
+    }
+
+    /* Titres de section */
+    .section-title {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        color: #1a1a2e;
+        letter-spacing: 1px;
+        font-weight: 700;
+        margin: 25px 0 15px 0;
+        display: flex;
+        align-items: center;
+    }
+    
+    .section-title::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #eee;
+        margin-left: 15px;
+    }
+
+    /* Grille 2 colonnes */
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-group { margin-bottom: 15px; }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    /* Inputs et Selects */
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        background-color: #fafafa;
+        height: 48px; /* Hauteur fixe pour aligner inputs et selects */
+        appearance: none; /* Pour nettoyer le style par défaut du select */
+    }
+
+    /* Petite flèche perso pour le select */
+    select.form-control {
+        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+        background-repeat: no-repeat;
+        background-position: right 15px top 50%;
+        background-size: 10px auto;
+        cursor: pointer;
+    }
+
+    .form-control:focus {
+        border-color: #1a1a2e;
+        background-color: #fff;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(26, 26, 46, 0.1);
+    }
+
+    /* Bouton Submit */
+    .btn-submit {
+        width: 100%;
+        padding: 15px;
+        background-color: #1a1a2e;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.2s, background-color 0.3s;
+        margin-top: 20px;
+    }
+
+    .btn-submit:hover {
+        background-color: #3b3b5c;
+        transform: translateY(-2px);
+    }
+
+    /* Footer */
+    .form-footer { text-align: center; margin-top: 20px; }
+    .back-link { color: #666; text-decoration: none; font-size: 0.9rem; }
+    .back-link:hover { color: #1a1a2e; text-decoration: underline; }
+
+    @media (max-width: 600px) {
+        .form-row { grid-template-columns: 1fr; gap: 0; }
+    }
+</style>
+
+<div class="content-wrapper">
+    <div class="form-card">
+        
+        <div class="form-header">
+            <h2>Nouveau Véhicule</h2>
+            <p>Ajoutez un bus à la flotte de transport.</p>
         </div>
 
-        <h3>Capacité et état</h3>
-        <div class="form-row">
+        <form action="" method="POST">
             
-            <div class="form-group half-width">
-                <label for="capacite">🧑‍🤝‍🧑 Capacité (places) :</label>
-                <input type="number" id="capacite" name="capacite" required min="1" placeholder="Ex: 30">
+            <div class="section-title">🚙 Identification</div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="immatriculation">Immatriculation</label>
+                    <input type="text" 
+                           id="immatriculation" 
+                           name="immatriculation" 
+                           class="form-control" 
+                           required 
+                           placeholder="Ex: LT-123-XY">
+                </div>
+
+                <div class="form-group">
+                    <label for="type">Type de véhicule</label>
+                    <input type="text" 
+                           id="type" 
+                           name="type" 
+                           class="form-control" 
+                           required 
+                           placeholder="Ex: Gros Porteur, Coaster...">
+                </div>
             </div>
 
-            <div class="form-group half-width">
-                <label for="statut">🚦 Statut :</label>
-                <select id="statut" name="statut">
-                    <option value="En service" selected>En service</option>
-                    <option value="Hors service">Hors service</option>
-                </select>
+            <div class="section-title">⚙️ Capacité et Statut</div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="capacite">Capacité (Nb. places)</label>
+                    <input type="number" 
+                           id="capacite" 
+                           name="capacite" 
+                           class="form-control" 
+                           required 
+                           min="1" 
+                           placeholder="Ex: 70">
+                </div>
+
+                <div class="form-group">
+                    <label for="statut">État actuel</label>
+                    <select id="statut" name="statut" class="form-control">
+                        <option value="En service" selected>✅ En service</option>
+                        <option value="Hors service">🛠️ Hors service / Panne</option>
+                        <option value="Maintenance">⚠️ En maintenance</option>
+                    </select>
+                </div>
             </div>
-            
+
+            <button type="submit" class="btn-submit">
+                ➕ Enregistrer le véhicule
+            </button>
+
+        </form>
+
+        <div class="form-footer">
+            <a href="{{ url_for('crud.list_vehicules') }}" class="back-link">
+                Annuler et Retour à la liste
+            </a>
         </div>
 
-        <div class="form-actions">
-            <button type="submit" class="btn-primary">➕ Créer le véhicule</button>
-            <a href="{{ url_for('crud.list_vehicules') }}" class="btn-secondary">Retour à la liste</a>
-        </div>
-    </form>
+    </div>
 </div>
+
 {% endblock %}

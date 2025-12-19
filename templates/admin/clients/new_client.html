@@ -1,43 +1,174 @@
 {% extends "admin/layout.html" %}
 
 {% block content %}
-<div class="form-container">
-    <h2>Créer un nouveau client</h2>
 
-    <form method="POST" class="client-form">
+<style>
+    /* Structure globale */
+    .content-wrapper {
+        padding: 40px 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        justify-content: center;
+        background-color: #f4f6f9;
+    }
 
-        <div class="form-row">
-            <div class="form-group half-width">
-                <label for="nom">Nom :</label>
-                <input type="text" id="nom" name="nom" required placeholder="Nom de famille">
-            </div>
+    .form-card {
+        background: white;
+        width: 100%;
+        max-width: 600px;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border-top: 5px solid #1a1a2e; /* Touche de couleur marque */
+    }
 
-            <div class="form-group half-width">
-                <label for="prenom">Prénom :</label>
-                <input type="text" id="prenom" name="prenom" placeholder="Prénom(s)">
-            </div>
+    /* En-tête */
+    .form-header {
+        text-align: center;
+        margin-bottom: 35px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .form-header h2 {
+        margin: 0;
+        color: #1a1a2e;
+        font-size: 1.6rem;
+    }
+
+    .form-header p {
+        margin: 8px 0 0;
+        color: #666;
+        font-size: 0.95rem;
+    }
+
+    /* Grille */
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 15px;
+    }
+
+    .form-group { margin-bottom: 15px; }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    /* Inputs */
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        background-color: #fafafa;
+        height: 48px;
+    }
+
+    .form-control:focus {
+        border-color: #1a1a2e;
+        background-color: #fff;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(26, 26, 46, 0.1);
+    }
+
+    /* Bouton */
+    .btn-submit {
+        width: 100%;
+        padding: 15px;
+        background-color: #1a1a2e;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.2s, background-color 0.3s;
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-submit:hover {
+        background-color: #3b3b5c;
+        transform: translateY(-2px);
+    }
+
+    /* Footer / Lien retour */
+    .form-footer { text-align: center; margin-top: 20px; }
+    .back-link { color: #666; text-decoration: none; font-size: 0.9rem; }
+    .back-link:hover { color: #1a1a2e; text-decoration: underline; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+        .form-row { grid-template-columns: 1fr; gap: 0; }
+        .form-card { padding: 20px; }
+    }
+</style>
+
+<div class="content-wrapper">
+    <div class="form-card">
+        
+        <div class="form-header">
+            <h2>👤 Nouveau Client</h2>
+            <p>Enregistrement d'un nouveau passager dans la base.</p>
         </div>
 
-        <div class="form-row">
-            <div class="form-group half-width">
-                <label for="telephone">Téléphone :</label>
-                <input type="tel" id="telephone" name="telephone" required placeholder="+XXX XXX XXX XX">
+        <form method="POST">
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nom">Nom de famille</label>
+                    <input type="text" id="nom" name="nom" class="form-control" required placeholder="Ex: DOE">
+                </div>
+
+                <div class="form-group">
+                    <label for="prenom">Prénom(s)</label>
+                    <input type="text" id="prenom" name="prenom" class="form-control" placeholder="Ex: John">
+                </div>
             </div>
 
-            <div class="form-group half-width">
-                <label for="email">Email :</label>
-                <input type="email" id="email" name="email" placeholder="example@domaine.com (Optionnel)">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="telephone">Téléphone 📞</label>
+                    <input type="tel" id="telephone" name="telephone" class="form-control" required placeholder="Ex: 699 00 00 00">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email ✉️ <span style="font-weight: normal; color: #888;"></span></label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="client@exemple.com">
+                </div>
             </div>
+
+            <div class="form-group">
+                <label for="cni">Numéro CNI / Pièce d'identité 🆔</label>
+                <input type="text" id="cni" name="cni" class="form-control" placeholder="Ex: 112233445 (Optionnel)">
+                <small style="color: #999; margin-top: 5px; display: block;">Utile pour les vérifications lors de l'embarquement.</small>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                ✨ Enregistrer le client
+            </button>
+
+        </form>
+
+        <div class="form-footer">
+            <a href="{{ url_for('crud.list_clients') }}" class="back-link">
+                Annuler et Retour à la liste
+            </a>
         </div>
 
-        <div class="form-group full-width">
-            <label for="cni">Numéro CNI / Pièce d'identité :</label>
-            <input type="text" id="cni" name="cni" placeholder="Numéro de la carte d'identité (Optionnel)">
-        </div>
-
-        <div class="form-submit">
-            <button type="submit" class="btn-primary">Créer le client</button>
-        </div>
-    </form>
+    </div>
 </div>
+
 {% endblock %}
