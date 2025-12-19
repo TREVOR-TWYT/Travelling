@@ -5,76 +5,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion - MBOA TRAVEL</title>
     <link rel="stylesheet" href="/static/css/login.css">
+    <style>
+        /* Champ mot de passe avec icône sur la même ligne */
+        .password-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px; /* espace avec le bouton */
+        }
+
+        .password-container input {
+            width: 100%;
+            padding-right: 40px; /* espace pour l'icône */
+            box-sizing: border-box;
+        }
+
+        .password-container .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            user-select: none;
+            font-size: 18px;
+        }
+    </style>
 </head>
 <body>
 
-
 <div class="login-container">
 
-<div class ="side-message">
-      <h2> Bienvenue </h2>
-      <p>Accede facilement a ton espace personnel.</p>
-      <p>Entre ton <strong>email</strong> et ton <strong>mot de passe</strong> pour te connecter.</p>
-</div>
-
-
-<div class="form-box">
-
-  <div class="logo">
-  <a href="/">
-    <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="MBOA TRAVEL">
-  </a>
-</div>
-
-<h2>Connexion</h2>
-<p class="subtitle">Rejoignez MBOA TRAVEL et voyagez en toute simplicité</p>
-
-    <form method="POST" id="loginForm" action="{{ url_for('handle_client_login') }}">
-
-      {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div class="flash-container">
-      {% for category, message in messages %}
-        <div class="flash {{ category }}">{{ message }}</div>
-      {% endfor %}
+    <div class="side-message">
+        <h2>Bienvenue</h2>
+        <p>Accède facilement à ton espace personnel.</p>
+        <p>Entre ton <strong>email</strong> et ton <strong>mot de passe</strong> pour te connecter.</p>
+        <p>Ou bien</p>
     </div>
-  {% endif %}
-{% endwith %}
 
+    <div class="form-box">
+
+        <div class="logo">
+            <a href="{{ url_for('public_index') }}">
+                <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="MBOA TRAVEL">
+            </a>
+        </div>
+
+        <h2>Connexion</h2>
+        <p class="subtitle">Rejoignez MBOA TRAVEL et voyagez en toute simplicité</p>
+
+        <form method="POST" id="loginForm" action="{{ url_for('handle_client_login') }}">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% endwith %}
 
             <input type="text" name="identifier" placeholder="Email ou Téléphone" required>
-            <input type="password" name="password" placeholder="Mot de passe" required>
-            <button type="submit" id="submitBtn">Se connecter</button>
-        
-        <!-- Loader -->
-        <div id="loader" class="loader" style="display: none;"></div>
-    </form>
 
-    <!--  SCRIPT 100% FONCTIONNEL AVEC DÉLAI -->
-    <script>
-        const form = document.getElementById("loginForm");
-        const loader = document.getElementById("loader");
-        const btn = document.getElementById("submitBtn");
+            <!-- Champ mot de passe avec icône sur la même ligne -->
+            <div class="password-container">
+                <input type="password" name="password" id="password" placeholder="Mot de passe" required>
+                <span class="toggle-password" onclick="togglePassword()">👁️</span>
+            </div>
 
-        form.addEventListener("submit", function (e) {
-            e.preventDefault();  // empêche l’envoi immédiat
+            <button type="submit" id="submitBtn" class="btn-register">Se connecter</button>
 
-            btn.disabled = true; 
-            loader.style.display = "inline-block"; // affiche le rond
+            <!-- Loader -->
+            <div id="loader" class="loader" style="display: none;"></div>
+        </form>
 
-            // ⏱️ délai avant envoi (2000 ms = 2 secondes)
-            setTimeout(() => {
-                form.submit();
-            }, 2000);
-        });
-    </script>
-    
-    <p class="bottom-text"> Vous n'avez pas de compte ? <a href="{{ url_for('public_register') }}">S’inscrire</a></p>
+        <!-- Script pour le loader -->
+        <script>
+            const form = document.getElementById("loginForm");
+            const loader = document.getElementById("loader");
+            const btn = document.getElementById("submitBtn");
 
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();  // empêche l’envoi immédiat
+
+                btn.disabled = true; 
+                loader.style.display = "inline-block"; // affiche le rond
+
+                // ⏱️ délai avant envoi (2000 ms = 2 secondes)
+                setTimeout(() => {
+                    form.submit();
+                }, 2000);
+            });
+        </script>
+
+        <p class="bottom-text">Vous n'avez pas de compte ? <a href="{{ url_for('public_register') }}">S’inscrire</a></p>
+
+    </div>
 </div>
-</div>
 
+<!-- Script pour afficher/masquer le mot de passe -->
+<script>
+function togglePassword(){
+    const input = document.getElementById("password");
+    input.type = input.type === "password" ? "text" : "password";
+}
+</script>
 
 </body>
 </html>
-

@@ -5,83 +5,117 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription - MBOA TRAVEL</title>
     <link rel="stylesheet" href="/static/css/register.css">
+    <style>
+        /* Styles pour mettre l’icône sur la même ligne que le champ password */
+        .password-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 15px; /* espace entre les champs */
+        }
+
+        .password-container input {
+            width: 100%;
+            padding-right: 40px; /* espace pour l’icône à droite */
+            box-sizing: border-box;
+        }
+
+        .password-container .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            user-select: none;
+            font-size: 18px;
+        }
+    </style>
 </head>
 
 <body>
 
-  <div class="register-container">
+<div class="register-container">
 
-  <div class ="side-message">
-    <h2> Bienvenue </h2>
-    <p>Nouveau sur l'application?.</p>
-    <p>Entre <strong>tes informations</strong> pour t'inscrire.</p>
-  </div>
-
-  
-  <div class="form-box">
-
-          <div class="logo">
-            <a href="/">
-              <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="MBOA TRAVEL">
-            </a>
-          </div>
-          
-          <h2>Créer un compte</h2>
-          <p class="subtitle">Rejoignez MBOA TRAVEL et voyagez en toute simplicité</p>
-  
-
-    <!--  FORMULAIRE CORRIGÉ AVEC IDs -->
-    <form method="POST" id="registerForm">
-
-      {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div class="flash-container">
-      {% for category, message in messages %}
-        <div class="flash {{ category }}">{{ message }}</div>
-      {% endfor %}
+    <div class ="side-message">
+        <h2> Bienvenue </h2>
+        <p>Nouveau sur l'application?.</p>
+        <p>Entre <strong>tes informations</strong> pour t'inscrire.</p>
     </div>
-  {% endif %}
-{% endwith %}
 
-        <input type="text" name="nom" placeholder="Nom" required>
-        <input type="text" name="prenom" placeholder="Prénom">
-        <input type="text" name="telephone" placeholder="Téléphone" required>
-        <input type="email" name="email" placeholder="Email">
-        <input type="text" id="cni" name="cni" placeholder="Numéro de carte d'identité">
-        <input type="password" name="password" placeholder="Mot de passe" required>
-        
-        <button type="submit" class="btn-register" id="submitBtn">S’inscrire</button>
+    <div class="form-box">
 
-        <!-- Loader -->
-        <div id="loader" class="loader" style="display: none;"></div>
-    </form>
+        <div class="logo">
+            <a href="{{ url_for('public_index') }}">
+                <img src="{{ url_for('static', filename='image/logo3.png') }}" alt="MBOA TRAVEL">
+            </a>
+        </div>
 
-    <!--  SCRIPT 100% FONCTIONNEL AVEC DÉLAI -->
-    <script>
-        const form = document.getElementById("registerForm");
-        const loader = document.getElementById("loader");
-        const btn = document.getElementById("submitBtn");
+        <h2>Créer un compte</h2>
+        <p class="subtitle">Rejoignez MBOA TRAVEL et voyagez en toute simplicité</p>
 
-        form.addEventListener("submit", function (e) {
-            e.preventDefault();  // empêche l’envoi immédiat
+        <!-- FORMULAIRE CORRIGÉ AVEC CONTENEUR PASSWORD -->
+        <form method="POST" id="registerForm">
 
-            btn.disabled = true; 
-            loader.style.display = "inline-block"; // affiche le rond
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% endwith %}
 
-            // ⏱️ délai avant envoi (2000 ms = 2 secondes)
-            setTimeout(() => {
-                form.submit();
-            }, 2000);
-        });
-    </script>
+            <input type="text" name="nom" placeholder="Nom" required>
+            <input type="text" name="prenom" placeholder="Prénom">
+            <input type="text" name="telephone" placeholder="Téléphone" required>
+            <input type="email" name="email" placeholder="Email">
+            <input type="text" id="cni" name="cni" placeholder="Numéro de carte d'identité">
 
-    <p>Déjà un compte ? <a href="{{ url_for('handle_client_login') }}">Se connecter</a></p>
+            <div class="password-container">
+                <input type="password" name="password" id="password" placeholder="Mot de passe" required>
+                <span class="toggle-password" onclick="togglePassword()">👁️</span>
+            </div>
+
+            <button type="submit" class="btn-register" id="submitBtn">S’inscrire</button>
+
+            <!-- Loader -->
+            <div id="loader" class="loader" style="display: none;"></div>
+        </form>
+
+        <!-- Script pour le loader -->
+        <script>
+            const form = document.getElementById("registerForm");
+            const loader = document.getElementById("loader");
+            const btn = document.getElementById("submitBtn");
+
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();  // empêche l’envoi immédiat
+
+                btn.disabled = true; 
+                loader.style.display = "inline-block"; // affiche le rond
+
+                // ⏱️ délai avant envoi (2000 ms = 2 secondes)
+                setTimeout(() => {
+                    form.submit();
+                }, 2000);
+            });
+        </script>
+
+        <p>Déjà un compte ? <a href="{{ url_for('handle_client_login') }}">Se connecter</a></p>
 
         <div class="back-home">
-        <a href="{{ url_for('public_index') }}">← Retour à l'accueil</a>
+            <a href="{{ url_for('public_index') }}">← Retour à l'accueil</a>
+        </div>
     </div>
-  </div>
 </div>
+
+<!-- Script pour afficher/masquer le mot de passe -->
+<script>
+function togglePassword(){
+    const input = document.getElementById("password");
+    input.type = input.type === "password" ? "text" : "password";
+}
+</script>
 
 </body>
 </html>
