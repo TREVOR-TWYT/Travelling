@@ -8,7 +8,7 @@ body {
 
 /* Header & Footer */
 header {
-    background-color: #764ba2;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 15px 0;
 }
@@ -25,7 +25,7 @@ header nav a:hover {
 }
 
 footer {
-    background-color: #764ba2;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     text-align: center;
     padding: 20px 0;
@@ -49,7 +49,8 @@ footer {
 }
 
 .flash.success {
-    background-color: #007acc;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
 }
 
 .flash.danger {
@@ -61,7 +62,8 @@ footer {
 }
 
 .flash.info {
-    background-color: #0066cc;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
 }
 
 /* Form Container */
@@ -76,7 +78,8 @@ footer {
 }
 
 .form-container h2 {
-    color: #764ba2;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
     margin-bottom: 25px;
 }
 
@@ -93,7 +96,7 @@ footer {
 .form-container .btn {
     width: 100%;
     padding: 14px;
-    background-color: #0066cc;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
     border-radius: 8px;
@@ -107,7 +110,8 @@ footer {
 
 .form-container button:hover,
 .form-container .btn:hover {
-    background-color: #004c99;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
 }
 
 .form-container p {
@@ -116,7 +120,8 @@ footer {
 }
 
 .form-container p a {
-    color: #0066cc;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
     text-decoration: none;
     font-weight: bold;
 }

@@ -531,6 +531,27 @@ def public_dashboard():
         dernier_colis=dernier_colis
     )
 
+# -----------------------------
+# PROFILE
+# -----------------------------
+@app.route("/public/profile", methods=["GET", "POST"])
+#@login_required
+def public_profile():
+    client = db.session.get(Client, session["client_id"])
+
+    if request.method == "POST":
+        client.nom = request.form["nom"]
+        client.prenom = request.form["prenom"]
+        client.telephone = request.form["telephone"]
+        client.email = request.form["email"]
+
+        db.session.commit()
+        flash("Profil mis à jour avec succès !", "success")
+        return redirect(url_for("public_profile"))
+
+    return render_template("public/profile.html", client=client)
+
+
 @app.route("/public/trajets")
 @app.route("/trajets-publics")
 def public_trajets():
