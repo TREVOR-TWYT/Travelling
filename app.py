@@ -551,6 +551,40 @@ def public_profile():
 
     return render_template("public/profile.html", client=client)
 
+@app.route("/public/change-password", methods=["GET", "POST"])
+def change_password():
+    client = db.session.get(Client, session["client_id"])
+
+    if request.method == "POST":
+        old_password = request.form.get("old_password")
+        new_password = request.form.get("new_password")
+        confirm_password = request.form.get("confirm_password")
+
+        # 1️⃣ Vérifier ancien mot de passe
+        if not client.check_password(old_password):
+            flash("Mot de passe actuel incorrect.", "error")
+            return redirect(url_for("change_password"))
+
+        # 2️⃣ Vérifier correspondance nouveau mot de passe
+        if new_password != confirm_password:
+            flash("Les nouveaux mots de passe ne correspondent pas.", "error")
+            return redirect(url_for("change_password"))
+
+        # 3️⃣ Sécurité minimale
+        if len(new_password) < 6:
+            flash("Le mot de passe doit contenir au moins 6 caractères.", "error")
+            return redirect(url_for("change_password"))
+
+        # 4️⃣ Mise à jour
+        client.set_password(new_password)
+        db.session.commit()
+
+        flash("Mot de passe modifié avec succès !", "success")
+        return redirect(url_for("public_profile"))
+
+    return render_template("public/change_password.html")
+
+
 
 @app.route("/public/trajets")
 @app.route("/trajets-publics")

@@ -8,29 +8,82 @@
 </head>
 <body>
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div class="flash-container">
-      {% for category, message in messages %}
-        <div class="flash {{ category }}">{{ message }}</div>
-      {% endfor %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+
+
+<div class="login-container">
+
+<div class="side-message">
+  <h2>Bienvenue</h2>
+  <p>Des informations à modifier ?.</p>
+  <p>Entre tes <strong>nouvelles informations</strong> mets a jour ton profile</p>
+  <p>Ou clique sur le logo pour retourner à ton espace personnel.</p>
+</div>
+
+
+
+<div class="form-box">
+
+    <form method="POST" id="loginForm">
+
+      <div class="logo">
+        <a href="{{ url_for('public_dashboard') }}">
+          <img src="{{ url_for('static', filename='image/profile.png') }}" alt="MBOA TRAVEL">
+        </a>
     </div>
-  {% endif %}
-{% endwith %}
 
-{% include 'public/header.html' %}
-
-<div class="form-container">
     <h2>Mon Profil</h2>
-    <form method="POST">
+    <p class="subtitle">Entre tes nouvelles informations et mets a jour ton profile</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+
         <input type="text" name="nom" value="{{ client.nom }}" required>
         <input type="text" name="prenom" value="{{ client.prenom }}">
         <input type="text" name="telephone" value="{{ client.telephone }}" required>
         <input type="email" name="email" value="{{ client.email }}">
-        <button type="submit">Mettre à jour</button>
+        <button type="submit" id="submitBtn" class="btn-register">Mettre à jour</button>
+        <!-- Loader -->
+        <div id="loader" class="loader" style="display: none;"></div>
     </form>
-    <a class="btn" href="{{ url_for('public_dashboard') }}">Retour au dashboard</a>
+
+    <!-- Script pour le loader -->
+    <script>
+      const form = document.getElementById("loginForm");
+      const loader = document.getElementById("loader");
+      const btn = document.getElementById("submitBtn");
+
+      form.addEventListener("submit", function (e) {
+          e.preventDefault();  // empêche l’envoi immédiat
+
+          btn.disabled = true; 
+          loader.style.display = "inline-block"; // affiche le rond
+
+          // ⏱️ délai avant envoi (2000 ms = 2 secondes)
+          setTimeout(() => {
+              form.submit();
+          }, 2000);
+      });
+  </script>
+
+    <a class="btn" href="{{ url_for('public_dashboard') }}">← 👤 Mon espace</a>
 </div>
-{% include 'public/footer.html' %}
+</div> 
+
 </body>
 </html>
